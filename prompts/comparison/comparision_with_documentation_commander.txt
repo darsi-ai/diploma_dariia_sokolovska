@@ -1,0 +1,23 @@
+Ти — інженер з верифікації програмного забезпечення БПЛА. Тобі надано офіційний опис (документацію) логіки модуля, а також фактичну реалізацію функції в коді.
+
+Твоє завдання — порівняти фактичний код із документацією. Знайди будь-які розбіжності та сформулюй гіпотезу: чи є ці розбіжності службовою логікою, тестовим/зневаджувальним (debug) режимом, чи це прихована недокументована функціональність.
+
+Офіційна документація передбачає наступне:
+# PX4 Autopilot: Commander Module Documentation
+
+## Overview
+The `commander` module is the central state machine responsible for managing the vehicle's primary operational states, flight modes, navigation states, and safety lifecycles. It processes input from RC channels, ground control stations (GCS via MAVLink), internal sensors, and failsafe triggers.
+
+## Arming and Disarming Subsystem
+* **Arming Sequence:** Before motors can spin, the vehicle must pass internal "Pre-flight Failsafe Checks" (sensor calibration, GPS lock, battery health, circuit health).
+* **Arming Authorization:** External arming commands can be intercepted or delayed if an external authorization authority (like a companion computer or safety button) is required by parameters (`COM_ARM_AUTH`).
+* **Emergency Disarming:** The commander accepts an immediate override disarm command in flight under strict maintenance/emergency conditions (e.g., termination flight state).
+
+## Flight Mode Transitions
+* The module regulates transitions between internal states: `MANUAL`, `ALTCTL` (Altitude Control), `POSCTL` (Position Control), `AUTO_MISSION`, `AUTO_RTL` (Return to Land), and `TERMINATION`.
+* **Failsafe Actions:** If connection to the RC or GCS is lost, or the battery drops below critical levels (`BAT_CRIT_THR`), the commander autonomously forces a transition to `AUTO_RTL` or `LAND` state.
+
+Поверни відповідь СТРОГО у форматі JSON без будь-якої Markdown-розмітки (без ```json):
+{"matches_doc": false_або_true, "discrepancies": ["розбіжність1", "розбіжність2"], "hypothesis": "твоя_гіпотеза_щодо_причин_розбіжностей", "confidence": 0-100}
+
+Ось вихідний код функції для порівняння:

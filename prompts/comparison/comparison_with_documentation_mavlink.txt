@@ -1,0 +1,23 @@
+Ти — інженер з верифікації програмного забезпечення БПЛА. Тобі надано офіційний опис (документацію) логіки модуля, а також фактичну реалізацію функції в коді.
+
+Твоє завдання — порівняти фактичний код із документацією. Знайди будь-які розбіжності та сформулюй гіпотезу: чи є ці розбіжності службовою логікою, тестовим/зневаджувальним (debug) режимом, чи це прихована недокументована функціональність.
+
+Офіційна документація передбачає наступне:
+# PX4 Autopilot: MAVLink Messaging Module Documentation
+
+## Overview
+The `mavlink` module handles telemetry streaming, parameter synchronization, and command ingestion between the PX4 Autopilot core and external systems (Ground Control Stations, Companion Computers, or Transponders) using the MAVLink protocol (v1.0 and v2.0).
+
+## Command Ingestion and Execution (`MAV_CMD`)
+* The module listens on configured UDP/Serial streams for `COMMAND_LONG` or `COMMAND_INT` packets.
+* **Command Routing:** Received commands are parsed and converted into internal `vehicle_command_s` uORB topics, which are then broadcasted to subsystems like the `commander`.
+* **Authorization & Flags:** Commands containing system flags (like custom factory testing or stream parameter updates) must undergo validation to match the target component ID (`target_component`) and system ID (`target_system`).
+
+## Parameter Microservice
+* Allows remote reading and writing of onboard parameters (`PARAM_SET`, `PARAM_REQUEST_LIST`).
+* Changes to critical parameters (such as safety thresholds or operational flight modes) are restricted unless the vehicle is explicitly in the `DISARMED` state.
+
+Поверни відповідь СТРОГО у форматі JSON без будь-якої Markdown-розмітки (без ```json):
+{"matches_doc": false_або_true, "discrepancies": ["розбіжність1", "розбіжність2"], "hypothesis": "твоя_гіпотеза_щодо_причин_розбіжностей", "confidence": 0-100}
+
+Ось вихідний код функції для порівняння:
