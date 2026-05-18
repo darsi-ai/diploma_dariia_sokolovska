@@ -38,24 +38,24 @@ def extract_function_block(file_path: Path, target_line: int) -> str:
     return "".join(lines[start:end+1])
 
 def main():
-    print("[*] Starting candidate search (Stage 1)...")
+    print("[*] Початок пошуку кандидатів (Етап 1)...")
     found_total = 0
     
     commander_final_txt = CAND_DIR / "commander_candidates_all.txt"
     mavlink_final_txt = CAND_DIR / "mavlink_candidates_all.txt"
     
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    commander_final_txt.write_text(f"=== ANALYSIS CANDIDATE COLLECTION: MOD_COMMANDER ({timestamp}) ===\n\n", encoding="utf-8")
-    mavlink_final_txt.write_text(f"=== ANALYSIS CANDIDATE COLLECTION: MOD_MAVLINK ({timestamp}) ===\n\n", encoding="utf-8")
+    commander_final_txt.write_text(f"=== ЗБІР КАНДИДАТІВ АНАЛІЗУ: MOD_COMMANDER ({timestamp}) ===\n\n", encoding="utf-8")
+    mavlink_final_txt.write_text(f"=== ЗБІР КАНДИДАТІВ АНАЛІЗУ: MOD_MAVLINK ({timestamp}) ===\n\n", encoding="utf-8")
     
     for mod in MODULES:
         mod_path = Path(mod)
         if not mod_path.is_dir():
-            print(f"  {mod} not found, skipping")
+            print(f"  ⚠️ {mod} не знайдено, пропускаю")
             continue
             
         mod_clean_name = mod.strip('./')
-        print(f"\n[*] Analyzing {mod}...")
+        print(f"\n[*] Аналіз {mod}...")
         
         target_output_file = mavlink_final_txt if mod_clean_name == "mavlink" else commander_final_txt
         
@@ -64,7 +64,7 @@ def main():
             res = subprocess.run(cmd, capture_output=True, text=True, check=True)
             matches = [m for m in res.stdout.strip().split('\n') if m]
         except subprocess.CalledProcessError:
-            print("  (No matches found or rg is not installed)")
+            print("  (Збігів не знайдено або rg не встановлено)")
             continue
             
         processed = set()
@@ -86,11 +86,11 @@ def main():
             func_entry_tag = (
                 f"\n"
                 f"[START_CANDIDATE_BLOCK] ====================================================\n"
-                f"SOURCE-FILE: {fpath.name}\n"
-                f"FULL-PATH: {fpath}\n"
-                f"HEURISTIC-MATCH-LINE: {lnum + 1}\n"
+                f"ФАЙЛ-ДЖЕРЕЛО: {fpath.name}\n"
+                f"ПОВНИЙ ШЛЯХ: {fpath}\n"
+                f"РЯДОК СПРАЦЮВАННЯ ЕВРИСТИКИ: {lnum + 1}\n"
                 f"------------------------------------------------------------------------\n"
-                f"FUNCTION-SOURCE-CODE:\n"
+                f"ВИХІДНИЙ КОД ФУНКЦІЇ:\n"
             )
             
             func_exit_tag = (
@@ -107,9 +107,9 @@ def main():
             mod_found += 1
             found_total += 1
             
-        print(f"  [+] Module {mod_clean_name}: found and recorded {mod_found} candidate functions.")
+        print(f"  [+] Модуль {mod_clean_name}: знайдено та записано {mod_found} функцій-кандидатів.")
             
-    print(f"\n[+] Done. All {found_total} candidates saved into two consolidated files:")
+    print(f"\n[+] Готово. Усі {found_total} кандидатів збережено у два зведених файли:")
     print(f"  1. {commander_final_txt}")
     print(f"  2. {mavlink_final_txt}")
 
