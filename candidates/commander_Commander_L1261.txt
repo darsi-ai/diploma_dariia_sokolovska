@@ -1,0 +1,4 @@
+			} else {
+				cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+				mavlink_log_critical(&_mavlink_log_pub, "Orbit command rejected");
+			}

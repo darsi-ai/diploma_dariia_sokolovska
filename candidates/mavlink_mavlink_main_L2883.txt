@@ -1,0 +1,3 @@
+			} else {
+				PX4_ERR("setting stream %s to default failed", _subscribe_to_stream);
+			}

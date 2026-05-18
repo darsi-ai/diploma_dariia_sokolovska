@@ -1,0 +1,10 @@
+	} else {
+		uart_config.c_cflag &= ~CRTSCTS;
+
+	}
+
+	ret = tcsetattr(_uart_fd, TCSANOW, &uart_config);
+
+	if (!ret) {
+		_flow_control_mode = mode;
+	}

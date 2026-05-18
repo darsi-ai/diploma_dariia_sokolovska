@@ -1,0 +1,3 @@
+			if (vehicle_command_ack_sub.get().command == cmd) {
+				return vehicle_command_ack_sub.get().result == vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+			}

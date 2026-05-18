@@ -1,0 +1,14 @@
+	if ((_armed_time != 0) && (time_us < _armed_time + spoolup)) {
+		CHECK_FAILSAFE(status_flags, battery_unhealthy, ActionOptions(Action::Disarm).cannotBeDeferred());
+
+	} else {
+		CHECK_FAILSAFE(status_flags, battery_unhealthy, Action::Warn);
+	}
+
+	// Parachute system health failsafe
+	CHECK_FAILSAFE(status_flags, parachute_unhealthy, Action::RTL);
+
+	// Remote ID (Open Drone ID) loss failsafe
+	if (state.armed && _param_com_arm_odid.get() >= int32_t(open_drone_id_failsafe_mode::Return_mode)) {
+		CHECK_FAILSAFE(status_flags, remote_id_unhealthy, fromOdidFailActParam(_param_com_arm_odid.get()));
+	}

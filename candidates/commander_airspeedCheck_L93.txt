@@ -1,0 +1,16 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Airspeed invalid");
+			}
+		}
+
+		if (!context.isArmed() && airspeed_calibrated_from_sensor > arming_max_airspeed_allowed) {
+			/* EVENT
+			 * @description
+			 * Current airspeed reading too high. Check if wind is below maximum airspeed and redo airspeed
+			 * calibration if the measured airspeed does not correspond to wind conditions.
+			 *
+			 * <profile name="dev">
+			 * Measured: {1:.1m/s}, limit: {2:.1m/s}.
+			 *
+			 * This check can be configured via <param>FW_AIRSPD_MAX</param> parameter.
+			 * </profile>

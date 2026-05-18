@@ -1,0 +1,37 @@
+		for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+			if (instance != 0 && i != (instance - 1)) {
+				continue;
+			}
+
+			switch (failure_type) {
+			case vehicle_command_s::FAILURE_TYPE_OK:
+				supported = true;
+				PX4_INFO("CMD_INJECT_FAILURE, motor %d ok", i + 1);
+				_motor_stop_mask &= ~(1 << i);
+				_esc_telemetry_blocked_mask &= ~(1 << i);
+				_esc_telemetry_wrong_mask &= ~(1 << i);
+				break;
+
+			case vehicle_command_s::FAILURE_TYPE_OFF:
+				supported = true;
+				PX4_INFO("CMD_INJECT_FAILURE, motor %d off", i + 1);
+				_motor_stop_mask |= 1 << i;
+				break;
+
+			case vehicle_command_s::FAILURE_TYPE_STUCK:
+				supported = true;
+				PX4_INFO("CMD_INJECT_FAILURE, motor %d no esc telemetry", i + 1);
+				_esc_telemetry_blocked_mask |= 1 << i;
+				break;
+
+			case vehicle_command_s::FAILURE_TYPE_WRONG:
+				supported = true;
+				PX4_INFO("CMD_INJECT_FAILURE, motor %d esc telemetry wrong", i);
+				_esc_telemetry_wrong_mask |= 1 << i;
+				break;
+			}
+		}
+
+		vehicle_command_ack_s ack{};
+		ack.command = vehicle_command.command;
+		ack.from_external = false;

@@ -1,0 +1,2 @@
+	ASSERT_FALSE(failsafe.failsafeDeferred());
+	failsafe.deferFailsafes(false, defer_timeout_s);

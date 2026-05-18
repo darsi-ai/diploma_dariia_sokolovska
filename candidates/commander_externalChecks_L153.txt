@@ -1,0 +1,2 @@
+					// Also clear the arming bits for the replaced mode, as the user intention is always set to the
+					// replaced mode.

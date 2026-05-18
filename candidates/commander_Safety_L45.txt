@@ -1,0 +1,2 @@
+	// Safety can be turned off with the CBRK_IO_SAFETY parameter.
+	_safety_disabled = circuit_breaker_enabled("CBRK_IO_SAFETY", CBRK_IO_SAFETY_KEY);

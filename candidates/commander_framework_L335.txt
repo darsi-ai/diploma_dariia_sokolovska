@@ -1,0 +1,24 @@
+			} else if (_actions[i].id == caller_id) {
+				found_idx = i;
+				break;
+			}
+		}
+
+		if (found_idx != -1) {
+			if (_actions[found_idx].activated && !_duplicate_reported_once) {
+				PX4_ERR("BUG: duplicate check for caller_id %i", caller_id);
+				_duplicate_reported_once = true;
+			}
+
+			_actions[found_idx].state_failure = true;
+			_actions[found_idx].activated = true;
+			_actions[found_idx].action = options.action; // Allow action to be updated, but keep the rest
+
+			if (!last_state_failure) {
+				PX4_DEBUG("Caller %i: state changed to failed, action already active", caller_id);
+			}
+
+		} else {
+			if (free_idx == -1) {
+				PX4_ERR("No free failsafe action idx");
+

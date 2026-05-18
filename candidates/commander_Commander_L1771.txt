@@ -1,0 +1,37 @@
+	} else {
+		actuator_test.timeout_ms = timeout_ms;
+	}
+
+	// enforce a timeout and a maximum limit
+	if (actuator_test.timeout_ms == 0 || actuator_test.timeout_ms > 3000) {
+		actuator_test.timeout_ms = 3000;
+	}
+
+	_actuator_test_pub.publish(actuator_test);
+	return vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+}
+
+void Commander::executeActionRequest(const action_request_s &action_request)
+{
+	arm_disarm_reason_t arm_disarm_reason{};
+
+	// Silently ignore RC actions during RC calibration
+	if (_vehicle_status.rc_calibration_in_progress
+	    && (action_request.source == action_request_s::SOURCE_STICK_GESTURE
+		|| action_request.source == action_request_s::SOURCE_RC_SWITCH
+		|| action_request.source == action_request_s::SOURCE_RC_BUTTON
+		|| action_request.source == action_request_s::SOURCE_RC_MODE_SLOT)) {
+		return;
+	}
+
+	switch (action_request.source) {
+	case action_request_s::SOURCE_STICK_GESTURE: arm_disarm_reason = arm_disarm_reason_t::stick_gesture; break;
+
+	case action_request_s::SOURCE_RC_SWITCH: arm_disarm_reason = arm_disarm_reason_t::rc_switch; break;
+
+	case action_request_s::SOURCE_RC_BUTTON: arm_disarm_reason = arm_disarm_reason_t::rc_button; break;
+	}
+
+	switch (action_request.action) {
+	case action_request_s::ACTION_DISARM: disarm(arm_disarm_reason); break;
+

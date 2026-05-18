@@ -1,0 +1,41 @@
+			else if (get_protocol() == Protocol::UDP) {
+				PX4_ERR("stream %s on UDP port %hu not found", _subscribe_to_stream, _network_port);
+			}
+
+#endif // MAVLINK_UDP
+		}
+
+		_subscribe_to_stream = nullptr;
+	}
+}
+
+void Mavlink::publish_telemetry_status()
+{
+	// many fields are populated in place
+
+	_tstatus.mode = _mode;
+	_tstatus.data_rate = _datarate;
+	_tstatus.rate_multiplier = _rate_mult;
+	_tstatus.flow_control = get_flow_control_enabled();
+	_tstatus.ftp = ftp_enabled();
+	_tstatus.forwarding = get_forwarding_on();
+	_tstatus.mavlink_v2 = (_protocol_version == 2);
+
+	_tstatus.streams = _streams.size();
+
+	// telemetry_status is also updated from the receiver thread, but never the same fields
+	_tstatus.timestamp = hrt_absolute_time();
+	_telemetry_status_pub.publish(_tstatus);
+	_tstatus_updated = false;
+}
+
+void Mavlink::configure_sik_radio()
+{
+	/* radio config check */
+	if (_uart_fd >= 0 && _param_sik_radio_id.get() != 0) {
+		/* request to configure radio and radio is present */
+		FILE *fs = fdopen(_uart_fd, "w");
+
+		if (fs) {
+			/* switch to AT command mode */
+			px4_usleep(1200000);

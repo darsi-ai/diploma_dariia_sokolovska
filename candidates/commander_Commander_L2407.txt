@@ -1,0 +1,16 @@
+			if (_auto_disarm_landed.get_state() && !_multicopter_throw_launch.isThrowLaunchInProgress()) {
+				if (_have_taken_off_since_arming) {
+					disarm(arm_disarm_reason_t::landing);
+
+				} else {
+					disarm(arm_disarm_reason_t::preflight_inaction);
+				}
+			}
+		}
+
+		// Auto disarm after 5 seconds if kill switch is engaged
+		_auto_disarm_killed.set_state_and_update(_actuator_armed.kill, hrt_absolute_time());
+
+		if (_auto_disarm_killed.get_state()) {
+			disarm(arm_disarm_reason_t::kill_switch, true);
+		}

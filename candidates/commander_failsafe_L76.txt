@@ -1,0 +1,2 @@
+		options.action = Action::Disarm;
+		break;

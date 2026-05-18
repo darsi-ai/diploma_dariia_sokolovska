@@ -1,0 +1,22 @@
+			if (_modes.valid(override_request.source_id)) {
+				Modes::Mode &mode = _modes.mode(override_request.source_id);
+				memcpy(&mode.overrides, &override_request, sizeof(mode.overrides));
+			}
+
+			break;
+		}
+	}
+}
+
+void ModeManagement::getModeStatus(uint32_t &valid_nav_state_mask, uint32_t &can_set_nav_state_mask) const
+{
+	valid_nav_state_mask = mode_util::getValidNavStates();
+	can_set_nav_state_mask = valid_nav_state_mask & ~(1u << vehicle_status_s::NAVIGATION_STATE_TERMINATION);
+
+	// Add external modes
+	for (int i = Modes::FIRST_EXTERNAL_NAV_STATE; i <= Modes::LAST_EXTERNAL_NAV_STATE; ++i) {
+		if (_modes.valid(i)) {
+			valid_nav_state_mask |= 1u << i;
+			can_set_nav_state_mask |= 1u << i;
+			const Modes::Mode &cur_mode = _modes.mode(i);
+

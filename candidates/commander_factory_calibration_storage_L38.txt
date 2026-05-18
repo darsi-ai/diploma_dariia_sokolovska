@@ -1,0 +1,2 @@
+ * Stores calibration parameters to a separate storage, if enabled by parameter
+ */

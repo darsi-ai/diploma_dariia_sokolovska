@@ -1,0 +1,2 @@
+   Lines also in your main.c, e.g. by reading these parameter from EEPROM.
+ */

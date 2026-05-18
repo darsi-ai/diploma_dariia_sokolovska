@@ -1,0 +1,10 @@
+				if (_vehicle_command_ack_sub.get_last_generation() != last_generation + 1) {
+					PX4_ERR("vehicle_command_ack lost, generation %u -> %u", last_generation,
+						_vehicle_command_ack_sub.get_last_generation());
+				}
+
+				const bool is_target_known = _receiver.component_was_seen(command_ack.target_system, command_ack.target_component);
+
+				if (!command_ack.from_external
+				    && command_ack.command < vehicle_command_s::VEHICLE_CMD_PX4_INTERNAL_START
+				    && is_target_known

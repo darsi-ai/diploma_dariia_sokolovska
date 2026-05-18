@@ -1,0 +1,35 @@
+	{
+		param_control_autosave(false);
+		param_t param = param_handle(px4::params::COM_FAIL_ACT_T);
+
+		float hold_delay = 5.f;
+		param_set(param, &hold_delay);
+	}
+
+};
+
+
+TEST_F(FailsafeTest, general)
+{
+	FailsafeTester failsafe(nullptr);
+
+	failsafe_flags_s failsafe_flags{};
+	FailsafeBase::State state{};
+	state.armed = true;
+	state.user_intended_mode = vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	state.vehicle_type = vehicle_status_s::VEHICLE_TYPE_ROTARY_WING;
+	hrt_abstime time = 5_s;
+	bool stick_override_request = false;
+
+	uint8_t updated_user_intented_mode = failsafe.update(time, state, false, stick_override_request, failsafe_flags);
+
+	ASSERT_EQ(updated_user_intented_mode, state.user_intended_mode);
+	ASSERT_EQ(failsafe.selectedAction(), FailsafeBase::Action::None);
+
+	// manual control lost -> Hold, then RTL
+	time += 10_ms;
+	failsafe_flags.manual_control_signal_lost = true;
+	updated_user_intented_mode = failsafe.update(time, state, false, stick_override_request, failsafe_flags);
+	ASSERT_EQ(updated_user_intented_mode, state.user_intended_mode);
+	ASSERT_EQ(failsafe.selectedAction(), FailsafeBase::Action::Hold);
+	time += 6_s;

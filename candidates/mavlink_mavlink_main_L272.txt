@@ -1,0 +1,2 @@
+	 * Setting the flag unblocks parameter transmissions, which are gated
+	 * beforehand to ensure that the system is fully initialized.

@@ -1,0 +1,32 @@
+{
+	char *ptr = _data_as_cstring(payload);
+	size_t oldpath_sz = strlen(ptr);
+
+	if (oldpath_sz + 2 >= payload->size) {
+		// no newpath
+		errno = EINVAL;
+		return kErrFailErrno;
+	}
+
+	_constructPath(_work_buffer1, _work_buffer1_len, ptr);
+	_constructPath(_work_buffer2, _work_buffer2_len, ptr + oldpath_sz + 1);
+
+	if (!_validatePath(_work_buffer1) || !_validatePath(_work_buffer2) || !_validatePathIsWritable(_work_buffer2)) {
+		return kErrFailFileProtected;
+	}
+
+	PX4_DEBUG("rename from %s to %s", _work_buffer1, _work_buffer2);
+
+	if (rename(_work_buffer1, _work_buffer2) == 0) {
+		payload->size = 0;
+		return kErrNone;
+
+	} else {
+		_our_errno = errno;
+		PX4_ERR("rename failed: %d %s", _our_errno, strerror(_our_errno));
+		return kErrFailErrno;
+	}
+}
+
+/// @brief Responds to a RemoveDirectory command
+MavlinkFTP::ErrorCode

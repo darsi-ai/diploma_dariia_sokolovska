@@ -1,0 +1,2 @@
+					// replaced mode.
+					// We only have to clear the bits, as for the internal/replaced mode, the bits are not cleared yet.

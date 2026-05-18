@@ -1,0 +1,39 @@
+			if (!cur_action.can_be_deferred) {
+				allow_failsafe_to_be_deferred = false;
+			}
+		}
+	}
+
+	if (_defer_failsafes && allow_failsafe_to_be_deferred && selected_action != Action::None) {
+		returned_state.failsafe_deferred = selected_action > Action::Warn;
+		returned_state.action = Action::None;
+		return;
+	}
+
+	// Check if we should enter delayed Hold
+	const bool action_can_be_delayed = selected_action != Action::None &&
+					   selected_action != Action::Warn &&
+					   selected_action != Action::Disarm &&
+					   selected_action != Action::Terminate &&
+					   selected_action != Action::Hold;
+
+	if (_current_delay > 0 && !_user_takeover_active && allow_user_takeover <= UserTakeoverAllowed::AlwaysModeSwitchOnly
+	    && action_can_be_delayed) {
+		returned_state.delayed_action = selected_action;
+		selected_action = Action::Hold;
+		allow_user_takeover = UserTakeoverAllowed::AlwaysModeSwitchOnly;
+	}
+
+	// User takeover interrupting a failsafe is triggered by a change of the user-intended mode
+	// (only if a failsafe action is already active otherwise there can be immediate takeover when entering a failsafe) or by stick movement
+	bool want_user_takeover_mode_switch = user_intended_mode_updated && (_selected_action > Action::Warn);
+	bool want_user_takeover = want_user_takeover_mode_switch || rc_sticks_takeover_request;
+	bool takeover_allowed =
+		(allow_user_takeover == UserTakeoverAllowed::Always && (_user_takeover_active || want_user_takeover))
+		|| (allow_user_takeover == UserTakeoverAllowed::AlwaysModeSwitchOnly && (_user_takeover_active
+				|| want_user_takeover_mode_switch));
+
+	if (actionAllowsUserTakeover(selected_action) && takeover_allowed) {
+		if (!_user_takeover_active && rc_sticks_takeover_request) {
+			// TODO: if the user intended mode is a stick-controlled mode, switch back to that instead
+			returned_state.updated_user_intended_mode = vehicle_status_s::NAVIGATION_STATE_POSCTL;

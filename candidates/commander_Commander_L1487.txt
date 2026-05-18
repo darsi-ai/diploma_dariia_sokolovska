@@ -1,0 +1,4 @@
+			} else {
+				answer_command(cmd, vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED);
+				// parameter 1: Heading   (degrees)
+				// parameter 3: Latitude  (degrees)

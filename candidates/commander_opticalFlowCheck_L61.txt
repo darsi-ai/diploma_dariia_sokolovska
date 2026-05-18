@@ -1,0 +1,6 @@
+	} else {
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>SYS_HAS_NUM_OF</param> parameter.
+		 * </profile>

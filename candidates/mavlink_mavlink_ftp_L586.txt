@@ -1,0 +1,20 @@
+{
+	if (payload->session != 0 || _session_info.fd < 0) {
+		PX4_DEBUG("_workBurst: no session or no fd");
+		return kErrInvalidSession;
+	}
+
+	PX4_DEBUG("FTP: burst offset:%" PRIu32, payload->offset);
+	// Setup for streaming sends
+	_session_info.stream_download = true;
+	_session_info.stream_offset = payload->offset;
+	_session_info.stream_chunk_transmitted = 0;
+	_session_info.stream_seq_number = payload->seq_number + 1;
+	_session_info.stream_target_system_id = target_system_id;
+	_session_info.stream_target_component_id = target_component_id;
+
+	return kErrNone;
+}
+
+/// @brief Responds to a Write command
+MavlinkFTP::ErrorCode

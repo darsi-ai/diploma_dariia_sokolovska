@@ -1,0 +1,2 @@
+	mode_util::getModeRequirements(state.vehicle_type, failsafe_flags); // Load mode requirements to degrade without valid position estimate
+	bool user_intended_mode_updated = false;

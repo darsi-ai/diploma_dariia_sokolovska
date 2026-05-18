@@ -1,0 +1,1 @@
+class Failsafe : public FailsafeBase

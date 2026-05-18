@@ -1,0 +1,2 @@
+	} else if (cmd_mavlink.command == MAV_CMD_GET_MESSAGE_INTERVAL) {
+		get_message_interval((int)(cmd_mavlink.param1 + 0.5f));

@@ -1,0 +1,3 @@
+	} else {
+		// Mode registers the first time but all indexes are used so we need to overwrite one
+		need_to_update_param = true;

@@ -1,0 +1,5 @@
+		} else {
+			_mavlink.send_statustext_critical("WPM: IGN CLEAR CMD: Busy\t");
+			events::send(events::ID("mavlink_mission_ignore_clear"), events::Log::Error,
+				     "Ignoring mission clear command, busy");
+

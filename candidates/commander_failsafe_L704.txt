@@ -1,0 +1,5 @@
+			// Check if RC is available, if not use the mode specified in NAV_RCL_ACT
+			if (status_flags.manual_control_signal_lost) {
+				ActionOptions rc_loss_action = fromNavDllOrRclActParam(_param_nav_rcl_act.get());
+				action = rc_loss_action.action;
+			}

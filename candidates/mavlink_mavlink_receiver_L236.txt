@@ -1,0 +1,2 @@
+	 * Set the interval at which the given message stream is published.
+	 * The rate is the number of messages per second.

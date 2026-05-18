@@ -1,0 +1,2 @@
+				* This warning is triggered when the position error estimate is 90% of (or only 10m below) <param>COM_POS_FS_EPH</param> parameter.
+				* </profile>

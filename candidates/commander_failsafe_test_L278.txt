@@ -1,0 +1,2 @@
+	uint8_t updated_user_intented_mode = failsafe.update(time, state, user_intended_mode_updated, false, failsafe_flags);
+

@@ -1,0 +1,4 @@
+		} else {
+			// Still set the mode as valid but not as selectable. This is because an external mode could still
+			// be selected via RC when not yet running, so we make sure to display some mode label indicating it's not
+			// available.

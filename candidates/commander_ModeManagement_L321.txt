@@ -1,0 +1,2 @@
+						_modes.mode(nav_mode_id).arming_check_registration_id = registration_id;
+					}

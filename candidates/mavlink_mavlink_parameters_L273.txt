@@ -1,0 +1,31 @@
+			    (set.target_component != mavlink_system.compid || set.target_component == MAV_COMP_ID_ALL)) {
+				// publish set request to UAVCAN driver via uORB.
+				uavcan_parameter_request_s req{};
+				req.message_type = msg->msgid;
+				req.node_id = set.target_component;
+				req.param_index = -1;
+				strncpy(req.param_id, set.param_id, MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN + 1);
+				req.param_id[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = '\0';
+
+				if (set.param_type == MAV_PARAM_TYPE_REAL32) {
+					req.param_type = MAV_PARAM_TYPE_REAL32;
+					req.real_value = set.param_value;
+
+				} else {
+					int32_t val;
+					memcpy(&val, &set.param_value, sizeof(int32_t));
+					req.param_type = MAV_PARAM_TYPE_INT64;
+					req.int_value = val;
+				}
+
+				req.timestamp = hrt_absolute_time();
+				_uavcan_parameter_request_pub.publish(req);
+			}
+
+#endif // CONFIG_MAVLINK_UAVCAN_PARAMETERS
+			break;
+		}
+
+	case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
+			/* request one parameter */
+			mavlink_param_request_read_t req_read;

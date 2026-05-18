@@ -1,0 +1,2 @@
+		uint8_t		opcode;		///< Command opcode
+		uint8_t		size;		///< Size of data

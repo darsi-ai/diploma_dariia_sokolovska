@@ -1,0 +1,50 @@
+{
+	// Here we fail to send the first multi-chunk but we still want to
+	// publish the incomplete message.
+
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext2 {};
+	statustext2.id = 1;
+	statustext2.chunk_seq = 1;
+
+	// By chosing 35 we might exactly trigger an overflow if we don't pay attention.
+	memset(statustext2.text, 'b', 35);
+
+	// The first message is just stored, we don't have to publish yet.
+	EXPECT_FALSE(handler.should_publish_previous(statustext2));
+	EXPECT_TRUE(handler.should_publish_current(statustext2, some_time));
+
+	// We expect a missing bracket and our 10 b.
+	EXPECT_EQ(strlen(handler.log_message().text), 15 + 35);
+	EXPECT_EQ(handler.log_message().text[20], 'b');
+}
+
+TEST(MavlinkStatustextHandler, MiddleMissing)
+{
+	// This time one message in the middle goes missing.
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	mavlink_statustext_t statustext3 {};
+
+	statustext1.id = 1;
+	statustext3.id = 1;
+
+	statustext1.chunk_seq = 0;
+	statustext3.chunk_seq = 2;
+
+	memset(statustext1.text, 'a', 50);
+	memset(statustext3.text, 'c', 25);
+
+	// The first messages are just stored, we don't have to publish yet.
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_FALSE(handler.should_publish_current(statustext1, some_time));
+	EXPECT_FALSE(handler.should_publish_previous(statustext3));
+	EXPECT_TRUE(handler.should_publish_current(statustext3, some_time + 2));
+
+	// The two texts plus the missing bracket.
+	EXPECT_EQ(strlen(handler.log_message().text), 50 + 25 + 15);
+	EXPECT_EQ(handler.log_message().text[20], 'a');
+	EXPECT_EQ(handler.log_message().text[70], 'c');
+}

@@ -1,0 +1,2 @@
+						(NavModes::All, health_component_t::battery, events::ID("check_battery_fault"), {events::Log::Emergency, events::LogInternal::Warning},
+						 "Battery {1}: {2}. {3}", index + 1, static_cast<battery_fault_reason_t>(fault_index), action);

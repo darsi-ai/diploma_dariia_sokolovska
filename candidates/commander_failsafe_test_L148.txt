@@ -1,0 +1,2 @@
+	// Mode change -> clear failsafe
+	time += 10_ms;

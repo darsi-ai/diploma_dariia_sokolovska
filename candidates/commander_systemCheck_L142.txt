@@ -1,0 +1,12 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Vehicle is in transition state");
+			}
+		}
+
+		if (!circuit_breaker_enabled_by_val(_param_cbrk_vtolarming.get(), CBRK_VTOLARMING_KEY)
+		    && context.status().vehicle_type != vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>CBRK_VTOLARMING</param> parameter.
+			 * </profile>

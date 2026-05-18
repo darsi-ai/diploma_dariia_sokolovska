@@ -1,0 +1,3 @@
+	} else if (first_unused_idx != -1) {
+		// Mode registers the first time and there's still unused indexes
+		need_to_update_param = true;

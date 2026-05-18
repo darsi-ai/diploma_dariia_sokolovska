@@ -1,0 +1,2 @@
+			mavlink_log_critical(mavlink_log_pub, "Arm auth: Temporarily rejected");
+			state = ARM_AUTH_IDLE;

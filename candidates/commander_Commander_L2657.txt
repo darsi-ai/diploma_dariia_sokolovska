@@ -1,0 +1,8 @@
+	} else {
+		BOARD_ARMED_LED_OFF();
+
+		// not ready to arm, blink at 10Hz
+		if (time_now_us >= _led_armed_state_toggle + 100_ms) {
+			_led_armed_state_toggle = time_now_us;
+			BOARD_ARMED_STATE_LED_TOGGLE();
+		}

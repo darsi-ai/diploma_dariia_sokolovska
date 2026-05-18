@@ -1,0 +1,9 @@
+				} else {
+					/* EVENT
+					* @description No action is triggered.
+					*/
+					events::send<uint32_t, events::px4::enums::failsafe_cause_t>(
+						events::ID("commander_failsafe_enter_warn"),
+					{events::Log::Warning, events::LogInternal::Warning},
+					"Failsafe warning: {2}", mavlink_mode, failsafe_cause);
+

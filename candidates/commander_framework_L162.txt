@@ -1,0 +1,38 @@
+	struct State {
+		bool armed{false};
+		uint8_t user_intended_mode{0};
+		uint8_t vehicle_type;
+		bool vtol_in_transition_mode{false};
+		bool mission_finished{false};
+	};
+
+	FailsafeBase(ModuleParams *parent);
+
+	/**
+	 * update the state machine
+	 *
+	 * @param time_us current time
+	 * @param state vehicle state
+	 * @param user_intended_mode_updated true if state.user_intended_mode got set (it may not have changed)
+	 * @param rc_sticks_takeover_request true if sticks are moved, and therefore requesting user takeover if in failsafe
+	 * @param status_flags condition flags
+	 * @return uint8_t updated user intended mode (changes when user wants to take over)
+	 */
+	uint8_t update(const hrt_abstime &time_us, const State &state, bool user_intended_mode_updated,
+		       bool rc_sticks_takeover_request,
+		       const failsafe_flags_s &status_flags);
+
+	bool inFailsafe() const { return (_selected_action != Action::None && _selected_action != Action::Warn); }
+
+	Action selectedAction() const { return _selected_action; }
+
+	static uint8_t modeFromAction(const Action &action, uint8_t user_intended_mode);
+
+	bool userTakeoverActive() const { return _user_takeover_active; }
+
+	/**
+	 * Defer all failsafes that can be deferred. Can be used to avoid triggering failsafes in critical situations.
+	 * @param enabled
+	 * @param timeout_s timeout in seconds, if set to 0, DEFAULT_DEFER_TIMEOUT is used, -1=no timeout
+	 * @return true on success, false if failsafe already active
+	 */

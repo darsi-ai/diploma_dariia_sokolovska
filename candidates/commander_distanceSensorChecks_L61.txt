@@ -1,0 +1,2 @@
+				 * This check can be configured via <param>SYS_HAS_NUM_DIST</param> parameter.
+				 * </profile>

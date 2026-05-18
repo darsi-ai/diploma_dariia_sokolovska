@@ -1,0 +1,4 @@
+				if (stream->get_id() == message_id) {
+					message_sent = stream->request_message(param2, param3, param4, param5, param6, param7);
+					break;
+				}

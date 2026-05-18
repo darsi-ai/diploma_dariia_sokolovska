@@ -1,0 +1,38 @@
+		if (reporter.failsafeFlags().global_position_invalid) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>COM_ARM_WO_GPS</param> parameter.
+			 * </profile>
+			 * The available positioning data is not sufficient to determine the vehicle's global position.
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_no_global_pos"),
+						    events::Log::Error, "Global position estimate required");
+
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Global position estimate required");
+			}
+
+		} else if (reporter.failsafeFlags().home_position_invalid) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>COM_ARM_WO_GPS</param> parameter.
+			 * </profile>
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_no_home_pos"),
+						    events::Log::Error, "Home position required");
+
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Home position required");
+			}
+		}
+	}
+
+	// safety button
+	if (context.status().safety_button_available && !context.status().safety_off && !context.isArmed()) {
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>CBRK_IO_SAFETY</param> parameter.
+		 * </profile>

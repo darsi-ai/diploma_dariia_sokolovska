@@ -1,0 +1,17 @@
+	if (_mode == MAVLINK_MODE_IRIDIUM) {
+		_transmitting_enabled_commanded = false;
+	}
+
+	/* add default streams depending on mode */
+	if (_mode != MAVLINK_MODE_IRIDIUM) {
+
+		/* HEARTBEAT is constant rate stream, rate never adjusted */
+		configure_stream("HEARTBEAT", 1.0f);
+
+		/* STATUSTEXT stream */
+		configure_stream("STATUSTEXT", 20.0f);
+
+		/* COMMAND_LONG stream: use unlimited rate to send all commands */
+		configure_stream("COMMAND_LONG");
+
+	}

@@ -1,0 +1,6 @@
+					if (_mavlink.hash_check_enabled()) {
+						_send_all_index = -1;
+					}
+
+					/* Error report that _HASH_CHECK parameter is read-only */
+					send_error(MAV_PARAM_ERROR_READ_ONLY, name, -1, msg->sysid, msg->compid);

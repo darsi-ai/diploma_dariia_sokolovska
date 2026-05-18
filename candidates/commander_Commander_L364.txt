@@ -1,0 +1,25 @@
+		if (argc > 1 && !strcmp(argv[1], "-f")) {
+			param2 = 21196.f;
+		}
+
+		send_vehicle_command(vehicle_command_s::VEHICLE_CMD_COMPONENT_ARM_DISARM,
+				     static_cast<float>(vehicle_command_s::ARMING_ACTION_ARM),
+				     param2);
+
+		return 0;
+	}
+
+	if (!strcmp(argv[0], "disarm")) {
+		float param2 = 0.f;
+
+		// 21196: force arming/disarming (e.g. allow arming to override preflight checks and disarming in flight)
+		if (argc > 1 && !strcmp(argv[1], "-f")) {
+			param2 = 21196.f;
+		}
+
+		send_vehicle_command(vehicle_command_s::VEHICLE_CMD_COMPONENT_ARM_DISARM,
+				     static_cast<float>(vehicle_command_s::ARMING_ACTION_DISARM),
+				     param2);
+
+		return 0;
+	}

@@ -1,0 +1,2 @@
+	updated_user_intented_mode = failsafe.update(time, state, false, false, failsafe_flags);
+	ASSERT_EQ(failsafe.selectedAction(), FailsafeBase::Action::Hold);

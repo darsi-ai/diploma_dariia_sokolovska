@@ -1,0 +1,32 @@
+		if (stream_name != nullptr) {
+			_mavlink.configure_stream_threadsafe(stream_name, 0.0f);
+
+			// Now we try again to send it.
+			for (const auto &stream : _mavlink.get_streams()) {
+				if (stream->get_id() == message_id) {
+					message_sent = stream->request_message(param2, param3, param4, param5, param6, param7);
+					break;
+				}
+			}
+		}
+	}
+
+	return (message_sent ? vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED :
+		vehicle_command_ack_s::VEHICLE_CMD_RESULT_DENIED);
+}
+
+
+void
+MavlinkReceiver::handle_message_command_ack(mavlink_message_t *msg)
+{
+	mavlink_command_ack_t ack;
+	mavlink_msg_command_ack_decode(msg, &ack);
+
+	// We should not clog the command_ack queue with acks that are not for us.
+	// Therefore, we drop them early and move on.
+	bool target_ok = evaluate_target_ok(0, ack.target_system, ack.target_component);
+
+	if (!target_ok) {
+		PX4_DEBUG("Drop ack %d for %d from %d/%d to %d/%d\n",
+			  ack.result, ack.command, msg->sysid, msg->compid, ack.target_system, ack.target_component);
+		return;

@@ -1,0 +1,6 @@
+	    || ((cmd.target_component != _vehicle_status.component_id) && (cmd.target_component != 0))) {
+		return false;
+	}
+
+	/* result of the command */
+	unsigned cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_UNSUPPORTED;

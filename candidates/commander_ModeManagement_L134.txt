@@ -1,0 +1,38 @@
+		if (handle != PARAM_INVALID && param_get(handle, &current_hash) == 0) {
+			if (!_modes[i].valid && current_hash == 0 && first_unused_idx == -1) {
+				first_unused_idx = i;
+			}
+
+			if (current_hash == mode_name_hash) {
+				matching_idx = i;
+			}
+
+			if (!_modes[i].valid && first_invalid_idx == -1) {
+				first_invalid_idx = i;
+			}
+		}
+	}
+
+	bool need_to_update_param = false;
+	int new_mode_idx = -1;
+
+	if (matching_idx != -1) {
+		// If we found a match, try to use it but check for hash collisions or duplicate mode name
+		if (_modes[matching_idx].valid) {
+			// This can happen when restarting modes while armed
+			PX4_WARN("Mode '%s' already registered (as '%s')", mode.name, _modes[matching_idx].name);
+
+			if (first_unused_idx != -1) {
+				new_mode_idx = first_unused_idx;
+				// Do not update the hash
+
+			} else {
+				// Need to overwrite a hash. Reset it as we can't store duplicate hashes anyway
+				new_mode_idx = first_invalid_idx;
+				need_to_update_param = true;
+				mode_name_hash = 0;
+			}
+
+		} else {
+			new_mode_idx = matching_idx;
+		}

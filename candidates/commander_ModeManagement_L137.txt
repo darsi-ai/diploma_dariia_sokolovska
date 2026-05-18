@@ -1,0 +1,15 @@
+			if (!_modes[i].valid && first_invalid_idx == -1) {
+				first_invalid_idx = i;
+			}
+		}
+	}
+
+	bool need_to_update_param = false;
+	int new_mode_idx = -1;
+
+	if (matching_idx != -1) {
+		// If we found a match, try to use it but check for hash collisions or duplicate mode name
+		if (_modes[matching_idx].valid) {
+			// This can happen when restarting modes while armed
+			PX4_WARN("Mode '%s' already registered (as '%s')", mode.name, _modes[matching_idx].name);
+

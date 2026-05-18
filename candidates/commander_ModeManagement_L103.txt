@@ -1,0 +1,19 @@
+	for (int i = 0; i < MAX_NUM; ++i) {
+		if (!_modes[i].valid) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+uint8_t Modes::addExternalMode(const Modes::Mode &mode)
+{
+	int32_t mode_name_hash = (int32_t)events::util::hash_32_fnv1a_const(mode.name);
+
+	if (mode_name_hash == 0) { // 0 is reserved for unused indexes
+		mode_name_hash = 1;
+	}
+
+	// Try to find the index with matching hash (if mode was already registered before),
+	// so that the same mode always gets the same index (required for RC switch mode assignment)

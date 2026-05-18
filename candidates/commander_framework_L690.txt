@@ -1,0 +1,29 @@
+		if (_current_delay > 0) {
+			PX4_DEBUG("Clearing delay, Hold not available, already in failsafe or taken over");
+		}
+
+		_current_delay = 0;
+	}
+}
+
+uint8_t FailsafeBase::modeFromAction(const Action &action, uint8_t user_intended_mode)
+{
+	switch (action) {
+
+	case Action::FallbackPosCtrl: return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+
+	case Action::FallbackAltCtrl: return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+
+	case Action::FallbackStab: return vehicle_status_s::NAVIGATION_STATE_STAB;
+
+	case Action::Hold: return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+
+	case Action::RTL: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+
+	case Action::Land: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+
+	case Action::Descend: return vehicle_status_s::NAVIGATION_STATE_DESCEND;
+
+	case Action::Terminate:
+	case Action::Disarm:
+	case Action::None:

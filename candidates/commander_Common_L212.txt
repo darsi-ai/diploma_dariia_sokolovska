@@ -1,0 +1,38 @@
+	if (log_level <= events::Log::Error) {
+		arming_checks.error = arming_checks.error | (events::px4::enums::health_component_t)(1 << component.index);
+
+	} else if (log_level <= events::Log::Warning) {
+		arming_checks.warning = arming_checks.warning | (events::px4::enums::health_component_t)(1 << component.index);
+	}
+
+	// clear relevant arming bits
+	clearArmingBits(required_modes);
+}
+
+void Report::clearArmingBits(NavModes modes)
+{
+	ArmingCheckResults &arming_checks = _results[_current_result].arming_checks;
+	NavModes &can_arm = arming_checks.can_arm;
+	can_arm = can_arm & ~modes;
+}
+
+void Report::clearCanRunBits(NavModes modes)
+{
+	ArmingCheckResults &arming_checks = _results[_current_result].arming_checks;
+	NavModes &can_run = arming_checks.can_run;
+	can_run = can_run & ~modes;
+}
+
+void Report::reset()
+{
+	_current_result = (_current_result + 1) % 2;
+	_results[_current_result].reset();
+	_next_buffer_idx = 0;
+	_buffer_overflowed = false;
+	_results_changed = false;
+}
+
+void Report::prepare(uint8_t vehicle_type)
+{
+	// Get mode requirements before running any checks (in particular the mode checks require them)
+	mode_util::getModeRequirements(vehicle_type, _failsafe_flags);

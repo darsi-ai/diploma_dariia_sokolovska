@@ -1,0 +1,20 @@
+		if (!found) {
+			if (external_nav_state == context.status().nav_state_user_intention) {
+				report_mode_not_available = true;
+			}
+
+			reporter.clearArmingBits(reporter.getModeGroup(external_nav_state));
+			setOrClearRequirementBits(true, external_nav_state, -1, reporter.failsafeFlags().mode_req_other);
+		}
+	}
+
+	if (report_mode_not_available) {
+		/* EVENT
+		 * @description
+		 * The application running the mode is not started.
+		 */
+		reporter.armingCheckFailure(reporter.getModeGroup(context.status().nav_state_user_intention),
+					    health_component_t::system,
+					    events::ID("check_external_modes_unavailable"),
+					    events::Log::Error, "Mode is not registered");
+	}

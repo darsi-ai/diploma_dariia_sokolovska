@@ -1,0 +1,2 @@
+	failsafe.deferFailsafes(false, defer_timeout_s);
+	time += 10_ms;

@@ -1,0 +1,8 @@
+	} else {
+
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * Most likely the airspeed selector module is not running.
+		 * This check can be configured via <param>SYS_HAS_NUM_ASPD</param> parameter.
+		 * </profile>

@@ -1,0 +1,2 @@
+	} else if (cmd_mavlink.command == MAV_CMD_DO_SET_MODE) {
+		_cmd_pub.publish(vehicle_command);

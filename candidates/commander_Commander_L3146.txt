@@ -1,0 +1,14 @@
+	if (reason) {
+		PX4_INFO("%s", reason);
+	}
+
+	PRINT_MODULE_DESCRIPTION(
+		R"DESCR_STR(
+### Description
+The commander module contains the state machine for mode switching and failsafe behavior.
+)DESCR_STR");
+
+	PRINT_MODULE_USAGE_NAME("commander", "system");
+	PRINT_MODULE_USAGE_COMMAND("start");
+	PRINT_MODULE_USAGE_PARAM_FLAG('h', "Enable HIL mode", true);
+#ifndef CONSTRAINED_FLASH

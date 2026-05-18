@@ -1,0 +1,5 @@
+	// Force intended mode if changed by the failsafe state machine
+	if (state.user_intended_mode != updated_user_intented_mode) {
+		_user_mode_intention.change(updated_user_intented_mode, ModeChangeSource::User, false, true);
+		_user_mode_intention.getHadModeChangeAndClear();
+	}

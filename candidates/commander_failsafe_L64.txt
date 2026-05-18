@@ -1,0 +1,15 @@
+	enum class LinkLossExceptionBits : int32_t {
+		Mission = (1 << 0),
+		AutoModes = (1 << 1),
+		Offboard = (1 << 2),
+		ExternalMode = (1 << 3),
+		AltitudeCruise = (1 << 4)
+	};
+
+	// COM_LOW_BAT_ACT parameter values
+	enum class LowBatteryAction : int32_t {
+		Warning = 0,        // Warning
+		Return = 1,         // Return mode (deprecated)
+		Land = 2,           // Land mode
+		ReturnOrLand = 3    // Return mode at critically low level, Land mode at current position if reaching dangerously low levels
+	};

@@ -1,0 +1,2 @@
+			// Just switch the flight mode here, the navigator takes care of
+			// doing something sensible with the coordinates. Its designed

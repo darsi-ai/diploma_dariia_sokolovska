@@ -1,0 +1,37 @@
+		if (is_dronecan_node_online(comp_id)) {
+			_camera_cannode_collision_warned_mask |= warn_bit;
+			mavlink_log_warning(_mavlink.get_mavlink_log_pub(),
+					    "CAN node %u blocked by MAV camera (reassign ID)\t",
+					    comp_id);
+		}
+	}
+}
+
+bool
+MavlinkParametersManager::is_observed_mavlink_camera(uint8_t target_component) const
+{
+	if (target_component < MAV_COMP_ID_CAMERA || target_component > MAV_COMP_ID_CAMERA6) {
+		return false;
+	}
+
+	const hrt_abstime last_seen = _camera_comp_last_seen[target_component - MAV_COMP_ID_CAMERA];
+
+	if (last_seen == 0) {
+		return false;
+	}
+
+	return hrt_elapsed_time(&last_seen) < CAMERA_OBSERVATION_TIMEOUT;
+}
+
+bool
+MavlinkParametersManager::is_dronecan_node_online(uint8_t node_id)
+{
+	dronecan_node_status_s status {};
+
+	for (auto &sub : _dronecan_node_status_subs) {
+		if (sub.copy(&status)
+		    && status.node_id == node_id
+		    && status.mode != dronecan_node_status_s::MODE_OFFLINE
+		    && hrt_elapsed_time(&status.timestamp) < CAMERA_OBSERVATION_TIMEOUT) {
+			return true;
+		}

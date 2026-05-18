@@ -1,0 +1,28 @@
+			if (mode.replaces_nav_state == nav_state) {
+				if (_external_checks.isUnresponsive(mode.arming_check_registration_id)) {
+					if (!mode.unresponsive_reported && report_error) {
+						mode.unresponsive_reported = true;
+						events::send(events::ID("commander_mode_fallback_internal"), events::Log::Critical,
+							     "External mode is unresponsive, falling back to internal");
+					}
+
+					return nav_state;
+
+				} else {
+					return i;
+				}
+			}
+		}
+	}
+
+	return nav_state;
+}
+
+uint8_t ModeManagement::getReplacedModeIfAny(uint8_t nav_state)
+{
+	if (_modes.valid(nav_state)) {
+		const Modes::Mode &mode = _modes.mode(nav_state);
+
+		if (mode.replaces_nav_state != Modes::Mode::REPLACES_NAV_STATE_NONE) {
+			return mode.replaces_nav_state;
+		}

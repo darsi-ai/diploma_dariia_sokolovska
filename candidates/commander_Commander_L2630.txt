@@ -1,0 +1,43 @@
+			if (_vehicle_status.failsafe) {
+				led_color = led_control_s::COLOR_PURPLE;
+
+			} else if (battery_warning == battery_status_s::WARNING_LOW) {
+				led_color = led_control_s::COLOR_AMBER;
+
+			} else if (battery_warning == battery_status_s::WARNING_CRITICAL) {
+				led_color = led_control_s::COLOR_RED;
+
+			} else {
+				if (!_failsafe_flags.home_position_invalid && !_failsafe_flags.global_position_invalid) {
+					led_color = led_control_s::COLOR_GREEN;
+
+				} else {
+					led_color = led_control_s::COLOR_BLUE;
+				}
+			}
+		}
+
+		if (led_mode != led_control_s::MODE_OFF) {
+			rgbled_set_color_and_mode(led_color, led_mode);
+		}
+	}
+
+	_last_overload = overload;
+
+#if !defined(CONFIG_ARCH_LEDS) && defined(BOARD_HAS_CONTROL_STATUS_LEDS)
+
+	if (isArmed()) {
+		if (_vehicle_status.failsafe) {
+			BOARD_ARMED_LED_OFF();
+
+			if (time_now_us >= _led_armed_state_toggle + 250_ms) {
+				_led_armed_state_toggle = time_now_us;
+				BOARD_ARMED_STATE_LED_TOGGLE();
+			}
+
+		} else {
+			BOARD_ARMED_STATE_LED_OFF();
+
+			// armed, solid
+			BOARD_ARMED_LED_ON();
+		}

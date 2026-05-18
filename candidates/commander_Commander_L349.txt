@@ -1,0 +1,28 @@
+		if (!strcmp(argv[1], "on")) {
+			send_vehicle_command(vehicle_command_s::VEHICLE_CMD_DO_SET_SAFETY_SWITCH_STATE, vehicle_command_s::SAFETY_ON);
+
+		} else if (!strcmp(argv[1], "off")) {
+			send_vehicle_command(vehicle_command_s::VEHICLE_CMD_DO_SET_SAFETY_SWITCH_STATE, vehicle_command_s::SAFETY_OFF);
+
+		} else {
+			PX4_ERR("invlaid argument, use [on|off]");
+			return 1;
+		}
+
+		return 0;
+	}
+
+	if (!strcmp(argv[0], "arm")) {
+		float param2 = 0.f;
+
+		// 21196: force arming/disarming (e.g. allow arming to override preflight checks and disarming in flight)
+		if (argc > 1 && !strcmp(argv[1], "-f")) {
+			param2 = 21196.f;
+		}
+
+		send_vehicle_command(vehicle_command_s::VEHICLE_CMD_COMPONENT_ARM_DISARM,
+				     static_cast<float>(vehicle_command_s::ARMING_ACTION_ARM),
+				     param2);
+
+		return 0;
+	}

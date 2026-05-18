@@ -1,0 +1,41 @@
+	if (!strcmp(argv[0], "poweroff")) {
+
+		bool ret = send_vehicle_command(vehicle_command_s::VEHICLE_CMD_PREFLIGHT_REBOOT_SHUTDOWN,
+						2.0f);
+
+		return (ret ? 0 : 1);
+	}
+
+
+#endif
+
+	return print_usage("unknown command");
+}
+
+int Commander::print_status()
+{
+	PX4_INFO("%s", isArmed() ? "Armed" : "Disarmed");
+	PX4_INFO("prearm safety: %s", _safety.isSafetyOff() ? "Off" : "On");
+	PX4_INFO("navigation mode: %s", mode_util::nav_state_names[_vehicle_status.nav_state]);
+	PX4_INFO("user intended navigation mode: %s", mode_util::nav_state_names[_vehicle_status.nav_state_user_intention]);
+	PX4_INFO("in failsafe: %s", _failsafe.inFailsafe() ? "yes" : "no");
+	_mode_management.printStatus();
+	perf_print_counter(_loop_perf);
+	perf_print_counter(_preflight_check_perf);
+	return 0;
+}
+
+extern "C" __EXPORT int commander_main(int argc, char *argv[])
+{
+	return ModuleBase::main(Commander::desc, argc, argv);
+}
+
+static constexpr const char *arm_disarm_reason_str(arm_disarm_reason_t calling_reason)
+{
+	static_assert((uint8_t)arm_disarm_reason_t::stick_gesture == vehicle_status_s::ARM_DISARM_REASON_STICK_GESTURE,
+		      "(dis)arm enum mismatch");
+	static_assert((uint8_t)arm_disarm_reason_t::rc_switch == vehicle_status_s::ARM_DISARM_REASON_RC_SWITCH,
+		      "(dis)arm enum mismatch");
+	static_assert((uint8_t)arm_disarm_reason_t::command_internal == vehicle_status_s::ARM_DISARM_REASON_COMMAND_INTERNAL,
+		      "(dis)arm enum mismatch");
+	static_assert((uint8_t)arm_disarm_reason_t::command_external == vehicle_status_s::ARM_DISARM_REASON_COMMAND_EXTERNAL,

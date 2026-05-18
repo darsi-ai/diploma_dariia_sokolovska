@@ -1,0 +1,10 @@
+			if (_vehicle_status.pre_flight_checks_pass != pre_flight_checks_pass) {
+				_vehicle_status.pre_flight_checks_pass = pre_flight_checks_pass;
+				_status_changed = true;
+			}
+
+			perf_end(_preflight_check_perf);
+			checkAndInformReadyForTakeoff();
+
+			// Arm automatically on boot once preflight checks pass
+			// _arm_on_boot_done prevents re-arming after disarming

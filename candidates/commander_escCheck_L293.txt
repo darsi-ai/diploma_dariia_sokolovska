@@ -1,0 +1,12 @@
+				if (reporter.mavlink_log_pub()) {
+					mavlink_log_critical(reporter.mavlink_log_pub(), "Motor failure: Motor %d undercurrent detected",
+							     actuator_function_index + 1);
+				}
+			}
+
+			if (_esc_overcurrent_hysteresis[i].get_state()) {
+				/* EVENT
+				 * @description
+				 * <profile name="dev">
+				 * This check can be configured via <param>FD_ACT_EN</param> parameter.
+				 * </profile>

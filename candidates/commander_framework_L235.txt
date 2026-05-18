@@ -1,0 +1,29 @@
+	struct SelectedActionState {
+		Action action{Action::None};
+		Action delayed_action{Action::None};
+		Cause cause{Cause::Generic};
+		uint8_t updated_user_intended_mode{};
+		bool user_takeover{false};
+		bool failsafe_deferred{false};
+	};
+
+	virtual void checkStateAndMode(const hrt_abstime &time_us, const State &state,
+				       const failsafe_flags_s &status_flags) = 0;
+	virtual Action checkModeFallback(const failsafe_flags_s &status_flags, uint8_t user_intended_mode) const = 0;
+
+	const failsafe_flags_s &lastStatusFlags() const { return _last_status_flags; }
+
+	bool checkFailsafe(int caller_id, bool last_state_failure, bool cur_state_failure, const ActionOptions &options);
+
+	virtual void getSelectedAction(const State &state, const failsafe_flags_s &status_flags,
+				       bool user_intended_mode_updated,
+				       bool rc_sticks_takeover_request,
+				       SelectedActionState &returned_state) const;
+
+	int genCallerId() { return ++_next_caller_id; }
+
+	static bool modeCanRun(const failsafe_flags_s &status_flags, uint8_t mode);
+
+	/**
+	 * Allows to modify the user intended mode. Use only in limited cases.
+	 *

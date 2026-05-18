@@ -1,0 +1,2 @@
+SimpleAnalyzer::SimpleAnalyzer(Mode mode, float window) :
+	_window(window),

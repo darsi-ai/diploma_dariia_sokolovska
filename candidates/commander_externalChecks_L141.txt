@@ -1,0 +1,6 @@
+		} else {
+			NavModes modes;
+
+			// We distinguish between two cases:
+			// - external navigation mode: in that case we set the single arming can_run bit for the mode
+			// - generic external arming check: set all arming bits

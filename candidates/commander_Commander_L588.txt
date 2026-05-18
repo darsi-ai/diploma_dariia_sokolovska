@@ -1,0 +1,2 @@
+	case arm_disarm_reason_t::command_external: return "external command";
+

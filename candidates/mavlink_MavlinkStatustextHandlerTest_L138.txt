@@ -1,0 +1,64 @@
+{
+	// If we receive too many, we need to cap it.
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	mavlink_statustext_t statustext2 {};
+	mavlink_statustext_t statustext3 {};
+
+	statustext1.id = 1;
+	statustext2.id = 1;
+	statustext3.id = 1;
+
+	statustext1.chunk_seq = 0;
+	statustext2.chunk_seq = 1;
+	statustext3.chunk_seq = 2;
+
+	memset(statustext1.text, 'a', 50);
+	memset(statustext2.text, 'b', 50);
+	memset(statustext3.text, 'c', 49);
+
+	// The first messages are just stored, we don't have to publish yet.
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_FALSE(handler.should_publish_current(statustext1, some_time));
+	EXPECT_FALSE(handler.should_publish_previous(statustext2));
+	EXPECT_FALSE(handler.should_publish_current(statustext2, some_time + 1));
+	EXPECT_FALSE(handler.should_publish_previous(statustext3));
+	EXPECT_TRUE(handler.should_publish_current(statustext3, some_time + 2));
+
+	EXPECT_EQ(strlen(handler.log_message().text), sizeof(log_message_s::text) - 1);
+}
+
+TEST(MavlinkStatustextHandler, LastMissing)
+{
+	// Here we fail to send the last multi-chunk but we still want to
+	// publish the incomplete message.
+
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	statustext1.id = 1;
+	statustext1.chunk_seq = 0;
+
+	memset(statustext1.text, 'a', 50);
+
+	// The first message is just stored, we don't have to publish yet.
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_FALSE(handler.should_publish_current(statustext1, some_time));
+
+	// Now we send a single and we expect the previous one to be published.
+	mavlink_statustext_t statustext2 {};
+	memset(statustext2.text, 'b', 10);
+	statustext2.id = 0;
+
+	// We expect 50 a and then a missing bracket.
+	EXPECT_TRUE(handler.should_publish_previous(statustext2));
+	EXPECT_EQ(strlen(handler.log_message().text), 50 + 15);
+	EXPECT_EQ(handler.log_message().text[25], 'a');
+
+	EXPECT_TRUE(handler.should_publish_previous(statustext2));
+	EXPECT_TRUE(handler.should_publish_current(statustext2, some_other_time));
+	// And we expect the single message to get through as well.
+	EXPECT_EQ(strlen(handler.log_message().text), 10);
+	EXPECT_EQ(handler.log_message().text[5], 'b');
+}

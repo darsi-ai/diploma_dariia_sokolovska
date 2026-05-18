@@ -1,0 +1,24 @@
+TEST(MavlinkStatustextHandler, Singles)
+{
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	statustext1.severity = some_severity;
+	strncpy(statustext1.text, some_text, sizeof(statustext1.text));
+
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_TRUE(handler.should_publish_current(statustext1, some_time));
+	EXPECT_STREQ(handler.log_message().text, some_text);
+	EXPECT_EQ(handler.log_message().severity, some_severity);
+	EXPECT_EQ(handler.log_message().timestamp, some_time);
+
+	mavlink_statustext_t statustext2 {};
+	statustext2.severity = some_other_severity;
+	strncpy(statustext2.text, some_other_text, sizeof(statustext2.text));
+
+	EXPECT_FALSE(handler.should_publish_previous(statustext2));
+	EXPECT_TRUE(handler.should_publish_current(statustext2, some_other_time));
+	EXPECT_STREQ(handler.log_message().text, some_other_text);
+	EXPECT_EQ(handler.log_message().severity, some_other_severity);
+	EXPECT_EQ(handler.log_message().timestamp, some_other_time);
+}

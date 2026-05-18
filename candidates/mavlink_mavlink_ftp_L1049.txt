@@ -1,0 +1,2 @@
+		PX4_DEBUG("stream send: offset %" PRIu32, _session_info.stream_offset);
+

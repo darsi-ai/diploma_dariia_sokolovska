@@ -1,0 +1,2 @@
+		 * This check can be configured via <param>FD_FAIL_R</param> parameter.
+		 * </profile>

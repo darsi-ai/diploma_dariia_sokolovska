@@ -1,0 +1,2 @@
+					PX4_DEBUG("stream %s on UDP port %hu disabled", _subscribe_to_stream, _network_port);
+				}

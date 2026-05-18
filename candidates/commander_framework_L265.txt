@@ -1,0 +1,4 @@
+				} else if (cause == Cause::BatteryEmergency) {
+					events::send(events::ID("commander_failsafe_enter_crit_low_bat_warn"), {events::Log::Emergency, events::LogInternal::Info},
+						     "Emergency battery level, land immediately");
+

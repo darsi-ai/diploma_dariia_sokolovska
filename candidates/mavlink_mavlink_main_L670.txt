@@ -1,0 +1,7 @@
+	if (mode != FLOW_CONTROL_OFF) {
+		uart_config.c_cflag |= CRTSCTS;
+
+	} else {
+		uart_config.c_cflag &= ~CRTSCTS;
+
+	}

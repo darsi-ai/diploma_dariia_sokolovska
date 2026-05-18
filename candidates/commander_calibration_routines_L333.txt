@@ -1,0 +1,38 @@
+		if (cmd.command == vehicle_command_s::VEHICLE_CMD_PREFLIGHT_CALIBRATION) {
+			// only handle commands sent after calibration started from external sources
+			if ((cmd.timestamp > calibration_started) && cmd.from_external) {
+
+				vehicle_command_ack_s command_ack{};
+
+				if ((int)cmd.param1 == 0 &&
+				    (int)cmd.param2 == 0 &&
+				    (int)cmd.param3 == 0 &&
+				    (int)cmd.param4 == 0 &&
+				    (int)cmd.param5 == 0 &&
+				    (int)cmd.param6 == 0) {
+
+					command_ack.result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+					mavlink_log_critical(mavlink_log_pub, CAL_QGC_CANCELLED_MSG);
+					tune_positive(true);
+					ret = true;
+
+				} else {
+					command_ack.result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_DENIED;
+					mavlink_log_critical(mavlink_log_pub, "command denied during calibration: %" PRIu32 "\t", cmd.command);
+					events::send<uint32_t>(events::ID("commander_cal_cmd_denied"), {events::Log::Error, events::LogInternal::Info},
+							       "Command denied during calibration: {1}", cmd.command);
+					tune_negative(true);
+					ret = false;
+				}
+
+				command_ack.command = cmd.command;
+				command_ack.target_system = cmd.source_system;
+				command_ack.target_component = cmd.source_component;
+				command_ack.timestamp = hrt_absolute_time();
+
+				uORB::Publication<vehicle_command_ack_s> command_ack_pub{ORB_ID(vehicle_command_ack)};
+				command_ack_pub.publish(command_ack);
+
+				return ret;
+			}
+		}

@@ -1,0 +1,92 @@
+{
+	ActionOptions options{};
+
+	switch (actuator_failure_failsafe_mode(param_value)) {
+	case actuator_failure_failsafe_mode::Warning_only:
+	default:
+		options.action = Action::Warn;
+		break;
+
+	case actuator_failure_failsafe_mode::Hold_mode:
+		options.action = Action::Hold;
+		break;
+
+	case actuator_failure_failsafe_mode::Land_mode:
+		options.action = Action::Land;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case actuator_failure_failsafe_mode::Return_mode:
+		options.action = Action::RTL;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case actuator_failure_failsafe_mode::Terminate:
+		options.action = Action::Terminate;
+		options.clear_condition = ClearCondition::Never;
+		break;
+	}
+
+	return options;
+}
+
+FailsafeBase::ActionOptions Failsafe::fromBatteryWarningActParam(int param_value, uint8_t battery_warning)
+{
+	ActionOptions options{};
+
+	switch (battery_warning) {
+	case battery_status_s::WARNING_NONE:
+	default:
+		options.action = Action::None;
+		break;
+
+	case battery_status_s::WARNING_LOW:
+		options.action = Action::Warn;
+		options.cause = Cause::BatteryLow;
+		break;
+
+	case battery_status_s::WARNING_CRITICAL:
+		options.action = Action::Warn;
+		options.cause = Cause::BatteryCritical;
+
+		switch ((LowBatteryAction)param_value) {
+		case LowBatteryAction::Return:
+		case LowBatteryAction::ReturnOrLand:
+			options.action = Action::RTL;
+			break;
+
+		case LowBatteryAction::Land:
+			options.action = Action::Land;
+			break;
+
+		case LowBatteryAction::Warning:
+			options.action = Action::Warn;
+			break;
+		}
+
+		break;
+
+	case battery_status_s::WARNING_EMERGENCY:
+		options.action = Action::Warn;
+		options.cause = Cause::BatteryEmergency;
+
+		switch ((LowBatteryAction)param_value) {
+		case LowBatteryAction::Return:
+			options.action = Action::RTL;
+			break;
+
+		case LowBatteryAction::ReturnOrLand:
+		case LowBatteryAction::Land:
+			options.action = Action::Land;
+			break;
+
+		case LowBatteryAction::Warning:
+			options.action = Action::Warn;
+			break;
+		}
+
+		break;
+	}
+
+	return options;
+}

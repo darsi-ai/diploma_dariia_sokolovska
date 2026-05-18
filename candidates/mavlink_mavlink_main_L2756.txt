@@ -1,0 +1,2 @@
+							mavlink_log_info(&_mavlink_log_pub, "Disable transmitting with IRIDIUM mavlink on device %s by command\t",
+									 _device_name);

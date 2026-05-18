@@ -1,0 +1,4 @@
+// parameter storage
+struct Param {
+	union param_value_u val;
+};

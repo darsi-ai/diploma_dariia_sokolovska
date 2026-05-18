@@ -1,0 +1,2 @@
+		 * The application running the mode might have crashed or the CPU load is too high.
+		 */

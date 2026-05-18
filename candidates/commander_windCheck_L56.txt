@@ -1,0 +1,2 @@
+			// only set failsafe flag if the high wind failsafe action is higher than warning
+			reporter.failsafeFlags().wind_limit_exceeded = true;

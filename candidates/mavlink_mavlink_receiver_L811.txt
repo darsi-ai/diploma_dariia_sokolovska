@@ -1,0 +1,14 @@
+	if (!target_ok) {
+		PX4_DEBUG("Drop ack %d for %d from %d/%d to %d/%d\n",
+			  ack.result, ack.command, msg->sysid, msg->compid, ack.target_system, ack.target_component);
+		return;
+	}
+
+	MavlinkCommandSender::instance().handle_mavlink_command_ack(ack, msg->sysid, msg->compid, _mavlink.get_channel());
+
+	vehicle_command_ack_s command_ack{};
+
+	command_ack.timestamp = hrt_absolute_time();
+	command_ack.result_param2 = ack.result_param2;
+	command_ack.command = ack.command;
+	command_ack.result = ack.result;

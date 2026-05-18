@@ -1,0 +1,39 @@
+FailsafeBase::ActionOptions Failsafe::fromNavDllOrRclActParam(int param_value)
+{
+	ActionOptions options{};
+
+	switch (gcs_connection_loss_failsafe_mode(param_value)) {
+	case gcs_connection_loss_failsafe_mode::Disabled:
+	default:
+		options.action = Action::None;
+		break;
+
+	case gcs_connection_loss_failsafe_mode::Hold_mode:
+		options.action = Action::Hold;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case gcs_connection_loss_failsafe_mode::Return_mode:
+		options.action = Action::RTL;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case gcs_connection_loss_failsafe_mode::Land_mode:
+		options.action = Action::Land;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case gcs_connection_loss_failsafe_mode::Terminate:
+		options.allow_user_takeover = UserTakeoverAllowed::Never;
+		options.action = Action::Terminate;
+		options.clear_condition = ClearCondition::Never;
+		break;
+
+	case gcs_connection_loss_failsafe_mode::Disarm: // Lockdown
+		options.allow_user_takeover = UserTakeoverAllowed::Never;
+		options.action = Action::Disarm;
+		break;
+	}
+
+	return options;
+}

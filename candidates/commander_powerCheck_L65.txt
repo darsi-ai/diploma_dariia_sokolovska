@@ -1,0 +1,2 @@
+		 * This check can be configured via <param>CBRK_SUPPLY_CHK</param> parameter.
+		 * </profile>

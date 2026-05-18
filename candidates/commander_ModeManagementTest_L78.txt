@@ -1,0 +1,2 @@
+		snprintf(mode.name, sizeof(mode.name), "mode %i", i);
+		EXPECT_TRUE(modes.removeExternalMode(Modes::FIRST_EXTERNAL_NAV_STATE + i, mode.name));

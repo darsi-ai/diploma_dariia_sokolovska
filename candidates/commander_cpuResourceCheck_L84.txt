@@ -1,0 +1,2 @@
+			 * The threshold can be adjusted via <param>COM_CPU_MAX</param> parameter.
+			 * </profile>

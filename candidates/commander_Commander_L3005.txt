@@ -1,0 +1,36 @@
+	    && !_traffic_avoidance_system_lost) {
+		mavlink_log_critical(&_mavlink_log_pub, "Traffic avoidance system lost\t");
+		events::send(events::ID("commander_traffic_avoidance_lost"), events::Log::Critical, "Traffic avoidance system lost");
+		_vehicle_status.traffic_avoidance_system_present = false;
+		_traffic_avoidance_system_lost = true;
+		_status_changed = true;
+	}
+}
+
+void Commander::battery_status_check()
+{
+	// Handle shutdown request from emergency battery action
+	if (_battery_warning != _failsafe_flags.battery_warning) {
+
+		if (_failsafe_flags.battery_warning == battery_status_s::WARNING_EMERGENCY) {
+#if defined(BOARD_HAS_POWER_CONTROL)
+
+			if (!isArmed() && (px4_shutdown_request(60_s) == 0)) {
+				mavlink_log_critical(&_mavlink_log_pub, "Dangerously low battery! Shutting system down in 60 seconds\t");
+				events::send(events::ID("commander_low_bat_shutdown"), {events::Log::Emergency, events::LogInternal::Warning},
+					     "Dangerously low battery! Shutting system down");
+
+				while (1) { px4_usleep(1); }
+
+			} else {
+				mavlink_log_critical(&_mavlink_log_pub, "System does not support shutdown\t");
+				/* EVENT
+				 * @description Cannot shut down, most likely the system does not support it.
+				 */
+				events::send(events::ID("commander_low_bat_shutdown_failed"), {events::Log::Emergency, events::LogInternal::Error},
+					     "Dangerously low battery! System shut down failed");
+			}
+
+#endif // BOARD_HAS_POWER_CONTROL
+		}
+	}

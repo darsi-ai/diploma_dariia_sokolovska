@@ -1,0 +1,8 @@
+			} else if (_voltage_high_hysteresis.get_state()) {
+				/* EVENT
+				 * @description
+				 * Check the voltage supply to the FMU, it must be below {2:.2} Volt.
+				 *
+				 * <profile name="dev">
+				 * This check can be configured via <param>CBRK_SUPPLY_CHK</param> parameter.
+				 * </profile>

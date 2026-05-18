@@ -1,0 +1,10 @@
+	    || command.source_component >= vehicle_command_s::COMPONENT_MODE_EXECUTOR_START) {
+		return 0;
+	}
+
+	lock();
+	CMD_DEBUG("new command: %" PRIu32 " (channel: %d)", command.command, channel);
+
+	mavlink_command_long_t msg = {};
+	msg.target_system = command.target_system;
+	msg.target_component = command.target_component;

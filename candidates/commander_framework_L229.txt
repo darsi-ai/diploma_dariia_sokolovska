@@ -1,0 +1,2 @@
+				"Failsafe warning:", mavlink_mode);
+

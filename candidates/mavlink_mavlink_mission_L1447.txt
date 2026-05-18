@@ -1,0 +1,19 @@
+		} else {
+			mission_item->lat = (double)mavlink_mission_item->x;
+			mission_item->lon = (double)mavlink_mission_item->y;
+		}
+
+		mission_item->altitude = mavlink_mission_item->z;
+
+		if (mavlink_mission_item->frame == MAV_FRAME_GLOBAL ||
+		    mavlink_mission_item->frame == MAV_FRAME_GLOBAL_INT) {
+			mission_item->altitude_is_relative = false;
+
+		} else if (mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT ||
+			   mavlink_mission_item->frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT) {
+			mission_item->altitude_is_relative = true;
+		}
+
+		// Depending on the received MAV_CMD_* (MAVLink Commands), assign the corresponding
+		// NAV_CMD value to the mission item's nav_cmd.
+		switch (mavlink_mission_item->command) {

@@ -1,0 +1,2 @@
+	ASSERT_TRUE(failsafe.userTakeoverActive());
+	stick_override_request = false;

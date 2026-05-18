@@ -1,0 +1,17 @@
+{
+	if (payload->session != 0 || _session_info.fd < 0) {
+		return kErrInvalidSession;
+	}
+
+	PX4_DEBUG("work terminate: close");
+	::close(_session_info.fd);
+	_session_info.fd = -1;
+	_session_info.stream_download = false;
+
+	payload->size = 0;
+
+	return kErrNone;
+}
+
+/// @brief Responds to a Reset command
+MavlinkFTP::ErrorCode

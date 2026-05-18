@@ -1,0 +1,3 @@
+					} else {
+						PX4_ERR("Invalid value for iridium mode frequency.");
+						err_flag = true;

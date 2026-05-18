@@ -1,0 +1,2 @@
+								PX4_ERR("Trying to replace an already replaced mode (%i)", request.replace_internal_mode);
+								reply.success = false;

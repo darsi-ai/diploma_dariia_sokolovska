@@ -1,0 +1,33 @@
+	switch (result) {
+	case vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED:
+		break;
+
+	case vehicle_command_ack_s::VEHICLE_CMD_RESULT_DENIED:
+		PX4_DEBUG("command %" PRIu32 " denied", cmd.command);
+		tune_negative(true);
+		break;
+
+	case vehicle_command_ack_s::VEHICLE_CMD_RESULT_FAILED:
+		PX4_DEBUG("command %" PRIu32 " failed", cmd.command);
+		tune_negative(true);
+		break;
+
+	case vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED:
+		PX4_DEBUG("command %" PRIu32 " temporarily rejected", cmd.command);
+		tune_negative(true);
+		break;
+
+	case vehicle_command_ack_s::VEHICLE_CMD_RESULT_UNSUPPORTED:
+		PX4_WARN("command %" PRIu32 " unsupported", cmd.command);
+		tune_negative(true);
+		break;
+
+	default:
+		PX4_ERR("command %" PRIu32 " invalid result %d", cmd.command, result);
+		return;
+	}
+
+	/* publish ACK */
+	vehicle_command_ack_s command_ack{};
+	command_ack.command = cmd.command;
+	command_ack.result = result;

@@ -1,0 +1,2 @@
+			/* Disable hardware flow control in FLOW_CONTROL_AUTO mode:
+			 * if no successful write since a defined time

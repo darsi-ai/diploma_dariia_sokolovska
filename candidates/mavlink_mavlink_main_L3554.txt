@@ -1,0 +1,2 @@
+					"Mode: sets default streams and rates", true);
+	PRINT_MODULE_USAGE_PARAM_STRING('n', nullptr, "<interface_name>", "wifi/ethernet interface name", true);

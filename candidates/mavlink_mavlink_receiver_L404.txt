@@ -1,0 +1,18 @@
+		switch (msg->msgid) {
+		case MAVLINK_MSG_ID_HIL_GPS:
+			handle_message_hil_gps(msg);
+			break;
+
+		default:
+			break;
+		}
+
+	}
+
+	/* handle packet with mission manager */
+	_mission_manager.handle_message(msg);
+
+	/* handle packet with parameter component */
+	if (_mavlink.boot_complete()) {
+		// make sure mavlink app has booted before we start processing parameter sync
+		_parameters_manager.handle_message(msg);

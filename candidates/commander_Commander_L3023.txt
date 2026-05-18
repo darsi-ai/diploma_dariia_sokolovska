@@ -1,0 +1,7 @@
+			} else {
+				mavlink_log_critical(&_mavlink_log_pub, "System does not support shutdown\t");
+				/* EVENT
+				 * @description Cannot shut down, most likely the system does not support it.
+				 */
+				events::send(events::ID("commander_low_bat_shutdown_failed"), {events::Log::Emergency, events::LogInternal::Error},
+					     "Dangerously low battery! System shut down failed");

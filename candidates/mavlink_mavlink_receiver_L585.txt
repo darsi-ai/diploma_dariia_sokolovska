@@ -1,0 +1,13 @@
+	} else if (cmd_mavlink.command == MAV_CMD_REQUEST_MESSAGE) {
+
+		uint16_t message_id = (uint16_t)roundf(vehicle_command.param1);
+
+#if defined(MAVLINK_MSG_ID_ESC_EEPROM)
+
+		// Translate ESC_EEPROM request into the PX4 internal command so the DShot driver handles it
+		if (message_id == MAVLINK_MSG_ID_ESC_EEPROM) {
+			vehicle_command_s eeprom_cmd = vehicle_command;
+			eeprom_cmd.command = vehicle_command_s::VEHICLE_CMD_ESC_REQUEST_EEPROM;
+			_cmd_pub.publish(eeprom_cmd);
+
+		} else

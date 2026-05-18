@@ -1,0 +1,2 @@
+	/* calculate interval in us, -1 means unlimited stream, 0 means disabled */
+	int interval = 0;

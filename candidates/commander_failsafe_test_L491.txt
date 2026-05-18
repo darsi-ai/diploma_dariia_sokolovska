@@ -1,0 +1,2 @@
+	failsafe.deferFailsafes(true, -1);
+	ASSERT_TRUE(failsafe.getDeferFailsafes());

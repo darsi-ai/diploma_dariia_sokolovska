@@ -1,0 +1,40 @@
+		for (int i = 0; i < expected; i++) {
+			if (!gps_online[i]) {
+				/* EVENT
+				 * @description
+				 * <profile name="dev">
+				 * Configure the minimum required GPS count with <param>SYS_HAS_NUM_GNSS</param>.
+				 * Configure the failsafe action with <param>COM_GNSSLOSS_ACT</param>.
+				 * </profile>
+				 */
+				reporter.healthFailure<uint8_t>(nav_modes, health_component_t::gps,
+								events::ID("check_gnss_receiver_offline"),
+								log_level, "GPS {1} offline", (uint8_t)i);
+
+			} else if (!gps_has_fix[i]) {
+				/* EVENT
+				 * @description
+				 * <profile name="dev">
+				 * Configure the minimum required GPS count with <param>SYS_HAS_NUM_GNSS</param>.
+				 * Configure the failsafe action with <param>COM_GNSSLOSS_ACT</param>.
+				 * </profile>
+				 */
+				reporter.healthFailure<uint8_t>(nav_modes, health_component_t::gps,
+								events::ID("check_gnss_receiver_no_fix"),
+								log_level, "GPS {1} lost fix", (uint8_t)i);
+			}
+		}
+	}
+
+	if (_divergence_hysteresis.get_state()) {
+		const bool block_arming = divergence_triggers_failsafe && act_configured;
+		const NavModes nav_modes = block_arming ? NavModes::All : NavModes::None;
+		const events::Log log_level = block_arming ? events::Log::Error : events::Log::Warning;
+
+		/* EVENT
+		 * @description
+		 * Two GNSS receivers report positions that are inconsistent with their reported accuracy.
+		 *
+		 * <profile name="dev">
+		 * Configure the failsafe action with <param>COM_GNSSLOSS_ACT</param>.
+		 * The failsafe action is only triggered when <param>SYS_HAS_NUM_GNSS</param> is set to 2.

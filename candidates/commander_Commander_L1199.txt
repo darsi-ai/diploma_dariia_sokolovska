@@ -1,0 +1,2 @@
+					// switch to AUTO_MISSION and ARM
+					if (_user_mode_intention.change(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, getSourceFromCommand(cmd))

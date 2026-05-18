@@ -1,0 +1,16 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: CPU load too high: %3.1f%%", (double)cpuload_percent);
+			}
+		}
+
+		const float ram_usage_percent = cpuload.ram_usage * 100.f;
+		const bool high_ram_usage = ram_usage_percent > _param_com_ram_max.get();
+
+		if (ram_usage_check_enabled && high_ram_usage) {
+			/* EVENT
+			 * @description
+			 * The RAM usage can be reduced for example by disabling unused modules (e.g. mavlink instances).
+			 *
+			 * <profile name="dev">
+			 * The threshold can be adjusted via <param>COM_RAM_MAX</param> parameter.
+			 * </profile>

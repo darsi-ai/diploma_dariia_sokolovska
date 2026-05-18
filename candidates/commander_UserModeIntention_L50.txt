@@ -1,0 +1,2 @@
+		// If a replacement mode is selected, select the internal one instead. The replacement will be selected after.
+		user_intended_nav_state = _handler->getReplacedModeIfAny(user_intended_nav_state);

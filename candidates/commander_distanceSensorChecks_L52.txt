@@ -1,0 +1,2 @@
+					|| (dist_sens.mode == distance_sensor_s::MODE_DISABLED));
+			reporter.setIsPresent(health_component_t::distance_sensor);

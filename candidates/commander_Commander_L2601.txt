@@ -1,0 +1,17 @@
+			if (_vehicle_status.failsafe) {
+				led_color = led_control_s::COLOR_PURPLE;
+
+			} else if (battery_warning == battery_status_s::WARNING_LOW) {
+				led_color = led_control_s::COLOR_AMBER;
+
+			} else if (battery_warning == battery_status_s::WARNING_CRITICAL) {
+				led_color = led_control_s::COLOR_RED;
+
+			} else {
+				if (!_failsafe_flags.home_position_invalid && !_failsafe_flags.global_position_invalid) {
+					led_color = led_control_s::COLOR_GREEN;
+
+				} else {
+					led_color = led_control_s::COLOR_BLUE;
+				}
+			}

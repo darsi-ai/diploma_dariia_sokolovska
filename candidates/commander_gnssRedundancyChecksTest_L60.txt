@@ -1,0 +1,55 @@
+class GnssRedundancyChecksTest : public ::testing::Test
+{
+public:
+	void SetUp() override
+	{
+		param_control_autosave(false);
+
+		// Reset params that tests modify so state doesn't leak between tests.
+		param_reset(param_find("SYS_HAS_NUM_GNSS"));
+		param_reset(param_find("COM_GNSSLOSS_ACT"));
+
+		// Set lever arms so expected_d = 0.70m, enabling the "too close" direction of divergence detection.
+		float v = 0.35f;  param_set(param_find("SENS_GPS0_OFFX"), &v);
+		v = -0.35f;       param_set(param_find("SENS_GPS1_OFFX"), &v);
+
+		// Claim uORB instances 0 and 1 before the check subscribes on first copy().
+		sensor_gps_s empty{};
+		_gps0_pub.publish(empty);
+		_gps1_pub.publish(empty);
+	}
+
+	sensor_gps_s makeGps(double lat, double lon, float eph = 0.02f, uint8_t fix_type = 6)
+	{
+		sensor_gps_s gps{};
+		gps.timestamp     = hrt_absolute_time();
+		gps.device_id     = 1;
+		gps.latitude_deg  = lat;
+		gps.longitude_deg = lon;
+		gps.eph           = eph;
+		gps.fix_type      = fix_type;
+		return gps;
+	}
+
+	// Run the check and store results in _failsafe_flags and _health_warning_gps.
+	void runCheck(bool armed = false)
+	{
+		vehicle_status_s status{};
+
+		if (armed) { status.arming_state = vehicle_status_s::ARMING_STATE_ARMED; }
+
+		_check.updateParams();
+		Context context{status};
+		_failsafe_flags = {};
+		Report reporter{_failsafe_flags, 0};
+		_check.checkAndReport(context, reporter);
+		// Capture any GPS health issue regardless of log level (Warning or Error).
+		_health_warning_gps = (reporter.healthResults().warning | reporter.healthResults().error) & health_component_t::gps;
+	}
+
+	uORB::PublicationMulti<sensor_gps_s> _gps0_pub{ORB_ID(sensor_gps)};
+	uORB::PublicationMulti<sensor_gps_s> _gps1_pub{ORB_ID(sensor_gps)};
+	failsafe_flags_s  _failsafe_flags{};
+	bool              _health_warning_gps{false};
+	GnssRedundancyChecks _check;
+};

@@ -1,0 +1,7 @@
+	    || command.source_component >= vehicle_command_s::COMPONENT_MODE_EXECUTOR_START) {
+		return 0;
+	}
+
+	lock();
+	CMD_DEBUG("new command: %" PRIu32 " (channel: %d)", command.command, channel);
+

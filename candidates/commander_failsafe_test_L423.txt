@@ -1,0 +1,2 @@
+	// Clear failsafe
+	failsafe_flags.gcs_connection_lost = false;

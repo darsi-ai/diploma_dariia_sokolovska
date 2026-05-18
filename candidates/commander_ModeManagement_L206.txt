@@ -1,0 +1,2 @@
+				PX4_INFO("  Replaces mode: %s", mode_util::nav_state_names[cur_mode.replaces_nav_state]);
+			}

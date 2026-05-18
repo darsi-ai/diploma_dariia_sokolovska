@@ -1,0 +1,19 @@
+	if (component_id < 0) {
+		mavlink_msg_param_error_send_struct(_mavlink.get_channel(), &msg);
+
+	} else {
+		// Re-pack the message with a different component ID
+		mavlink_message_t mavlink_packet;
+		mavlink_msg_param_error_encode_chan(mavlink_system.sysid, component_id, _mavlink.get_channel(), &mavlink_packet, &msg);
+		_mavlink_resend_uart(_mavlink.get_channel(), &mavlink_packet);
+	}
+
+	return 0;
+}
+
+#if defined(CONFIG_MAVLINK_UAVCAN_PARAMETERS)
+
+bool MavlinkParametersManager::send_uavcan()
+{
+	/* Send parameter values received from the UAVCAN topic */
+	uavcan_parameter_value_s value{};

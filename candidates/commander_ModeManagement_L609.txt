@@ -1,0 +1,2 @@
+			_modes.mode(config_control_setpoint.source_id).config_control_setpoint = config_control_setpoint;
+			had_update = true;

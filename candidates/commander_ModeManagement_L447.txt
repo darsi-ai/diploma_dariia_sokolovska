@@ -1,0 +1,12 @@
+				if (_external_checks.isUnresponsive(mode.arming_check_registration_id)) {
+					if (!mode.unresponsive_reported && report_error) {
+						mode.unresponsive_reported = true;
+						events::send(events::ID("commander_mode_fallback_internal"), events::Log::Critical,
+							     "External mode is unresponsive, falling back to internal");
+					}
+
+					return nav_state;
+
+				} else {
+					return i;
+				}

@@ -1,0 +1,15 @@
+	{
+		return hrt_absolute_time() < _last_param_sent + 2_s;
+	}
+
+private:
+	int		_send_all_index{-1};
+
+	/* do not allow top copying this class */
+	MavlinkParametersManager(MavlinkParametersManager &);
+	MavlinkParametersManager &operator = (const MavlinkParametersManager &);
+
+protected:
+	/// send a single param if a PARAM_REQUEST_LIST is in progress
+	/// @return true if a parameter was sent
+	bool send_one();

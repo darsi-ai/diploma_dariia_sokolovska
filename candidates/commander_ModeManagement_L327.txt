@@ -1,0 +1,16 @@
+				if (request.register_arming_check) {
+					int8_t replace_nav_state = request.enable_replace_internal_mode ? request.replace_internal_mode : -1;
+					int registration_id = _external_checks.addRegistration(nav_mode_id, replace_nav_state);
+
+					if (nav_mode_id != -1) {
+						_modes.mode(nav_mode_id).arming_check_registration_id = registration_id;
+					}
+
+					reply.arming_check_id = registration_id;
+				}
+
+				// Activate the mode?
+				if (request.register_mode_executor && request.activate_mode_immediately && nav_mode_id != -1) {
+					update_request.change_user_intended_nav_state = true;
+					update_request.user_intended_nav_state = nav_mode_id;
+				}

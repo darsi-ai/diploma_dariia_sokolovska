@@ -1,0 +1,2 @@
+		// -1: channel did not request this command to be sent, -2: channel got an ack for this command
+#if MAVLINK_COMM_NUM_BUFFERS == 4

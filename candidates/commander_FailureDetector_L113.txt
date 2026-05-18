@@ -1,0 +1,2 @@
+				// disable attitude check during tailsitter transition
+				roll = 0.f;

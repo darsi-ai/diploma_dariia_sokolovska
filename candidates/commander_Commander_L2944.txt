@@ -1,0 +1,15 @@
+	// GCS data link loss failsafe
+	if (!_vehicle_status.gcs_connection_lost) {
+		if ((_datalink_last_heartbeat_gcs != 0)
+		    && hrt_elapsed_time(&_datalink_last_heartbeat_gcs) > (_param_com_dl_loss_t.get() * 1_s)) {
+
+			_vehicle_status.gcs_connection_lost = true;
+			_vehicle_status.gcs_connection_lost_counter++;
+
+			mavlink_log_info(&_mavlink_log_pub, "Connection to ground station lost\t");
+			events::send(events::ID("commander_gcs_lost"), {events::Log::Warning, events::LogInternal::Info},
+				     "Connection to ground control station lost");
+
+			_status_changed = true;
+		}
+	}

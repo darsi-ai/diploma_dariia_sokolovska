@@ -1,0 +1,2 @@
+					PX4_ERR("iridium mode frequency parsing failed");
+					err_flag = true;

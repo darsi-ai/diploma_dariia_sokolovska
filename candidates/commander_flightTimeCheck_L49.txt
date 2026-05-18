@@ -1,0 +1,9 @@
+		if (reporter.mavlink_log_pub()) {
+			mavlink_log_critical(reporter.mavlink_log_pub(), "Maximum flight time reached\t");
+		}
+
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>COM_FLT_TIME_MAX</param> parameter.
+		 * </profile>

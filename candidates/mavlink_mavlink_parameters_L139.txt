@@ -1,0 +1,8 @@
+	struct _uavcan_open_request_list_item {
+		uavcan_parameter_request_s req;
+		struct _uavcan_open_request_list_item *next;
+	};
+
+	/**
+	 * Request the next uavcan parameter
+	 */

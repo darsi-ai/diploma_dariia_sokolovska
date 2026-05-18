@@ -1,0 +1,30 @@
+		if (ocm.position || ocm.velocity || ocm.acceleration) {
+			// publish offboard_control_mode
+			ocm.timestamp = hrt_absolute_time();
+			_offboard_control_mode_pub.publish(ocm);
+
+			vehicle_status_s vehicle_status{};
+			_vehicle_status_sub.copy(&vehicle_status);
+
+			if (vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_OFFBOARD) {
+				// only publish setpoint once in OFFBOARD
+				setpoint.timestamp = hrt_absolute_time();
+				_trajectory_setpoint_pub.publish(setpoint);
+			}
+		}
+	}
+}
+
+void
+MavlinkReceiver::handle_message_set_gps_global_origin(mavlink_message_t *msg)
+{
+	mavlink_set_gps_global_origin_t gps_global_origin;
+	mavlink_msg_set_gps_global_origin_decode(msg, &gps_global_origin);
+
+	if (gps_global_origin.target_system == _mavlink.get_system_id()) {
+		vehicle_command_s vcmd{};
+		vcmd.param5 = (double)gps_global_origin.latitude * 1.e-7;
+		vcmd.param6 = (double)gps_global_origin.longitude * 1.e-7;
+		vcmd.param7 = (float)gps_global_origin.altitude * 1.e-3f;
+		vcmd.command = vehicle_command_s::VEHICLE_CMD_SET_GPS_GLOBAL_ORIGIN;
+		vcmd.target_system = _mavlink.get_system_id();

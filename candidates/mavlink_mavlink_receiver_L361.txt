@@ -1,0 +1,2 @@
+	 * in the system mode. Either send a set mode
+	 * COMMAND_LONG message or a SET_MODE message

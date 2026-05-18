@@ -1,0 +1,2 @@
+	_tstatus.mode = _mode;
+	_tstatus.data_rate = _datarate;

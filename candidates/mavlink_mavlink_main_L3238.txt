@@ -1,0 +1,6 @@
+		} else {
+			float rate = 1000000.0f / (float)interval;
+			// Note that the actual current rate can be lower if the associated uORB topic updates at a
+			// lower rate.
+			float rate_current = stream->const_rate() ? rate : rate * rate_mult;
+			snprintf(rate_str, sizeof(rate_str), "%6.2f (%.3f)", (double)rate, (double)rate_current);

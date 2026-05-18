@@ -1,0 +1,2 @@
+class ReporterTest : public ::testing::Test
+

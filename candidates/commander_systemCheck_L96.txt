@@ -1,0 +1,6 @@
+		} else if (reporter.failsafeFlags().home_position_invalid) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>COM_ARM_WO_GPS</param> parameter.
+			 * </profile>

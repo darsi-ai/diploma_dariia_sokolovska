@@ -1,0 +1,35 @@
+			if (!isArmed() && (px4_shutdown_request(60_s) == 0)) {
+				mavlink_log_critical(&_mavlink_log_pub, "Dangerously low battery! Shutting system down in 60 seconds\t");
+				events::send(events::ID("commander_low_bat_shutdown"), {events::Log::Emergency, events::LogInternal::Warning},
+					     "Dangerously low battery! Shutting system down");
+
+				while (1) { px4_usleep(1); }
+
+			} else {
+				mavlink_log_critical(&_mavlink_log_pub, "System does not support shutdown\t");
+				/* EVENT
+				 * @description Cannot shut down, most likely the system does not support it.
+				 */
+				events::send(events::ID("commander_low_bat_shutdown_failed"), {events::Log::Emergency, events::LogInternal::Error},
+					     "Dangerously low battery! System shut down failed");
+			}
+
+#endif // BOARD_HAS_POWER_CONTROL
+		}
+	}
+
+	_battery_warning = _failsafe_flags.battery_warning;
+}
+
+void Commander::manualControlCheck()
+{
+	manual_control_setpoint_s manual_control_setpoint;
+	const bool manual_control_updated = _manual_control_setpoint_sub.update(&manual_control_setpoint);
+
+	if (manual_control_updated && manual_control_setpoint.valid) {
+
+		_last_manual_throttle = manual_control_setpoint.throttle;
+
+		if (isArmed()) {
+			// Abort autonomous mode and switch to position mode if sticks are moved significantly
+			// but only if actually in air.

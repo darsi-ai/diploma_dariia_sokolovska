@@ -1,0 +1,2 @@
+	// A matching mode category must deny arming
+	reporter.reset();

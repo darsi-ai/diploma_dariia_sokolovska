@@ -1,0 +1,13 @@
+			if (should_arm_on_boot) {
+				if (arm(arm_disarm_reason_t::mission_start, false) != TRANSITION_DENIED) {
+					_arm_on_boot_done = true;
+				}
+			}
+		}
+
+		// handle commands last, as the system needs to be updated to handle them
+		handleCommandsFromModeExecutors();
+
+		if (_vehicle_command_sub.updated()) {
+			// got command
+			const unsigned last_generation = _vehicle_command_sub.get_last_generation();

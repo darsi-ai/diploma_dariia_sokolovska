@@ -1,0 +1,15 @@
+		if (_param_fd_act_en.get() > 0) {
+			updateEscsStatus(context, reporter, esc_status, now);
+			mask |= checkMotorStatus(context, reporter, esc_status, now);
+		}
+
+		_motor_failure_mask = mask;
+		reporter.setIsPresent(health_component_t::motors_escs);
+		reporter.failsafeFlags().fd_motor_failure = (mask != 0);
+
+	} else if ((_param_com_arm_chk_escs.get() > 0) && now > _start_time + 3_s) { // Allow ESCs to init
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>COM_ARM_CHK_ESCS</param> parameter.
+		 * </profile>

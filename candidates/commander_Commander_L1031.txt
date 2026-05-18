@@ -1,0 +1,2 @@
+					arming_res = arm(arm_disarm_reason, cmd.from_external || !forced);
+

@@ -1,0 +1,2 @@
+	// clear_condition to avoid triggering a failsafe after deferring is disabled.
+	const bool remove_while_deferring = _defer_failsafes && action.can_be_deferred;

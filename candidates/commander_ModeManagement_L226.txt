@@ -1,0 +1,29 @@
+		if (valid(i)) {
+			const Modes::Mode &cur_mode = mode(i);
+			PX4_INFO("External Mode %i: nav_state: %i, name: %s", i - vehicle_status_s::NAVIGATION_STATE_EXTERNAL1 + 1, i,
+				 cur_mode.name);
+
+			if (cur_mode.replaces_nav_state != Mode::REPLACES_NAV_STATE_NONE
+			    && cur_mode.replaces_nav_state < vehicle_status_s::NAVIGATION_STATE_MAX) {
+				PX4_INFO("  Replaces mode: %s", mode_util::nav_state_names[cur_mode.replaces_nav_state]);
+			}
+		}
+	}
+}
+
+ModeManagement::ModeManagement(ExternalChecks &external_checks)
+	: _external_checks(external_checks)
+{
+	_external_checks.setExternalNavStates(Modes::FIRST_EXTERNAL_NAV_STATE, Modes::LAST_EXTERNAL_NAV_STATE);
+}
+
+void ModeManagement::checkNewRegistrations(UpdateRequest &update_request)
+{
+	register_ext_component_request_s request;
+	int max_updates = 5;
+
+	while (!update_request.change_user_intended_nav_state && _register_ext_component_request_sub.update(&request)
+	       && --max_updates >= 0) {
+		request.name[sizeof(request.name) - 1] = '\0';
+		PX4_DEBUG("got registration request: %s %llu, arming: %i mode: %i executor: %i", request.name, request.request_id,
+			  request.register_arming_check, request.register_mode, request.register_mode_executor);

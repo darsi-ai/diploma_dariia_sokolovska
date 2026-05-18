@@ -1,0 +1,2 @@
+						_first_heartbeat_sent = stream->first_message_sent();
+					}

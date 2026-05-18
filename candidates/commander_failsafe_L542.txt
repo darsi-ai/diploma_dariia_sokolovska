@@ -1,0 +1,6 @@
+	if (_param_nav_dll_act.get() != int32_t(gcs_connection_loss_failsafe_mode::Disabled) && !dll_loss_ignored) {
+		CHECK_FAILSAFE(status_flags, gcs_connection_lost, fromNavDllOrRclActParam(_param_nav_dll_act.get()).causedBy(Cause::GCSConnectionLoss));
+	}
+
+	// VTOL transition failure (quadchute)
+	if (state.user_intended_mode == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION ||

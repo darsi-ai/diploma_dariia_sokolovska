@@ -1,0 +1,19 @@
+	if (blink_msg_end == 0) {
+		return 0;
+
+	} else if (hrt_absolute_time() > blink_msg_end) {
+		blink_msg_end = 0;
+		return 2;
+
+	} else {
+		return 1;
+	}
+}
+
+int led_init()
+{
+	blink_msg_end = 0;
+
+	led_control.led_mask = 0xff;
+	led_control.mode = led_control_s::MODE_OFF;
+	led_control.priority = 0;

@@ -1,0 +1,2 @@
+	 * try to start a new stream. This fails if a stream is already running.
+	 * thread-safe

@@ -1,0 +1,8 @@
+	} else if (_vehicle_status.pre_flight_checks_pass) {
+		BOARD_ARMED_LED_OFF();
+
+		// ready to arm, blink at 1Hz
+		if (time_now_us >= _led_armed_state_toggle + 1_s) {
+			_led_armed_state_toggle = time_now_us;
+			BOARD_ARMED_STATE_LED_TOGGLE();
+		}

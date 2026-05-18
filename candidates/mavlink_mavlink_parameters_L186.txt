@@ -1,0 +1,2 @@
+	 * CAMERA_OBSERVATION_TIMEOUT. When false, the UAVCAN parameter bridge may
+	 * forward to CAN node target_component even if that ID falls in 100..105,

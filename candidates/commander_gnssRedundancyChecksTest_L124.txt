@@ -1,0 +1,8 @@
+{
+	runCheck();
+	EXPECT_FALSE(_failsafe_flags.gnss_lost);
+	EXPECT_FALSE(_health_warning_gps);
+}
+
+// One receiver fixed, SYS_HAS_NUM_GNSS not configured → no failsafe.
+TEST_F(GnssRedundancyChecksTest, SingleGpsNoFailsafe)

@@ -1,0 +1,2 @@
+		// Reset related failsafe flags otherwise failures from before disabling the check cause failsafes without reported reason
+		reporter.failsafeFlags().battery_unhealthy = false;

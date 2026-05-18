@@ -1,0 +1,2 @@
+		uint8_t		data[];		///< command data, varies by Opcode
+	};

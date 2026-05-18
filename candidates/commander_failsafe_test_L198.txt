@@ -1,0 +1,2 @@
+	updated_user_intented_mode = failsafe.update(time, state, false, stick_override_request, failsafe_flags);
+	state.user_intended_mode = vehicle_status_s::NAVIGATION_STATE_POSCTL;

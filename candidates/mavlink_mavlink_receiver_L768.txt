@@ -1,0 +1,10 @@
+		if (stream->get_id() == message_id) {
+			stream_found = true;
+			message_sent = stream->request_message(param2, param3, param4, param5, param6, param7);
+			break;
+		}
+	}
+
+	if (!stream_found) {
+		// If we don't find the stream, we can configure it with rate 0 and then trigger it once.
+		const char *stream_name = get_stream_name(message_id);

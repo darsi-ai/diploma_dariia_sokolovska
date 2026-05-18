@@ -1,0 +1,2 @@
+	static_assert((uint8_t)arm_disarm_reason_t::failsafe == vehicle_status_s::ARM_DISARM_REASON_FAILSAFE,
+		      "(dis)arm enum mismatch");

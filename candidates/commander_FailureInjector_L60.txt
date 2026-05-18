@@ -1,0 +1,4 @@
+		if (vehicle_command.command != vehicle_command_s::VEHICLE_CMD_INJECT_FAILURE
+		    || failure_unit != vehicle_command_s::FAILURE_UNIT_SYSTEM_MOTOR) {
+			continue;
+		}

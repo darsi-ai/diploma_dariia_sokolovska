@@ -1,0 +1,2 @@
+	case offboard_loss_failsafe_mode::Disarm:
+		action = Action::Disarm;

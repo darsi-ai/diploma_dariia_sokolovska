@@ -1,0 +1,14 @@
+void Failsafe::updateArmingState(const hrt_abstime &time_us, bool armed, const failsafe_flags_s &status_flags)
+{
+	if (!_was_armed && armed) {
+		_armed_time = time_us;
+		_manual_control_lost_at_arming = status_flags.manual_control_signal_lost;
+		_battery_warning_at_arming = status_flags.battery_warning;
+
+	} else if (!armed) {
+		_manual_control_lost_at_arming = status_flags.manual_control_signal_lost; // ensure action isn't added while disarmed
+		_armed_time = 0;
+	}
+
+	_was_armed = armed;
+}

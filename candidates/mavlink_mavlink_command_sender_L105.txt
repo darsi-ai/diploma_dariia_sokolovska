@@ -1,0 +1,2 @@
+		mavlink_command_long_t command = {};
+		hrt_abstime timestamp_us = 0;

@@ -1,0 +1,28 @@
+			} else {
+				PX4_ERR("invalid partner ip '%s'", myoptarg);
+				err_flag = true;
+			}
+
+			break;
+#else
+
+		case 'c':
+			PX4_ERR("Multicast option is not supported on this platform");
+			err_flag = true;
+			break;
+#endif
+#else
+
+		case 'p':
+		case 'u':
+		case 'o':
+		case 't':
+			PX4_ERR("UDP options not supported on this platform");
+			err_flag = true;
+			break;
+#endif
+
+		case 'm': {
+
+				int mode;
+

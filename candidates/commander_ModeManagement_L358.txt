@@ -1,0 +1,32 @@
+				if (request.register_mode_executor && request.activate_mode_immediately && nav_mode_id != -1) {
+					update_request.change_user_intended_nav_state = true;
+					update_request.user_intended_nav_state = nav_mode_id;
+				}
+			}
+		}
+
+		reply.timestamp = hrt_absolute_time();
+		_register_ext_component_reply_pub.publish(reply);
+	}
+}
+
+void ModeManagement::checkUnregistrations(uint8_t user_intended_nav_state, UpdateRequest &update_request)
+{
+	unregister_ext_component_s request;
+	int max_updates = 5;
+
+	while (!update_request.change_user_intended_nav_state && _unregister_ext_component_sub.update(&request)
+	       && --max_updates >= 0) {
+		request.name[sizeof(request.name) - 1] = '\0';
+		PX4_DEBUG("got unregistration request: %s arming: %i mode: %i executor: %i", request.name,
+			  (int)request.arming_check_id, (int)request.mode_id, (int)request.mode_executor_id);
+
+		if (request.arming_check_id != -1) {
+			_external_checks.removeRegistration(request.arming_check_id, request.mode_id);
+		}
+
+		if (request.mode_id != -1) {
+			if (_modes.removeExternalMode(request.mode_id, request.name)) {
+				removeModeExecutor(request.mode_executor_id);
+				// else: if the mode was already removed (due to a timeout), the executor was also removed already
+			}

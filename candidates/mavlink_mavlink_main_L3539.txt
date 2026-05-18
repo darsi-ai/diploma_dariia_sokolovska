@@ -1,0 +1,2 @@
+$ mavlink stream -u 14556 -s HIGHRES_IMU -r 50
+)DESCR_STR");

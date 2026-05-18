@@ -1,0 +1,2 @@
+				Modes::Mode &mode = _modes.mode(override_request.source_id);
+				memcpy(&mode.overrides, &override_request, sizeof(mode.overrides));

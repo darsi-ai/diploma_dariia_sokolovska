@@ -1,0 +1,31 @@
+			if (handle != PARAM_INVALID) {
+				param_set_no_notification(handle, &mode_name_hash);
+			}
+		}
+
+		_modes[new_mode_idx] = mode;
+		_modes[new_mode_idx].valid = true;
+		return new_mode_idx + FIRST_EXTERNAL_NAV_STATE;
+	}
+
+	PX4_ERR("logic error");
+	return -1;
+}
+
+bool Modes::removeExternalMode(uint8_t nav_state, const char *name)
+{
+	if (valid(nav_state) && strncmp(name, _modes[nav_state - FIRST_EXTERNAL_NAV_STATE].name, sizeof(Mode::name)) == 0) {
+		_modes[nav_state - FIRST_EXTERNAL_NAV_STATE].valid = false;
+		return true;
+	}
+
+	PX4_ERR("trying to remove invalid mode %s", name);
+	return false;
+}
+
+void Modes::printStatus() const
+{
+	for (int i = Modes::FIRST_EXTERNAL_NAV_STATE; i <= Modes::LAST_EXTERNAL_NAV_STATE; ++i) {
+		if (valid(i)) {
+			const Modes::Mode &cur_mode = mode(i);
+			PX4_INFO("External Mode %i: nav_state: %i, name: %s", i - vehicle_status_s::NAVIGATION_STATE_EXTERNAL1 + 1, i,

@@ -1,0 +1,2 @@
+void rgbled_set_color_and_mode(uint8_t color, uint8_t mode);
+

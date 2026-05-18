@@ -1,0 +1,2 @@
+		CHECK_FAILSAFE(status_flags, fd_critical_failure, ActionOptions(Action::Disarm).cannotBeDeferred());
+		CHECK_FAILSAFE(status_flags, fd_alt_loss, ActionOptions(Action::Disarm).cannotBeDeferred());

@@ -1,0 +1,6 @@
+				if (!reply.can_arm_and_run) {
+					setOrClearRequirementBits(true, nav_mode_id, replaces_nav_state, reporter.failsafeFlags().mode_req_other);
+				}
+
+				// Mode requirements
+				// A replacement mode will also replace the mode requirements of the internal/replaced mode

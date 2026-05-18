@@ -1,0 +1,10 @@
+	if (_mode_executors.valid(_mode_executor_in_charge)) {
+		returned_nav_state = _mode_executors.executor(_mode_executor_in_charge).owned_nav_state;
+	}
+
+	// Switch to Hold if the mode is unresponsive
+	if (_modes.valid(returned_nav_state)) {
+		if (_external_checks.isUnresponsive(_modes.mode(returned_nav_state).arming_check_registration_id)) {
+			returned_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		}
+	}

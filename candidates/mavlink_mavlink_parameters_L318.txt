@@ -1,0 +1,4 @@
+				} else {
+
+					/* when index is >= 0, send this parameter again */
+					int ret = send_param(param_for_used_index(req_read.param_index));

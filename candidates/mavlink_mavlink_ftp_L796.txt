@@ -1,0 +1,16 @@
+{
+	PX4_DEBUG("work reset: close");
+
+	if (_session_info.fd != -1) {
+		::close(_session_info.fd);
+		_session_info.fd = -1;
+		_session_info.stream_download = false;
+	}
+
+	payload->size = 0;
+
+	return kErrNone;
+}
+
+/// @brief Responds to a Rename command
+MavlinkFTP::ErrorCode

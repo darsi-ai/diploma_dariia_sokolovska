@@ -1,0 +1,2 @@
+	bool			_hil_enabled{false};		/**< Hardware In the Loop mode */
+	bool			_is_usb_uart{false};		/**< Port is USB */

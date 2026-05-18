@@ -1,0 +1,2 @@
+	 * Return here in the iridium mode since the iridium driver does not
+	 * support the subsequent function calls.

@@ -1,0 +1,36 @@
+				switch (static_cast<GnssArmingCheck>(_param_com_arm_wo_gps.get())) {
+				default:
+
+				/* FALLTHROUGH */
+				case GnssArmingCheck::DenyArming:
+					mavlink_log_critical(reporter.mavlink_log_pub(), message, " Fail");
+					break;
+
+				case GnssArmingCheck::WarningOnly:
+					mavlink_log_warning(reporter.mavlink_log_pub(), message, "");
+					break;
+
+				case GnssArmingCheck::Disabled:
+					break;
+				}
+			}
+		}
+	}
+
+}
+
+void EstimatorChecks::checkSensorBias(const Context &context, Report &reporter, NavModes required_groups)
+{
+	// _estimator_sensor_bias_sub instance got changed above already
+	estimator_sensor_bias_s bias;
+
+	if (_estimator_sensor_bias_sub.copy(&bias) && hrt_elapsed_time(&bias.timestamp) < 30_s) {
+
+		// check accelerometer bias estimates
+		if (bias.accel_bias_valid) {
+			const float ekf_ab_test_limit = 0.75f * bias.accel_bias_limit;
+
+			for (int axis_index = 0; axis_index < 3; axis_index++) {
+				// allow for higher uncertainty in estimates for axes that are less observable to prevent false positives
+				// adjust test threshold by 3-sigma
+				const float test_uncertainty = 3.0f * sqrtf(fmaxf(bias.accel_bias_variance[axis_index], 0.0f));

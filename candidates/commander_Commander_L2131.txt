@@ -1,0 +1,24 @@
+				if (!auto_mission_available) {
+					/* the mission is invalid */
+					tune_mission_fail(true);
+
+				} else if (mission_result.warning) {
+					/* the mission has a warning */
+					tune_mission_warn(true);
+
+				} else {
+					/* the mission is valid */
+					tune_mission_ok(true);
+				}
+			}
+		}
+
+		if (isArmed() && !_vehicle_land_detected.landed
+		    && (mission_result.timestamp >= _vehicle_status.nav_state_timestamp)
+		    && mission_result.finished
+		    && _mode_management.modeExecutorInCharge() == ModeExecutors::AUTOPILOT_EXECUTOR_ID) {
+
+			if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF
+			    || _vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF) {
+				// Transition to loiter when the takeoff is completed (force into the Loiter, if mode is not executable then failsafe).
+				_user_mode_intention.change(vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER, ModeChangeSource::ModeExecutor, false, true);

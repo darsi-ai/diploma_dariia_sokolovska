@@ -1,0 +1,11 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Critical battery\t");
+			}
+
+			break;
+
+		case battery_status_s::WARNING_EMERGENCY:
+			/* EVENT
+			 * @description
+			 * The lowest battery state of charge is below the emergency threshold.
+			 *

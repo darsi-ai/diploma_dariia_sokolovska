@@ -1,0 +1,9 @@
+	if (!_vehicle_status_sub.update(&vehicle_status)) {
+		return;
+	}
+
+	// Get mission result
+	const mission_result_s &mission_result = _mission_result_sub.get();
+
+	// Update mission mode
+	if (vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION ||

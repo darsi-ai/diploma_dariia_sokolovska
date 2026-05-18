@@ -1,0 +1,9 @@
+		if (hrt_elapsed_time(&item->last_time_sent_us) <= TIMEOUT_US) {
+			// We keep waiting for the timeout.
+			continue;
+		}
+
+		// Loop through num_sent_per_channel and check if any channel has receives an ack for this command
+		// (indicated by the value -2). We avoid removing the command at the time of receiving the ack
+		// as some channels might be lagging behind and will end up putting the same command into the buffer.
+		bool dropped_command = false;

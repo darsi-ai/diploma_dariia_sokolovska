@@ -1,0 +1,35 @@
+	if (errorCode == kErrNone) {
+		payload->req_opcode = payload->opcode;
+		payload->opcode = kRspAck;
+
+	} else {
+		PX4_DEBUG("errorCode: %d, errno: %d / %s", errorCode, _our_errno, strerror(_our_errno));
+		payload->req_opcode = payload->opcode;
+		payload->opcode = kRspNak;
+		payload->size = 1;
+
+		if (_our_errno == EEXIST) {
+			errorCode = kErrFailFileExists;
+
+		} else if (_our_errno == ENOENT && errorCode == kErrFailErrno) {
+			errorCode = kErrFileNotFound;
+		}
+
+		payload->data[0] = errorCode;
+
+		if (errorCode == kErrFailErrno) {
+			payload->size = 2;
+			payload->data[1] = _our_errno;
+		}
+	}
+
+	_last_reply_valid = false;
+
+	// Stream download replies are sent through mavlink stream mechanism. Unless we need to Nack.
+	if (!stream_send || errorCode != kErrNone) {
+		// respond to the request
+		ftp_req->target_system = target_system_id;
+		ftp_req->target_network = 0;
+		ftp_req->target_component = target_comp_id;
+		_reply(ftp_req);
+	}

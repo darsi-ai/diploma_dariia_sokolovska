@@ -1,0 +1,8 @@
+	} else {
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * Ensure the ADC is working and the system_power topic is published.
+		 *
+		 * This check can be configured via <param>CBRK_SUPPLY_CHK</param> parameter.
+		 * </profile>

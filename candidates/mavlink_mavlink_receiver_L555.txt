@@ -1,0 +1,28 @@
+	if (cmd_mavlink.x == INT32_MAX && cmd_mavlink.y == INT32_MAX) {
+		// INT32_MAX for x and y means to ignore it.
+		vcmd.param5 = (double)NAN;
+		vcmd.param6 = (double)NAN;
+
+	} else {
+		vcmd.param5 = ((double)cmd_mavlink.x) / 1e7;
+		vcmd.param6 = ((double)cmd_mavlink.y) / 1e7;
+	}
+
+	vcmd.param7 = cmd_mavlink.z;
+	vcmd.command = cmd_mavlink.command;
+	vcmd.target_system = cmd_mavlink.target_system;
+	vcmd.target_component = cmd_mavlink.target_component;
+	vcmd.source_system = msg->sysid;
+	vcmd.source_component = msg->compid;
+	vcmd.confirmation = false;
+	vcmd.from_external = true;
+
+	handle_message_command_both(msg, cmd_mavlink, vcmd);
+}
+
+template <class T>
+void MavlinkReceiver::handle_message_command_both(mavlink_message_t *msg, const T &cmd_mavlink,
+		const vehicle_command_s &vehicle_command)
+{
+	bool target_ok = evaluate_target_ok(cmd_mavlink.command, cmd_mavlink.target_system, cmd_mavlink.target_component);
+	bool send_ack = true;

@@ -1,0 +1,2 @@
+				events::send(events::ID("commander_low_bat_shutdown"), {events::Log::Emergency, events::LogInternal::Warning},
+					     "Dangerously low battery! Shutting system down");

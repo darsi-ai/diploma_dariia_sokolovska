@@ -1,0 +1,2 @@
+			"Failsafe activated: switching to {2} in {3} seconds", mavlink_mode, failsafe_action,
+			(uint16_t) delay_s);

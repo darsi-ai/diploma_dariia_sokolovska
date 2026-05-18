@@ -1,0 +1,7 @@
+	for (int i = 0; i < Modes::MAX_NUM - 1; ++i) {
+		snprintf(mode.name, sizeof(mode.name), "mode %i", i);
+		EXPECT_TRUE(modes.removeExternalMode(Modes::FIRST_EXTERNAL_NAV_STATE + i, mode.name));
+	}
+
+	// Add some mode, ensure it gets the same index
+	const int mode_to_add_idx = 3;

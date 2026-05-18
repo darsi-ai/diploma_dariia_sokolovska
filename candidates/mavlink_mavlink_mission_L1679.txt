@@ -1,0 +1,2 @@
+	mavlink_mission_item->command = mission_item->nav_cmd;
+	mavlink_mission_item->autocontinue = mission_item->autocontinue;

@@ -1,0 +1,32 @@
+	switch (action) {
+
+	case Action::FallbackPosCtrl: return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+
+	case Action::FallbackAltCtrl: return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+
+	case Action::FallbackStab: return vehicle_status_s::NAVIGATION_STATE_STAB;
+
+	case Action::Hold: return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+
+	case Action::RTL: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+
+	case Action::Land: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+
+	case Action::Descend: return vehicle_status_s::NAVIGATION_STATE_DESCEND;
+
+	case Action::Terminate:
+	case Action::Disarm:
+	case Action::None:
+	case Action::Warn:
+	case Action::Count:
+		break;
+	}
+
+	return user_intended_mode;
+}
+
+bool FailsafeBase::modeCanRun(const failsafe_flags_s &status_flags, uint8_t mode)
+{
+	uint32_t mode_mask = 1u << mode;
+	// mode_req_wind_and_flight_time_compliance: does not need to be handled here (these are separate failsafe triggers)
+	// mode_req_manual_control: is handled separately

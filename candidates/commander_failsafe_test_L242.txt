@@ -1,0 +1,2 @@
+	// Test termination
+	failsafe_flags.fd_motor_failure = true;

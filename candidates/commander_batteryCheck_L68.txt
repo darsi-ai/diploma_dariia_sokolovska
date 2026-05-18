@@ -1,0 +1,2 @@
+	case battery_fault_reason_t::failed_to_arm: return "failed to arm";
+

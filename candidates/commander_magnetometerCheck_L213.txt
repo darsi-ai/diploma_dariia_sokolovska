@@ -1,0 +1,35 @@
+		if (_estimator_status_sub[i].copy(&estimator_status) && estimator_status.mag_device_id == device_id) {
+			mag_fault = estimator_status.control_mode_flags & (1 << estimator_status_s::CS_MAG_FAULT);
+			is_used_by_nav = true;
+			break;
+		}
+	}
+
+	return is_used_by_nav;
+}
+
+
+void MagnetometerChecks::consistencyCheck(const Context &context, Report &reporter)
+{
+	if (_param_com_arm_mag_ang.get() < 0) { // Check disabled
+		return;
+	}
+
+	sensor_preflight_mag_s sensors;
+
+	if (!_sensor_preflight_mag_sub.copy(&sensors)) {
+		// can happen if not advertised (yet)
+		return;
+	}
+
+	// Use the difference between sensors to detect a bad calibration, orientation or magnetic interference.
+	// If a single sensor is fitted, the value being checked will be zero so this check will always pass.
+	if (sensors.mag_inconsistency_angle > math::radians<float>(_param_com_arm_mag_ang.get())) {
+		int inconsistency_angle_deg = static_cast<int>(math::degrees<float>(sensors.mag_inconsistency_angle));
+		/* EVENT
+		 * @description
+		 * Check the compass orientations and recalibrate.
+		 *
+		 * <profile name="dev">
+		 * This check can be configured via <param>COM_ARM_MAG_ANG</param> parameter.
+		 * </profile>

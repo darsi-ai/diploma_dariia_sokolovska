@@ -1,0 +1,3 @@
+	} else {
+		// speed up parameter loading via UDP or USB: try to send 20 at once
+		max_num_to_send = 20;

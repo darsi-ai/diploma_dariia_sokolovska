@@ -1,0 +1,9 @@
+	if (cfsetispeed(&uart_config, speed) < 0 || cfsetospeed(&uart_config, speed) < 0) {
+		PX4_ERR("ERR SET BAUD %s: %d\n", uart_name, termios_state);
+		::close(_uart_fd);
+		return -1;
+	}
+
+#if defined(__PX4_LINUX) || defined(__PX4_DARWIN) || defined(__PX4_CYGWIN)
+	/* Put in raw mode */
+	cfmakeraw(&uart_config);

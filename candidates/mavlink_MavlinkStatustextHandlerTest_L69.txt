@@ -1,0 +1,60 @@
+{
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	statustext1.severity = some_severity;
+	strncpy(statustext1.text, some_text, sizeof(statustext1.text));
+
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_TRUE(handler.should_publish_current(statustext1, some_time));
+	EXPECT_STREQ(handler.log_message().text, some_text);
+	EXPECT_EQ(handler.log_message().severity, some_severity);
+	EXPECT_EQ(handler.log_message().timestamp, some_time);
+
+	mavlink_statustext_t statustext2 {};
+	statustext2.severity = some_other_severity;
+	strncpy(statustext2.text, some_other_text, sizeof(statustext2.text));
+
+	EXPECT_FALSE(handler.should_publish_previous(statustext2));
+	EXPECT_TRUE(handler.should_publish_current(statustext2, some_other_time));
+	EXPECT_STREQ(handler.log_message().text, some_other_text);
+	EXPECT_EQ(handler.log_message().severity, some_other_severity);
+	EXPECT_EQ(handler.log_message().timestamp, some_other_time);
+}
+
+TEST(MavlinkStatustextHandler, Multiple)
+{
+	MavlinkStatustextHandler handler;
+
+	mavlink_statustext_t statustext1 {};
+	mavlink_statustext_t statustext2 {};
+
+	statustext1.severity = some_severity;
+	statustext2.severity = some_severity;
+
+	statustext1.id = 1;
+	statustext2.id = 1;
+
+	statustext1.chunk_seq = 0;
+	statustext2.chunk_seq = 1;
+
+	memset(statustext1.text, 'a', 50);
+	memset(statustext2.text, 'b', 25);
+
+	// The first message is just stored, we don't have to publish yet.
+	EXPECT_FALSE(handler.should_publish_previous(statustext1));
+	EXPECT_FALSE(handler.should_publish_current(statustext1, some_time));
+	// Now we should be able to publish.
+	EXPECT_FALSE(handler.should_publish_previous(statustext2));
+	EXPECT_TRUE(handler.should_publish_current(statustext2, some_other_time));
+
+	// Check overall text length.
+	EXPECT_EQ(strlen(handler.log_message().text), 75);
+
+	// And a few samples.
+	EXPECT_EQ(handler.log_message().text[30], 'a');
+	EXPECT_EQ(handler.log_message().text[60], 'b');
+
+	EXPECT_EQ(handler.log_message().severity, some_severity);
+	EXPECT_EQ(handler.log_message().timestamp, some_time);
+}

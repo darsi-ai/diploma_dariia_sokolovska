@@ -1,0 +1,2 @@
+		added_mode_nav_state = modes.addExternalMode(mode);
+		EXPECT_TRUE(modeValid(added_mode_nav_state));

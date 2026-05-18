@@ -1,0 +1,2 @@
+						_mode = (MAVLINK_MODE)mode;
+

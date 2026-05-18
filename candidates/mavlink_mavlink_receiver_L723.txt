@@ -1,0 +1,33 @@
+		} else {
+			result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_UNSUPPORTED;
+		}
+
+		send_ack = true;
+
+	} else {
+		send_ack = false;
+
+		if (msg->sysid == mavlink_system.sysid && msg->compid == mavlink_system.compid) {
+			PX4_WARN("ignoring CMD with same SYS/COMP (%" PRIu8 "/%" PRIu8 ") ID", mavlink_system.sysid, mavlink_system.compid);
+			return;
+		}
+
+		if (cmd_mavlink.command == MAV_CMD_LOGGING_START) {
+			// check that we have enough bandwidth available: this is given by the configured logger topics
+			// and rates. The 5000 is somewhat arbitrary, but makes sure that we cannot enable log streaming
+			// on a radio link
+			if (_mavlink.get_data_rate() < 5000) {
+				send_ack = true;
+				result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_DENIED;
+				_mavlink.send_statustext_critical("Not enough bandwidth to enable log streaming\t");
+				events::send<uint32_t>(events::ID("mavlink_log_not_enough_bw"), events::Log::Error,
+						       "Not enough bandwidth to enable log streaming ({1} \\< 5000)", _mavlink.get_data_rate());
+
+			} else {
+				// we already instanciate the streaming object, because at this point we know on which
+				// mavlink channel streaming was requested. But in fact it's possible that the logger is
+				// not even running. The main mavlink thread takes care of this by waiting for an ack
+				// from the logger.
+				_mavlink.try_start_ulog_streaming(msg->sysid, msg->compid);
+			}
+		}

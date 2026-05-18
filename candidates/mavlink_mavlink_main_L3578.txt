@@ -1,0 +1,2 @@
+	PRINT_MODULE_USAGE_COMMAND_DESCR("stream", "Configure the sending rate of a stream for a running instance");
+#if defined(CONFIG_NET) || defined(__PX4_POSIX)

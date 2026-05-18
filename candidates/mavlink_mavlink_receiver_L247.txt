@@ -1,0 +1,2 @@
+	bool evaluate_target_ok(int command, int target_system, int target_component);
+

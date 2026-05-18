@@ -1,0 +1,4 @@
+			if (cur_mode.replaces_nav_state != Modes::Mode::REPLACES_NAV_STATE_NONE) {
+				// Hide the internal mode if it's replaced
+				can_set_nav_state_mask &= ~(1u << cur_mode.replaces_nav_state);
+			}

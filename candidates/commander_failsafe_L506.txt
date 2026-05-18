@@ -1,0 +1,39 @@
+{
+	switch (user_intended_mode) {
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION:
+		return exception_mask_parameter & (int)LinkLossExceptionBits::Mission;
+
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL:
+	case vehicle_status_s::NAVIGATION_STATE_DESCEND:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET:
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND:
+	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
+		return exception_mask_parameter & (int)LinkLossExceptionBits::AutoModes;
+
+	case vehicle_status_s::NAVIGATION_STATE_OFFBOARD:
+		return exception_mask_parameter & (int)LinkLossExceptionBits::Offboard;
+
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7:
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8:
+		return exception_mask_parameter & (int)LinkLossExceptionBits::ExternalMode;
+
+	case vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE:
+		return exception_mask_parameter & (int)LinkLossExceptionBits::AltitudeCruise;
+
+	default:
+		return false;
+	}
+}
+
+void Failsafe::checkStateAndMode(const hrt_abstime &time_us, const State &state,
+				 const failsafe_flags_s &status_flags)

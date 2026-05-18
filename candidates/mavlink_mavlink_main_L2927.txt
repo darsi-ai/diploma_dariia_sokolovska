@@ -1,0 +1,18 @@
+				else if (get_protocol() == Protocol::UDP) {
+					PX4_DEBUG("stream %s on UDP port %hu disabled", _subscribe_to_stream, _network_port);
+				}
+
+#endif // MAVLINK_UDP
+			}
+
+		} else {
+			if (get_protocol() == Protocol::SERIAL) {
+				PX4_ERR("stream %s on device %s not found", _subscribe_to_stream, _device_name);
+
+			}
+
+#if defined(MAVLINK_UDP)
+
+			else if (get_protocol() == Protocol::UDP) {
+				PX4_ERR("stream %s on UDP port %hu not found", _subscribe_to_stream, _network_port);
+			}

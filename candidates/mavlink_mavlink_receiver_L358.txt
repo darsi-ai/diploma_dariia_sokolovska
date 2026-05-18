@@ -1,0 +1,2 @@
+	 * Only decode hil messages in HIL mode.
+	 *

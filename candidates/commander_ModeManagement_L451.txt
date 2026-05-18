@@ -1,0 +1,2 @@
+							     "External mode is unresponsive, falling back to internal");
+					}

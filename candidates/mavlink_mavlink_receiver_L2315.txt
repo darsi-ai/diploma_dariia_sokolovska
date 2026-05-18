@@ -1,0 +1,2 @@
+		rate = 0.f; // stop the stream
+

@@ -1,0 +1,14 @@
+		} else {
+			printRejectMode(vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF);
+			cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+		}
+
+#else
+		cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_UNSUPPORTED;
+#endif // CONFIG_MODE_NAVIGATOR_VTOL_TAKEOFF
+		break;
+
+	case vehicle_command_s::VEHICLE_CMD_NAV_LAND: {
+			// Special handling for LAND mode: always allow to switch into it such that if used
+			// as emergency mode it is always available. When triggering it the user generally wants
+			// the vehicle to descend immediately, and if that means to switch to DESCEND it is fine.

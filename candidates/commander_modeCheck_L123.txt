@@ -1,0 +1,2 @@
+		 * The available positioning data is not sufficient to execute the selected mode.
+		 */

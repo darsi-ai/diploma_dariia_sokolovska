@@ -1,0 +1,7 @@
+			} else if (!gps_has_fix[i]) {
+				/* EVENT
+				 * @description
+				 * <profile name="dev">
+				 * Configure the minimum required GPS count with <param>SYS_HAS_NUM_GNSS</param>.
+				 * Configure the failsafe action with <param>COM_GNSSLOSS_ACT</param>.
+				 * </profile>

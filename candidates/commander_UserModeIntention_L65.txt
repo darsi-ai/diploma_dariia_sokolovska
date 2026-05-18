@@ -1,0 +1,2 @@
+				// We still use the original user intended mode. The failsafe state machine will then set the
+				// fallback and once can_run becomes true, the actual user intended mode will be selected.

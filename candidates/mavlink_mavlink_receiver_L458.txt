@@ -1,0 +1,33 @@
+{
+	switch (msg.msgid) {
+	case MAVLINK_MSG_ID_HEARTBEAT:
+		handle_message_heartbeat(&msg);
+		break;
+
+	case MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_ATTITUDE:
+		handle_message_gimbal_manager_set_attitude(&msg);
+		break;
+
+	case MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_MANUAL_CONTROL:
+		handle_message_gimbal_manager_set_manual_control(&msg);
+		break;
+
+	case MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION:
+		handle_message_gimbal_device_information(&msg);
+		break;
+
+	case MAVLINK_MSG_ID_GIMBAL_DEVICE_ATTITUDE_STATUS:
+		handle_message_gimbal_device_attitude_status(&msg);
+		break;
+	}
+
+	// Message forwarding
+	_mavlink.handle_message(&msg);
+}
+
+bool
+MavlinkReceiver::evaluate_target_ok(int command, int target_system, int target_component)
+{
+	return ((target_system == 0) || (target_system == mavlink_system.sysid))
+	       && ((target_component == mavlink_system.compid) || (target_component == MAV_COMP_ID_ALL));
+}

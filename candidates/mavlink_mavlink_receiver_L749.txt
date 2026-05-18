@@ -1,0 +1,8 @@
+		if (!send_ack) {
+			_cmd_pub.publish(vehicle_command);
+		}
+	}
+
+	if (send_ack) {
+		acknowledge(msg->sysid, msg->compid, cmd_mavlink.command, result, progress);
+	}

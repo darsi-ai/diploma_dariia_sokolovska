@@ -1,0 +1,8 @@
+	if (prev_nav_state != _vehicle_status.nav_state) {
+		_vehicle_status.nav_state_timestamp = hrt_absolute_time();
+	}
+
+	_mode_management.updateActiveConfigOverrides(_vehicle_status.nav_state, _config_overrides);
+
+	// Apply failsafe deferring & get the current state
+	_failsafe.deferFailsafes(_config_overrides.defer_failsafes, _config_overrides.defer_failsafes_timeout_s);

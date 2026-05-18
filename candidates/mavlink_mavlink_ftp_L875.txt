@@ -1,0 +1,22 @@
+{
+	_constructPath(_work_buffer1, _work_buffer1_len, _data_as_cstring(payload));
+
+	if (!_validatePath(_work_buffer1) || !_validatePathIsWritable(_work_buffer1)) {
+		return kErrFailFileProtected;
+	}
+
+	PX4_DEBUG("create dir %s", _work_buffer1);
+
+	if (mkdir(_work_buffer1, S_IRWXU | S_IRWXG | S_IRWXO) == 0) {
+		payload->size = 0;
+		return kErrNone;
+
+	} else {
+		_our_errno = errno;
+		PX4_ERR("create dir failed: %s", strerror(_our_errno));
+		return kErrFailErrno;
+	}
+}
+
+/// @brief Responds to a CalcFileCRC32 command
+MavlinkFTP::ErrorCode

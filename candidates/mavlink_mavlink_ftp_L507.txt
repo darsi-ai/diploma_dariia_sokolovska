@@ -1,0 +1,17 @@
+	if (stat(_work_buffer1, &st) != 0) {
+		// fail only if requested open for read
+		if (oflag & O_RDONLY) {
+			_our_errno = errno;
+			PX4_ERR("stat failed read: %s", strerror(_our_errno));
+			return kErrFailErrno;
+
+		} else {
+			st.st_size = 0;
+		}
+	}
+
+	fileSize = st.st_size;
+
+	PX4_DEBUG("open: %s", _work_buffer1);
+	// Set mode to 666 incase oflag has O_CREAT
+	int fd = ::open(_work_buffer1, oflag, PX4_O_MODE_666);

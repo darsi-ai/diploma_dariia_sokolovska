@@ -1,0 +1,39 @@
+	for (int j = 0; j < 2; ++j) { // test with and without additional report arguments
+		const bool with_arg = j == 0;
+
+		for (int i = 0; i < 3; ++i) { // repeat same report: we expect reporting only the first time
+			reporter.reset();
+
+			if (with_arg) {
+				reporter.armingCheckFailure<uint16_t>(NavModes::All, health_component_t::remote_control,
+								      events::ID("arming_test_reporting_fail1"), events::Log::Warning, "", 4938);
+
+			} else {
+				reporter.armingCheckFailure(NavModes::PositionControl, health_component_t::remote_control,
+							    events::ID("arming_test_reporting_fail2"), events::Log::Warning, "");
+			}
+
+			reporter.finalize();
+			reporter.report(false);
+			ASSERT_FALSE(reporter.canArm(vehicle_status_s::NAVIGATION_STATE_POSCTL));
+
+			if (i == 0) {
+				ASSERT_TRUE(event_sub.update(&event));
+				ASSERT_EQ(event.id, events::ID("commander_arming_check_summary"));
+				ASSERT_TRUE(event_sub.update(&event));
+
+				if (with_arg) {
+					ASSERT_EQ(event.id, events::ID("arming_test_reporting_fail1"));
+
+				} else {
+					ASSERT_EQ(event.id, events::ID("arming_test_reporting_fail2"));
+				}
+
+				ASSERT_TRUE(event_sub.update(&event));
+				ASSERT_EQ(event.id, events::ID("commander_health_summary"));
+
+			} else {
+				ASSERT_FALSE(event_sub.updated());
+			}
+		}
+	}

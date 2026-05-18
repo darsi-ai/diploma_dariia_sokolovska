@@ -1,0 +1,15 @@
+	switch (_failsafe.selectedAction()) {
+	case FailsafeBase::Action::Disarm:
+		disarm(arm_disarm_reason_t::failsafe, true);
+		break;
+
+	case FailsafeBase::Action::Terminate:
+		_vehicle_status.nav_state = _vehicle_status.NAVIGATION_STATE_TERMINATION;
+		break;
+
+	default:
+		break;
+	}
+
+	_vehicle_status.failsafe = _failsafe.inFailsafe();
+	_vehicle_status.failsafe_and_user_took_over = _failsafe.userTakeoverActive();

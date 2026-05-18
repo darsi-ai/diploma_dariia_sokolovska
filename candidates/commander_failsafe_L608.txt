@@ -1,0 +1,6 @@
+	if (state.armed && _param_com_arm_odid.get() >= int32_t(open_drone_id_failsafe_mode::Return_mode)) {
+		CHECK_FAILSAFE(status_flags, remote_id_unhealthy, fromOdidFailActParam(_param_com_arm_odid.get()));
+	}
+
+	// Battery low failsafe
+	// If battery was low and arming was allowed through COM_ARM_BAT_MIN, don't failsafe immediately for the current low battery warning state

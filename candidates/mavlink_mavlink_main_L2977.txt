@@ -1,0 +1,3 @@
+			} else {
+				/* reset to factory defaults */
+				fprintf(fs, "AT&F\r\n");

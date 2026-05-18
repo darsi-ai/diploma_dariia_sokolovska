@@ -1,0 +1,2 @@
+					// Rovers: center stick = stop, safe to arm near center
+					throttle_safe = (fabsf(_last_manual_throttle) < 0.2f);

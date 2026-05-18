@@ -1,0 +1,80 @@
+transition_result_t Commander::arm(arm_disarm_reason_t calling_reason, bool run_preflight_checks)
+{
+	if (isArmed()) {
+		return TRANSITION_NOT_CHANGED;
+	}
+
+	if (_vehicle_status.calibration_enabled
+	    || _vehicle_status.rc_calibration_in_progress
+	    || _actuator_armed.in_esc_calibration_mode) {
+
+		mavlink_log_critical(&_mavlink_log_pub, "Arming denied: calibrating\t");
+		events::send(events::ID("commander_arm_denied_calibrating"), {events::Log::Critical, events::LogInternal::Info},
+			     "Arming denied: calibrating");
+		tune_negative(true);
+		return TRANSITION_DENIED;
+	}
+
+	// allow a grace period for re-arming: preflight checks don't need to pass during that time, for example for accidental in-air disarming
+	if (calling_reason == arm_disarm_reason_t::rc_switch
+	    && ((_last_disarmed_timestamp != 0) && (hrt_elapsed_time(&_last_disarmed_timestamp) < 5_s))) {
+
+		run_preflight_checks = false;
+	}
+
+	if (run_preflight_checks) {
+		if (_vehicle_control_mode.flag_control_manual_enabled) {
+
+			if (!_failsafe_flags.manual_control_signal_lost) {
+				bool throttle_safe;
+
+				if (_vehicle_status.vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
+					// Rovers: center stick = stop, safe to arm near center
+					throttle_safe = (fabsf(_last_manual_throttle) < 0.2f);
+
+				} else if (_vehicle_control_mode.flag_control_climb_rate_enabled) {
+					// Climb-rate modes (AltCtl, PosCtl, etc.): center = hover, safe at or below center
+					throttle_safe = (_last_manual_throttle <= 0.2f);
+
+				} else {
+					// Manual/Stab/Acro on MC/FW: bottom = no thrust, safe at bottom
+					throttle_safe = (_last_manual_throttle < -0.8f);
+				}
+
+				if (!throttle_safe) {
+					mavlink_log_critical(&_mavlink_log_pub, "Arming denied: throttle not in safe position\t");
+					events::send(events::ID("commander_arm_denied_throttle_unsafe"), {events::Log::Critical, events::LogInternal::Info},
+						     "Arming denied: throttle not in safe position");
+					tune_negative(true);
+					return TRANSITION_DENIED;
+				}
+			}
+		}
+
+		_health_and_arming_checks.update(false, true);
+
+		if (!_health_and_arming_checks.canArm(_vehicle_status.nav_state)) {
+			tune_negative(true);
+			mavlink_log_critical(&_mavlink_log_pub, "Arming denied: Resolve system health failures first\t");
+			events::send(events::ID("commander_arm_denied_resolve_failures"), {events::Log::Critical, events::LogInternal::Info},
+				     "Arming denied: Resolve system health failures first");
+			return TRANSITION_DENIED;
+		}
+	}
+
+	_vehicle_status.armed_time = hrt_absolute_time();
+	_vehicle_status.arming_state = vehicle_status_s::ARMING_STATE_ARMED;
+	_vehicle_status.latest_arming_reason = (uint8_t)calling_reason;
+
+	mavlink_log_info(&_mavlink_log_pub, "Armed by %s\t", arm_disarm_reason_str(calling_reason));
+	events::send<events::px4::enums::arm_disarm_reason_t>(events::ID("commander_armed_by"), events::Log::Info,
+			"Armed by {1}", calling_reason);
+
+	if (_param_com_home_en.get() && !_mission_in_progress && !_config_overrides.disable_auto_set_home) {
+		_home_position.setHomePosition();
+	}
+
+	_status_changed = true;
+
+	return TRANSITION_CHANGED;
+}

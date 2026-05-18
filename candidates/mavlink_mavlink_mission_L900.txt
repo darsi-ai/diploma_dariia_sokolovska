@@ -1,0 +1,5 @@
+		} else {
+			_mavlink.send_statustext_critical("WPM: REJ. CMD: partner id mismatch\t");
+			events::send(events::ID("mavlink_mission_partner_id_mismatch2"), events::Log::Error,
+				     "Rejecting mission request command, component or system ID mismatch");
+

@@ -1,0 +1,2 @@
+		ReturnOrLand = 3    // Return mode at critically low level, Land mode at current position if reaching dangerously low levels
+	};

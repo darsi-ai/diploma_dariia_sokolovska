@@ -1,0 +1,2 @@
+	return mode >= Modes::FIRST_EXTERNAL_NAV_STATE && mode <= Modes::LAST_EXTERNAL_NAV_STATE;
+}

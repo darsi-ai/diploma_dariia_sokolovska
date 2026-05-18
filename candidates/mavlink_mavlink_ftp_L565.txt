@@ -1,0 +1,37 @@
+{
+	if (payload->session != 0 || _session_info.fd < 0) {
+		return kErrInvalidSession;
+	}
+
+	PX4_DEBUG("FTP: read offset:%ld" PRIu32, payload->offset);
+
+	// We have to test seek past EOF ourselves, lseek will allow seek past EOF
+	if (payload->offset >= _session_info.file_size) {
+		PX4_WARN("request past EOF");
+		return kErrEOF;
+	}
+
+	PX4_DEBUG("lseek with offset: %ld", payload->offset);
+
+	if (lseek(_session_info.fd, payload->offset, SEEK_SET) < 0) {
+		_our_errno = errno;
+		PX4_ERR("seek fail: %s", strerror(_our_errno));
+		return kErrFailErrno;
+	}
+
+	int bytes_read = ::read(_session_info.fd, &payload->data[0], payload->size);
+
+	if (bytes_read < 0) {
+		// Negative return indicates error other than eof
+		_our_errno = errno;
+		PX4_ERR("read fail %d, %s", bytes_read, strerror(_our_errno));
+		return kErrFailErrno;
+	}
+
+	payload->size = bytes_read;
+
+	return kErrNone;
+}
+
+/// @brief Responds to a Stream command
+MavlinkFTP::ErrorCode

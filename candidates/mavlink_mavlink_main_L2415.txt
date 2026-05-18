@@ -1,0 +1,22 @@
+		if (!_message_buffer.allocate(2 * sizeof(mavlink_message_t) + 1)) {
+			PX4_ERR("msg buf alloc fail");
+			return PX4_ERROR;
+		}
+	}
+
+	/* Activate sending the data by default (for the IRIDIUM mode it will be disabled after the first round of packages is sent)*/
+	_transmitting_enabled = true;
+	_transmitting_enabled_commanded = true;
+
+	if (_mode == MAVLINK_MODE_IRIDIUM) {
+		_transmitting_enabled_commanded = false;
+	}
+
+	/* add default streams depending on mode */
+	if (_mode != MAVLINK_MODE_IRIDIUM) {
+
+		/* HEARTBEAT is constant rate stream, rate never adjusted */
+		configure_stream("HEARTBEAT", 1.0f);
+
+		/* STATUSTEXT stream */
+		configure_stream("STATUSTEXT", 20.0f);

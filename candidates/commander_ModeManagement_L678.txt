@@ -1,0 +1,26 @@
+	for (int i = Modes::FIRST_EXTERNAL_NAV_STATE; i <= Modes::LAST_EXTERNAL_NAV_STATE; ++i) {
+		if (_modes.valid(i)) {
+			valid_nav_state_mask |= 1u << i;
+			can_set_nav_state_mask |= 1u << i;
+			const Modes::Mode &cur_mode = _modes.mode(i);
+
+			if (cur_mode.replaces_nav_state != Modes::Mode::REPLACES_NAV_STATE_NONE) {
+				// Hide the internal mode if it's replaced
+				can_set_nav_state_mask &= ~(1u << cur_mode.replaces_nav_state);
+			}
+
+		} else {
+			// Still set the mode as valid but not as selectable. This is because an external mode could still
+			// be selected via RC when not yet running, so we make sure to display some mode label indicating it's not
+			// available.
+			valid_nav_state_mask |= 1u << i;
+		}
+	}
+}
+
+bool ModeManagement::currentModeAcceptsOffboardSetpoints(uint8_t nav_state) const
+{
+	// OFFBOARD mode always accepts offboard setpoints
+	if (nav_state == vehicle_status_s::NAVIGATION_STATE_OFFBOARD) {
+		return true;
+	}

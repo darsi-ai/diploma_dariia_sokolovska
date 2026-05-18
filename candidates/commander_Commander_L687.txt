@@ -1,0 +1,56 @@
+transition_result_t Commander::disarm(arm_disarm_reason_t calling_reason, bool forced)
+{
+	if (!isArmed()) {
+		return TRANSITION_NOT_CHANGED;
+	}
+
+	if (!forced) {
+		const bool landed = (_vehicle_land_detected.landed || _vehicle_land_detected.maybe_landed
+				     || is_ground_vehicle(_vehicle_status));
+		const bool mc_manual_thrust_mode = _vehicle_status.vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+						   && _vehicle_control_mode.flag_control_manual_enabled
+						   && !_vehicle_control_mode.flag_control_climb_rate_enabled;
+		const bool commanded_by_rc = (calling_reason == arm_disarm_reason_t::stick_gesture)
+					     || (calling_reason == arm_disarm_reason_t::rc_switch)
+					     || (calling_reason == arm_disarm_reason_t::rc_button);
+
+		if (!landed && !(mc_manual_thrust_mode && commanded_by_rc)) {
+			if (calling_reason != arm_disarm_reason_t::stick_gesture) {
+				mavlink_log_critical(&_mavlink_log_pub, "Disarming denied: not landed\t");
+				events::send(events::ID("commander_disarm_denied_not_landed"),
+				{events::Log::Critical, events::LogInternal::Info},
+				"Disarming denied: not landed");
+			}
+
+			return TRANSITION_DENIED;
+		}
+	}
+
+	_vehicle_status.armed_time = 0;
+	_vehicle_status.arming_state = vehicle_status_s::ARMING_STATE_DISARMED;
+	_vehicle_status.latest_disarming_reason = (uint8_t)calling_reason;
+	_vehicle_status.takeoff_time = 0;
+
+	_have_taken_off_since_arming = false;
+
+	_last_disarmed_timestamp = hrt_absolute_time();
+
+	_user_mode_intention.onDisarm();
+
+	mavlink_log_info(&_mavlink_log_pub, "Disarmed by %s\t", arm_disarm_reason_str(calling_reason));
+	events::send<events::px4::enums::arm_disarm_reason_t>(events::ID("commander_disarmed_by"), events::Log::Info,
+			"Disarmed by {1}", calling_reason);
+
+	if (_param_com_force_safety.get()) {
+		_safety.activateSafety();
+	}
+
+	// update flight uuid
+	const int32_t flight_uuid = _param_com_flight_uuid.get() + 1;
+	_param_com_flight_uuid.set(flight_uuid);
+	_param_com_flight_uuid.commit_no_notification();
+
+	_status_changed = true;
+
+	return TRANSITION_CHANGED;
+}

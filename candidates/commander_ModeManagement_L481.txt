@@ -1,0 +1,15 @@
+	if (_modes.valid(nav_state)) {
+		const Modes::Mode &mode = _modes.mode(nav_state);
+
+		if (mode.replaces_nav_state != Modes::Mode::REPLACES_NAV_STATE_NONE) {
+			return mode.replaces_nav_state;
+		}
+	}
+
+	return nav_state;
+}
+
+uint8_t ModeManagement::onDisarm(uint8_t stored_nav_state)
+{
+	// Switch to the owned mode if an executor is active
+	uint8_t returned_nav_state = stored_nav_state;

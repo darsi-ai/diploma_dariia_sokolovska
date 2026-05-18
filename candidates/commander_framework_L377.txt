@@ -1,0 +1,3 @@
+	} else if (last_state_failure && !cur_state_failure) {
+		// Invalid -> valid transition: remove action
+		bool found = false;

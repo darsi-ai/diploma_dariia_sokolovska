@@ -1,0 +1,8 @@
+	union {
+		CrcMissionItem_t item;
+		uint8_t raw[sizeof(CrcMissionItem_t)];
+	} u;
+
+	u.item.frame = mission_item.frame;
+	u.item.command = mission_item.command;
+	u.item.autocontinue = mission_item.autocontinue;

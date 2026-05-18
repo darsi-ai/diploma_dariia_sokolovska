@@ -1,0 +1,33 @@
+			if (ret == 0) {
+				_mavlink_shell = shell;
+
+			} else {
+				PX4_ERR("Failed to start shell (%i)", ret);
+				delete shell;
+			}
+		}
+	}
+
+	return _mavlink_shell;
+}
+
+void
+Mavlink::close_shell()
+{
+	if (_mavlink_shell) {
+		delete _mavlink_shell;
+		_mavlink_shell = nullptr;
+	}
+}
+
+void
+Mavlink::update_rate_mult()
+{
+	float const_rate = 0.0f;
+	float rate = 0.0f;
+
+	/* scale down rates if their theoretical bandwidth is exceeding the link bandwidth */
+	for (const auto &stream : _streams) {
+		if (stream->const_rate()) {
+			const_rate += (stream->get_interval() > 0) ? stream->get_size_avg() * 1000000.0f / stream->get_interval() : 0;
+

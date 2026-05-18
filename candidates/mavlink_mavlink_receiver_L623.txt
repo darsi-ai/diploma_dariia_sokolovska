@@ -1,0 +1,10 @@
+	} else if (cmd_mavlink.command == MAV_CMD_DO_AUTOTUNE_ENABLE) {
+
+		bool has_module = true;
+		autotune_attitude_control_status_s status{};
+		_autotune_attitude_control_status_sub.copy(&status);
+
+		// publish vehicle command once if:
+		// - autotune is not already running
+		// - we are not in transition
+		// - autotune module is enabled

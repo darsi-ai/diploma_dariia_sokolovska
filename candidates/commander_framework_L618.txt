@@ -1,0 +1,2 @@
+	// UX improvement (this is optional for safety): change failsafe to a warning in certain situations.
+	// If already landing, do not go into RTL

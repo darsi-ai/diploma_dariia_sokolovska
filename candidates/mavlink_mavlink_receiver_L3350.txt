@@ -1,0 +1,12 @@
+						switch (_mavlink.get_mode()) {
+						case Mavlink::MAVLINK_MODE::MAVLINK_MODE_GIMBAL:
+							handle_messages_in_gimbal_mode(msg);
+							break;
+
+						default:
+							handle_message(&msg);
+							break;
+						}
+
+						_mavlink.set_has_received_messages(true); // Received first message, unlock wait to transmit '-w' command-line flag
+						update_rx_stats(msg);

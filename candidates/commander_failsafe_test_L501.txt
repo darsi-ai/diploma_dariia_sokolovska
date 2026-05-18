@@ -1,0 +1,2 @@
+	// Clear flag (the failsafe action only clears on mode switch, but we still expect it to clear as it's being deferred)
+	failsafe_flags.manual_control_signal_lost = false;

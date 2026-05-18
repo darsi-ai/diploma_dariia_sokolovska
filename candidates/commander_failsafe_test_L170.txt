@@ -1,0 +1,2 @@
+	// Mission failure -> no failsafe
+	time += 10_ms;

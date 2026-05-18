@@ -1,0 +1,7 @@
+	if (valid(nav_state) && strncmp(name, _modes[nav_state - FIRST_EXTERNAL_NAV_STATE].name, sizeof(Mode::name)) == 0) {
+		_modes[nav_state - FIRST_EXTERNAL_NAV_STATE].valid = false;
+		return true;
+	}
+
+	PX4_ERR("trying to remove invalid mode %s", name);
+	return false;

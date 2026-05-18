@@ -1,0 +1,8 @@
+			if (_vehicle_command_mode_executor_sub.get_last_generation() != last_generation + 1) {
+				PX4_ERR("vehicle_command from executor lost, generation %u -> %u", last_generation,
+					_vehicle_command_mode_executor_sub.get_last_generation());
+			}
+
+			// For commands from mode executors, we check if it is in charge and then publish it on the official
+			// command topic
+			const int mode_executor_in_charge = _mode_management.modeExecutorInCharge();

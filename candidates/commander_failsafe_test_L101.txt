@@ -1,0 +1,15 @@
+	{
+		param_control_autosave(false);
+		param_t param = param_handle(px4::params::COM_FAIL_ACT_T);
+
+		float hold_delay = 5.f;
+		param_set(param, &hold_delay);
+	}
+
+};
+
+
+TEST_F(FailsafeTest, general)
+{
+	FailsafeTester failsafe(nullptr);
+

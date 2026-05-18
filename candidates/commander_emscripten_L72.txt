@@ -1,0 +1,10 @@
+	{
+		ModuleParams::updateParams();
+	}
+
+	FailsafeBase &current() { return _failsafe; }
+	std::map<param_t, Param> &params() { return _used_params; }
+private:
+	std::map<param_t, Param> _used_params;
+	Failsafe _failsafe{this};
+};

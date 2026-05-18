@@ -1,0 +1,2 @@
+					_modes.removeExternalMode(i, mode.name);
+				}

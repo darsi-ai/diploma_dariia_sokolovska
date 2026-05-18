@@ -1,0 +1,102 @@
+			} else {
+				printRejectMode(vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER);
+				cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+			}
+
+		}
+		break;
+
+	case vehicle_command_s::VEHICLE_CMD_DO_SET_MODE: {
+			uint8_t base_mode = (uint8_t)cmd.param1;
+			uint8_t custom_main_mode = (uint8_t)cmd.param2;
+			uint8_t custom_sub_mode = (uint8_t)cmd.param3;
+
+			uint8_t desired_nav_state = vehicle_status_s::NAVIGATION_STATE_MAX;
+			transition_result_t main_ret = TRANSITION_NOT_CHANGED;
+
+			if (base_mode & VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED) {
+				/* use autopilot-specific mode */
+				if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_MANUAL) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_MANUAL;
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_ALTCTL) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_ALTITUDE_CRUISE) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE;
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_POSCTL) {
+					switch (custom_sub_mode) {
+					default:
+					case PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL:
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_POSCTL;
+						break;
+
+					case PX4_CUSTOM_SUB_MODE_POSCTL_SLOW:
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW;
+						break;
+					}
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_AUTO) {
+					if (custom_sub_mode > 0) {
+
+						switch (custom_sub_mode) {
+						case PX4_CUSTOM_SUB_MODE_AUTO_LOITER:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_MISSION:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_RTL:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_LAND:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND;
+							break;
+
+						case PX4_CUSTOM_SUB_MODE_EXTERNAL1...PX4_CUSTOM_SUB_MODE_EXTERNAL8:
+							desired_nav_state = vehicle_status_s::NAVIGATION_STATE_EXTERNAL1 + (custom_sub_mode - PX4_CUSTOM_SUB_MODE_EXTERNAL1);
+							break;
+
+						default:
+							main_ret = TRANSITION_DENIED;
+							mavlink_log_critical(&_mavlink_log_pub, "Unsupported auto mode\t");
+							events::send(events::ID("commander_unsupported_auto_mode"), events::Log::Error,
+								     "Unsupported auto mode");
+							break;
+						}
+
+					} else {
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+					}
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_ACRO) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_ACRO;
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_STABILIZED) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_STAB;
+
+				} else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_OFFBOARD) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_OFFBOARD;
+
+				} else {
+					main_ret = TRANSITION_DENIED;
+					mavlink_log_critical(&_mavlink_log_pub, "Unsupported main mode\t");
+					events::send(events::ID("commander_unsupported_main_mode"), events::Log::Error,
+						     "Unsupported main mode");
+				}

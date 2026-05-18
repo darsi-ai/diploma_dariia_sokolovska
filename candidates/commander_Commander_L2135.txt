@@ -1,0 +1,3 @@
+			} else if (_vehicle_status.nav_state == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION) {
+				// Transition to loiter when the mission is cleared and/or finished, and we are still in mission mode.
+

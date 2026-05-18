@@ -1,0 +1,2 @@
+	float			_subscribe_to_stream_rate{0.0f};  ///< rate of stream to subscribe to (0=disable, -1=unlimited, -2=default)
+	bool			_udp_initialised{false};

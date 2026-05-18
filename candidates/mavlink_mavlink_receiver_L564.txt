@@ -1,0 +1,2 @@
+				 cmd_mavlink.command, msg->sysid, msg->compid, cmd_mavlink.target_system, cmd_mavlink.target_component);
+		}

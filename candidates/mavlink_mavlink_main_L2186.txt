@@ -1,0 +1,62 @@
+				if (px4_get_parameter_value(myoptarg, mode) == 0) {
+					if (mode >= 0 && mode < (int)MAVLINK_MODE_COUNT) {
+						_mode = (MAVLINK_MODE)mode;
+
+					} else {
+						PX4_ERR("invalid mode");
+						err_flag = true;
+					}
+
+				} else {
+					if (strcmp(myoptarg, "custom") == 0) {
+						_mode = MAVLINK_MODE_CUSTOM;
+
+					} else if (strcmp(myoptarg, "camera") == 0) {
+						// left in here for compatibility
+						_mode = MAVLINK_MODE_ONBOARD;
+
+					} else if (strcmp(myoptarg, "onboard") == 0) {
+						_mode = MAVLINK_MODE_ONBOARD;
+
+					} else if (strcmp(myoptarg, "osd") == 0) {
+						_mode = MAVLINK_MODE_OSD;
+
+					} else if (strcmp(myoptarg, "magic") == 0) {
+						_mode = MAVLINK_MODE_MAGIC;
+
+					} else if (strcmp(myoptarg, "config") == 0) {
+						_mode = MAVLINK_MODE_CONFIG;
+
+					} else if (strcmp(myoptarg, "iridium") == 0) {
+						_mode = MAVLINK_MODE_IRIDIUM;
+						set_telemetry_status_type(telemetry_status_s::LINK_TYPE_IRIDIUM);
+
+					} else if (strcmp(myoptarg, "minimal") == 0) {
+						_mode = MAVLINK_MODE_MINIMAL;
+
+					} else if (strcmp(myoptarg, "extvision") == 0) {
+						_mode = MAVLINK_MODE_EXTVISION;
+
+					} else if (strcmp(myoptarg, "extvisionmin") == 0) {
+						_mode = MAVLINK_MODE_EXTVISIONMIN;
+
+					} else if (strcmp(myoptarg, "gimbal") == 0) {
+						_mode = MAVLINK_MODE_GIMBAL;
+
+					} else if (strcmp(myoptarg, "onboard_low_bandwidth") == 0) {
+						_mode = MAVLINK_MODE_ONBOARD_LOW_BANDWIDTH;
+
+					} else if (strcmp(myoptarg, "uavionix") == 0) {
+						_mode = MAVLINK_MODE_UAVIONIX;
+
+					} else if (strcmp(myoptarg, "low_bandwidth") == 0) {
+						_mode = MAVLINK_MODE_LOW_BANDWIDTH;
+
+					} else if (strcmp(myoptarg, "distance_sensor") == 0) {
+						_mode = MAVLINK_MODE_DISTANCE_SENSOR;
+
+					} else {
+						PX4_ERR("invalid mode");
+						err_flag = true;
+					}
+				}

@@ -1,0 +1,13 @@
+	if (!strcmp(argv[0], "poweroff")) {
+
+		bool ret = send_vehicle_command(vehicle_command_s::VEHICLE_CMD_PREFLIGHT_REBOOT_SHUTDOWN,
+						2.0f);
+
+		return (ret ? 0 : 1);
+	}
+
+
+#endif
+
+	return print_usage("unknown command");
+}

@@ -1,0 +1,15 @@
+					if (stream->get_id() == MAVLINK_MSG_ID_HEARTBEAT) {
+						_first_heartbeat_sent = stream->first_message_sent();
+					}
+				}
+			}
+		}
+
+		/* check for ulog streaming messages */
+		if (_mavlink_ulog) {
+			const int ret = _mavlink_ulog->handle_update(get_channel());
+
+			if (ret < 0) { // abort the streaming on error
+				if (ret != -1) {
+					PX4_WARN("mavlink ulog stream update failed, stopping (%i)", ret);
+				}

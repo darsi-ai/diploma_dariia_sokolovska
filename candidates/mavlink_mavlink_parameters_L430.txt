@@ -1,0 +1,2 @@
+		// parameter only used in startup script but should show on ground station
+		param_find("SYS_PARAM_VER");

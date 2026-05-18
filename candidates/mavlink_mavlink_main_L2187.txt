@@ -1,0 +1,7 @@
+					if (mode >= 0 && mode < (int)MAVLINK_MODE_COUNT) {
+						_mode = (MAVLINK_MODE)mode;
+
+					} else {
+						PX4_ERR("invalid mode");
+						err_flag = true;
+					}

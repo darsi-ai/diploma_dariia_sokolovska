@@ -1,0 +1,2 @@
+		OnDisarm,             ///< Disable after condition cleared AND disarm happens
+		Never,                ///< Never clear the condition, require reboot to clear

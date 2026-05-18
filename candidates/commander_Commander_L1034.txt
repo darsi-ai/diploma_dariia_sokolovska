@@ -1,0 +1,3 @@
+				} else if (arming_action == vehicle_command_s::ARMING_ACTION_DISARM) {
+					arming_res = disarm(arm_disarm_reason, forced);
+

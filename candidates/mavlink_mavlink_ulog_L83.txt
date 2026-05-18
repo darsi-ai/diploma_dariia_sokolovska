@@ -1,0 +1,2 @@
+	 * stop the stream. It also deletes the singleton object, so make sure cleanup
+	 * all pointers to it.

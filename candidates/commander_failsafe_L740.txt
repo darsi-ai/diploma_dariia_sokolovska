@@ -1,0 +1,13 @@
+	if (!modeCanRun(status_flags, user_intended_mode)) {
+		action = Action::RTL;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	}
+
+	return action;
+}
+
+uint8_t Failsafe::modifyUserIntendedMode(Action previous_action, Action current_action,
+		uint8_t user_intended_mode) const
+{
+	// If we switch from a failsafe back into orbit, switch to loiter instead
+	if ((int)previous_action > (int)Action::Warn

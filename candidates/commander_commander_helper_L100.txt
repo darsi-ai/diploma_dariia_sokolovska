@@ -1,0 +1,2 @@
+ * set the LED color & mode
+ * @param color @see led_control_s::COLOR_*

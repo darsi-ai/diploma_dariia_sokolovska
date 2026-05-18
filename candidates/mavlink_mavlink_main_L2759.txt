@@ -1,0 +1,2 @@
+									     "Disabling transmitting with IRIDIUM mavlink on instance {1} by command", _instance_id);
+						}

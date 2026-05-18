@@ -1,0 +1,3 @@
+			} else {
+				/* delete stream */
+				_streams.deleteNode(stream);

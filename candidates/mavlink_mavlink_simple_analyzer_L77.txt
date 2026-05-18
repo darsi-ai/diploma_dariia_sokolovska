@@ -1,0 +1,15 @@
+	enum Mode {
+		AVERAGE = 0,
+		MIN,
+		MAX,
+	};
+
+	/**
+	 * Constructor
+	 *
+	 * Defines the mode of the analyzer and the window size in case of the
+	 * averaging mode.
+	 *
+	 * @param[in] mode: The mode of the analyzer
+	 * @param[in] window: The window size in seconds. Only used in the averaging mode.
+	 */

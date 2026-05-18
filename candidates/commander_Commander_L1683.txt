@@ -1,0 +1,20 @@
+			if (_vehicle_command_mode_executor_sub.get_last_generation() != last_generation + 1) {
+				PX4_ERR("vehicle_command from executor lost, generation %u -> %u", last_generation,
+					_vehicle_command_mode_executor_sub.get_last_generation());
+			}
+
+			// For commands from mode executors, we check if it is in charge and then publish it on the official
+			// command topic
+			const int mode_executor_in_charge = _mode_management.modeExecutorInCharge();
+
+			// source_system is set to the mode executor
+			if (cmd.source_component == vehicle_command_s::COMPONENT_MODE_EXECUTOR_START + mode_executor_in_charge) {
+				cmd.source_system = _vehicle_status.system_id;
+				cmd.timestamp = hrt_absolute_time();
+				_vehicle_command_pub.publish(cmd);
+
+			} else {
+				cmd.source_system = _vehicle_status.system_id;
+				answer_command(cmd, vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED);
+				PX4_WARN("Got cmd from executor %i not in charge (in charge: %i)", cmd.source_system, mode_executor_in_charge);
+			}

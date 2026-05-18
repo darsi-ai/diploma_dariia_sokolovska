@@ -1,0 +1,2 @@
+		snprintf(mode.name, sizeof(mode.name), "new mode %i", i);
+		added_mode_nav_state = modes.addExternalMode(mode);

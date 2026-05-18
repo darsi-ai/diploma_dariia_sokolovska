@@ -1,0 +1,2 @@
+	// User wants takeover -> Altitude mode + Warning
+	time += 10_ms;

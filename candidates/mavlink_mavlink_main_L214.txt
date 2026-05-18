@@ -1,0 +1,26 @@
+		for (Mavlink *inst : mavlink_module_instances) {
+			if (inst) {
+				inst->check_events_enable();
+				break;
+			}
+		}
+	}
+
+	perf_free(_loop_perf);
+	perf_free(_loop_interval_perf);
+	perf_free(_send_byte_error_perf);
+	perf_free(_forwarding_error_perf);
+}
+
+void
+Mavlink::mavlink_update_parameters()
+{
+	updateParams();
+
+	setProtocolVersion(_param_mav_proto_ver.get());
+
+	if (_param_mav_type.get() < 0 || _param_mav_type.get() >= MAV_TYPE_ENUM_END) {
+		_param_mav_type.set(0);
+		_param_mav_type.commit_no_notification();
+		PX4_ERR("MAV_TYPE parameter invalid, resetting to 0.");
+	}

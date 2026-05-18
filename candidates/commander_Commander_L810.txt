@@ -1,0 +1,2 @@
+			// to not require navigator and command to receive / process
+			// the data at the exact same time.

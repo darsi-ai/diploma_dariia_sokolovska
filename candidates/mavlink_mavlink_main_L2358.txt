@@ -1,0 +1,7 @@
+		if (Mavlink::get_instance_for_network_port(_network_port) != nullptr) {
+			PX4_ERR("port %hu already occupied", _network_port);
+			return PX4_ERROR;
+		}
+
+		PX4_INFO("mode: %s, data rate: %d B/s on udp port %hu remote port %hu",
+			 mavlink_mode_str(_mode), _datarate, _network_port, _remote_port);

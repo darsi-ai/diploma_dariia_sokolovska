@@ -1,0 +1,2 @@
+	ASSERT_EQ(failsafe.selectedAction(), FailsafeBase::Action::None);
+	ASSERT_FALSE(failsafe.failsafeDeferred());

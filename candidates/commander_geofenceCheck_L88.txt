@@ -1,0 +1,11 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Geofence: exceeding maximum altitude above Home");
+			}
+		}
+
+		if (geofence_result.geofence_custom_fence_triggered) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>GF_ACTION</param> parameter.
+			 * </profile>

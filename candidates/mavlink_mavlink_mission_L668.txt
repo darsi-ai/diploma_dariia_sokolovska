@@ -1,0 +1,22 @@
+			} else if (_state == MAVLINK_WPM_STATE_GETLIST) {
+
+				// INT or float mode is not supported
+				if (wpa.type == MAV_MISSION_UNSUPPORTED) {
+
+					if (_int_mode) {
+						_int_mode = false;
+						send_mission_request(_transfer_partner_sysid, _transfer_partner_compid, _transfer_seq);
+
+					} else {
+						_int_mode = true;
+						send_mission_request(_transfer_partner_sysid, _transfer_partner_compid, _transfer_seq);
+					}
+
+				} else if (wpa.type == MAV_MISSION_OPERATION_CANCELLED) {
+					PX4_DEBUG("WPM: MISSION_ACK CANCELLED, switch to state IDLE");
+					switch_to_idle_state();
+					_transfer_in_progress = false;
+
+				} else if (wpa.type != MAV_MISSION_ACCEPTED) {
+					PX4_WARN("Mission ack result was %d", wpa.type);
+				}

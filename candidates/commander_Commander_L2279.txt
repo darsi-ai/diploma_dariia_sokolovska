@@ -1,0 +1,20 @@
+		if (!_safety.isSafetyDisabled()) {
+			if (_safety.isSafetyOff()) {
+				set_tune(tune_control_s::TUNE_ID_NOTIFY_POSITIVE);
+
+			} else {
+				tune_neutral(true);
+			}
+		}
+
+		_status_changed = true;
+	}
+}
+
+void Commander::vtolStatusUpdate()
+{
+	// Make sure that this is only adjusted if vehicle really is of type vtol
+	if (_vtol_vehicle_status_sub.update(&_vtol_vehicle_status) && is_vtol(_vehicle_status)) {
+
+		// Check if there has been any change while updating the flags (transition = rotary wing status)
+		const uint8_t new_vehicle_type =

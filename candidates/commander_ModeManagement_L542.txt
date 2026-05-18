@@ -1,0 +1,2 @@
+			control_mode = _modes.mode(nav_state).config_control_setpoint;
+			ret = true;

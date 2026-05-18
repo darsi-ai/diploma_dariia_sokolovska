@@ -1,0 +1,2 @@
+					disarm(arm_disarm_reason_t::landing);
+

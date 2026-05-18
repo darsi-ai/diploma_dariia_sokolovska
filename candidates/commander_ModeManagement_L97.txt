@@ -1,0 +1,13 @@
+	for (int i = 0; i < MAX_NUM; ++i) {
+		if (!_modes[i].valid) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+uint8_t Modes::addExternalMode(const Modes::Mode &mode)
+{
+	int32_t mode_name_hash = (int32_t)events::util::hash_32_fnv1a_const(mode.name);
+

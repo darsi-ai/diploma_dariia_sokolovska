@@ -1,0 +1,2 @@
+	// Follow Target supports RC adjustment, so disable auto control mode to disable
+	// the Flight Task from exiting itself when RC stick movement is detected.

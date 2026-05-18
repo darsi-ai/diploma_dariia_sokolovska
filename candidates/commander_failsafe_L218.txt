@@ -1,0 +1,28 @@
+FailsafeBase::ActionOptions Failsafe::fromQuadchuteActParam(int param_value)
+{
+	ActionOptions options{};
+
+	switch (command_after_quadchute(param_value)) {
+	case command_after_quadchute::Warning_only:
+	default:
+		options.action = Action::Warn;
+		break;
+
+	case command_after_quadchute::Return_mode:
+		options.action = Action::RTL;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case command_after_quadchute::Land_mode:
+		options.action = Action::Land;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case command_after_quadchute::Hold_mode:
+		options.action = Action::Hold;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+	}
+
+	return options;
+}

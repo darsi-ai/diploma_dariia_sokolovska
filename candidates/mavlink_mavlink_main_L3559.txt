@@ -1,0 +1,2 @@
+	PRINT_MODULE_USAGE_PARAM_FLOAT('F', 0.015, 0.0, 50.0, "Sets the transmission frequency for iridium mode", true);
+	PRINT_MODULE_USAGE_PARAM_FLAG('f', "Enable message forwarding to other Mavlink instances", true);

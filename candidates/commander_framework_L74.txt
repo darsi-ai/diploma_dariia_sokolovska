@@ -1,0 +1,2 @@
+		OnModeChangeOrDisarm, ///< Disable after condition cleared AND (mode switch OR disarm happens)
+		OnDisarm,             ///< Disable after condition cleared AND disarm happens

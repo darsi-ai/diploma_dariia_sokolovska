@@ -1,0 +1,2 @@
+	// Wait a bit, don't defer anymore -> no failsafe triggered
+	time += 1_s;

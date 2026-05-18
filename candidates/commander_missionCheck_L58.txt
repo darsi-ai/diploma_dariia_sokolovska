@@ -1,0 +1,15 @@
+		if (reporter.failsafeFlags().mission_failure) {
+			// navigator sends out the exact reason
+			/* EVENT
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::system,
+						    events::ID("check_mission_failure"),
+						    events::Log::Error, "Mission cannot be completed");
+
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Mission cannot be completed\t");
+			}
+		}
+
+		// This is a mode requirement, no need to report
+		reporter.failsafeFlags().auto_mission_missing = mission_result.mission_id <= 0;

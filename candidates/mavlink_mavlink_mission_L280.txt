@@ -1,0 +1,2 @@
+	 * like MAV_CMD_DO*, as they use a parameter mapping 1 ~ 7, which directly
+	 * gets the value from MAVlink's Mission Item parameters.

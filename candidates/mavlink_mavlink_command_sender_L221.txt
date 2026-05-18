@@ -1,0 +1,2 @@
+				CMD_DEBUG("command %" PRIu16 " dropped", item->command.command);
+				_commands.drop_current();

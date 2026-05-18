@@ -1,0 +1,76 @@
+{
+	ActionOptions options{};
+
+	switch (command_after_quadchute(param_value)) {
+	case command_after_quadchute::Warning_only:
+	default:
+		options.action = Action::Warn;
+		break;
+
+	case command_after_quadchute::Return_mode:
+		options.action = Action::RTL;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case command_after_quadchute::Land_mode:
+		options.action = Action::Land;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case command_after_quadchute::Hold_mode:
+		options.action = Action::Hold;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+	}
+
+	return options;
+}
+
+FailsafeBase::Action Failsafe::fromOffboardLossActParam(int param_value, uint8_t &user_intended_mode)
+{
+	Action action{Action::None};
+
+	switch (offboard_loss_failsafe_mode(param_value)) {
+	case offboard_loss_failsafe_mode::Position_mode:
+	default:
+		action = Action::FallbackPosCtrl;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_POSCTL;
+		break;
+
+	case offboard_loss_failsafe_mode::Altitude_mode:
+		action = Action::FallbackAltCtrl;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+		break;
+
+	case offboard_loss_failsafe_mode::Stabilized:
+		action = Action::FallbackStab;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_STAB;
+		break;
+
+	case offboard_loss_failsafe_mode::Return_mode:
+		action = Action::RTL;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+		break;
+
+	case offboard_loss_failsafe_mode::Land_mode:
+		action = Action::Land;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+		break;
+
+	case offboard_loss_failsafe_mode::Hold_mode:
+		action = Action::Hold;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		break;
+
+	case offboard_loss_failsafe_mode::Terminate:
+		action = Action::Terminate;
+		user_intended_mode = vehicle_status_s::NAVIGATION_STATE_TERMINATION;
+		break;
+
+	case offboard_loss_failsafe_mode::Disarm:
+		action = Action::Disarm;
+		break;
+	}
+
+	return action;
+}

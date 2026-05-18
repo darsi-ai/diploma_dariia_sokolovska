@@ -1,0 +1,13 @@
+	struct _uavcan_open_request_list_item {
+		uavcan_parameter_request_s req;
+		struct _uavcan_open_request_list_item *next;
+	};
+
+	/**
+	 * Request the next uavcan parameter
+	 */
+	void request_next_uavcan_parameter();
+
+	/**
+	 * Enqueue one uavcan parameter reqest. We store 10 at max.
+	 */

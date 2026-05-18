@@ -1,0 +1,15 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Battery %i missing\t", index + 1);
+			}
+		}
+
+		if (!_last_armed && context.isArmed()) {
+			_battery_connected_at_arming[index] = battery.connected;
+		}
+
+		if (context.isArmed() && !battery.connected && _battery_connected_at_arming[index]) { // If disconnected after arming
+			/* EVENT
+			 */
+			reporter.healthFailure<uint8_t>(NavModes::All, health_component_t::battery, events::ID("check_battery_disconnected"),
+							events::Log::Emergency, "Battery {1} disconnected", index + 1);
+

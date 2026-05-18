@@ -1,0 +1,2 @@
+	updated_user_intented_mode = failsafe.update(time, state, user_intended_mode_updated, false, failsafe_flags);
+	ASSERT_EQ(updated_user_intented_mode, state.user_intended_mode);

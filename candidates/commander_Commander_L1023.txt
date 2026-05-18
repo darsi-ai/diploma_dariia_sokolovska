@@ -1,0 +1,3 @@
+			} else {
+				// Arm is forced (checks skipped) when param2 is set to a magic number.
+				const bool forced = (static_cast<int>(lroundf(cmd.param2)) == 21196);

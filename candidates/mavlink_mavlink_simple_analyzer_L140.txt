@@ -1,0 +1,13 @@
+	{
+		float avg = get_scaled(scalingfactor);
+		int_round(avg);
+		check_limits(avg, INT8_MIN, INT8_MAX);
+
+		ret = static_cast<int8_t>(avg);
+	}
+
+private:
+	unsigned int _n = 0; /**< The number of added samples */
+	float _window = 60.0f; /**< The window size for the moving average filter [s] */
+	Mode _mode = AVERAGE; /**< The mode of the simple analyzer */
+	float _result = 0.0f; /**< The result of the analyzed data. */

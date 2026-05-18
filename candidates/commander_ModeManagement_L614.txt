@@ -1,0 +1,2 @@
+				PX4_ERR("Control sp config request for invalid mode: %i", config_control_setpoint.source_id);
+				_invalid_mode_printed = true;

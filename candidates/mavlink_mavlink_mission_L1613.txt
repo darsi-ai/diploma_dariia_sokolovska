@@ -1,0 +1,16 @@
+		case MAV_CMD_DO_SET_ROI: {
+				const int roi_mode = mavlink_mission_item->param1;
+
+				if (roi_mode == MAV_ROI_NONE || roi_mode == MAV_ROI_WPNEXT || roi_mode == MAV_ROI_WPINDEX) {
+					mission_item->nav_cmd = NAV_CMD_DO_SET_ROI;
+
+				} else {
+					return MAV_MISSION_INVALID_PARAM1;
+				}
+			}
+			break;
+
+		case MAV_CMD_DO_WINCH:
+		case MAV_CMD_DO_GRIPPER:
+			mission_item->nav_cmd = mavlink_mission_item->command;
+			MavlinkMissionManager::copy_params_from_mavlink_to_mission_item(mission_item, mavlink_mission_item, 1, 2);

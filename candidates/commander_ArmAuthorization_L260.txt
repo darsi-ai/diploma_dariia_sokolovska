@@ -1,0 +1,2 @@
+				mavlink_log_critical(mavlink_log_pub, "Arm auth: Denied, waypoint %" PRId32 " have a invalid value",
+						     command_ack.result_param2);

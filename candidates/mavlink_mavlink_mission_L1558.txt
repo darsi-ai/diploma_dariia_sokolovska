@@ -1,0 +1,2 @@
+			PX4_DEBUG("Unsupported command %d", mavlink_mission_item->command);
+

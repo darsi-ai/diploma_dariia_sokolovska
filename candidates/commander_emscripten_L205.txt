@@ -1,0 +1,22 @@
+{
+	return FailsafeBase::actionStr((FailsafeBase::Action)action);
+}
+
+EMSCRIPTEN_BINDINGS(failsafe)
+{
+	class_<failsafe_flags_s>("state")
+	.constructor<>()
+	UORB_STRUCT_FIELD_MAPPING
+	;
+
+	function("failsafe_update", &failsafe_update);
+	function("action_str", &action_str);
+	function("get_used_params", &get_used_params);
+	function("set_param_value_int32", &set_param_value_int32);
+	function("set_param_value_float", &set_param_value_float);
+	function("get_param_value_int32", &get_param_value_int32);
+	function("get_param_value_float", &get_param_value_float);
+	function("user_takeover_active", &user_takeover_active);
+	function("selected_action", &selected_action);
+	register_vector<std::string>("vector<string>");
+}

@@ -1,0 +1,39 @@
+		for (int i = Modes::FIRST_EXTERNAL_NAV_STATE; i <= Modes::LAST_EXTERNAL_NAV_STATE; ++i) {
+			if (_modes.valid(i)) {
+				const Modes::Mode &mode = _modes.mode(i);
+
+				// Remove only if not currently selected
+				if (user_intended_nav_state != i && _external_checks.isUnresponsive(mode.arming_check_registration_id)) {
+					PX4_DEBUG("Removing unresponsive mode %i", i);
+					_external_checks.removeRegistration(mode.arming_check_registration_id, i);
+					removeModeExecutor(mode.mode_executor_registration_id);
+					_modes.removeExternalMode(i, mode.name);
+				}
+			}
+		}
+
+		// As we're disarmed we can use the user intended mode, as no failsafe will be active.
+		// Note that this might not be true if COM_MODE_ARM_CHK is set
+		checkNewRegistrations(update_request);
+		checkUnregistrations(user_intended_nav_state, update_request);
+	}
+
+	update_request.control_setpoint_update = checkConfigControlSetpointUpdates();
+	checkConfigOverrides();
+}
+
+void ModeManagement::onUserIntendedNavStateChange(ModeChangeSource source, uint8_t user_intended_nav_state)
+{
+	// Update mode executor in charge
+	int mode_executor_for_intended_nav_state = -1;
+
+	if (_modes.valid(user_intended_nav_state)) {
+		mode_executor_for_intended_nav_state = _modes.mode(user_intended_nav_state).mode_executor_registration_id;
+	}
+
+	if (mode_executor_for_intended_nav_state == -1) {
+		// Not an owned mode: check source
+		if (source == ModeChangeSource::User) {
+			// Give control to the pilot
+			_mode_executor_in_charge = ModeExecutors::AUTOPILOT_EXECUTOR_ID;
+		}

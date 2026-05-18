@@ -1,0 +1,14 @@
+						// Clear immediately if not a mode
+						if (_registrations[i].nav_mode_id == -1) {
+							removeRegistration(i, -1);
+							PX4_WARN("No response from %i, removing", i);
+
+						} else {
+							_registrations[i].unresponsive = true;
+
+							if (_registrations[i].total_num_unresponsive < 100) {
+								++_registrations[i].total_num_unresponsive;
+							}
+
+							PX4_WARN("No response from %i, flagging unresponsive", i);
+						}

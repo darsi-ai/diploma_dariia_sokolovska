@@ -1,0 +1,2 @@
+ *   "/fs/microsd/..hidden"     -> allowed (not a ".." component)
+ */

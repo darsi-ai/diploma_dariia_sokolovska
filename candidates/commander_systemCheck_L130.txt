@@ -1,0 +1,30 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Home position required");
+			}
+		}
+	}
+
+	// safety button
+	if (context.status().safety_button_available && !context.status().safety_off && !context.isArmed()) {
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>CBRK_IO_SAFETY</param> parameter.
+		 * </profile>
+		 */
+		reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_safety_button"),
+					    events::Log::Info, "Press safety button first");
+
+		if (reporter.mavlink_log_pub()) {
+			mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Press safety button first");
+		}
+	}
+
+	// VTOL in transition
+	if (context.status().is_vtol && !context.isArmed()) {
+		if (context.status().in_transition_mode) {
+			/* EVENT
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_vtol_in_transition"),
+						    events::Log::Warning, "Vehicle is in transition state");
+

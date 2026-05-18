@@ -1,0 +1,2 @@
+			PX4_INFO("Mode Executor %i: owned nav_state: %i, in charge: %s", executor_id, _mode_executors[i].owned_nav_state,
+				 executor_id == executor_in_charge ? "yes" : "no");

@@ -1,0 +1,23 @@
+	if (status->signing) {
+		Mavlink *inst = mavlink_module_instances[status->signing->link_id];
+
+		if (inst != nullptr) {
+			return inst->accept_unsigned(message_id);
+		}
+	}
+
+	return false;
+}
+
+static void usage();
+
+hrt_abstime Mavlink::_first_start_time = {0};
+
+bool Mavlink::_boot_complete = false;
+
+Mavlink::Mavlink() :
+	ModuleParams(nullptr),
+	_receiver(*this)
+{
+	// initialise parameter cache
+	mavlink_update_parameters();

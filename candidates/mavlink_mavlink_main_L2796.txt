@@ -1,0 +1,2 @@
+		msg.command = cmd.command;
+		msg.target_system = cmd.target_system;

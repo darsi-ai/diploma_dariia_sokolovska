@@ -1,0 +1,17 @@
+				if (reporter.mavlink_log_pub()) {
+					mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Avionics Power high: %6.2f Volt",
+							     (double)_latest_high_failure_val);
+				}
+			}
+
+			const int power_module_count = math::countSetBits(system_power.brick_valid);
+
+			if (power_module_count < _param_com_power_count.get()) {
+				/* EVENT
+				 * @description
+				 * Available power modules: {1}.
+				 * Required power modules: {2}.
+				 *
+				 * <profile name="dev">
+				 * This check can be configured via <param>COM_POWER_COUNT</param> parameter.
+				 * </profile>

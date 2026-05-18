@@ -1,0 +1,13 @@
+		if (strcmp(stream_name, stream->get_name()) == 0) {
+			if (interval != 0) {
+				/* set new interval */
+				stream->set_interval(interval);
+
+			} else {
+				/* delete stream */
+				_streams.deleteNode(stream);
+				return OK; // must finish with loop after node is deleted
+			}
+
+			return OK;
+		}

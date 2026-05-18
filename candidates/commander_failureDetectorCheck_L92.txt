@@ -1,0 +1,11 @@
+		if (reporter.mavlink_log_pub()) {
+			mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Altitude failure");
+		}
+	}
+
+	if (fd_status.fd_ext) {
+		/* EVENT
+		 * @description
+		 * <profile name="dev">
+		 * This check can be configured via <param>FD_EXT_ATS_EN</param> parameter.
+		 * </profile>

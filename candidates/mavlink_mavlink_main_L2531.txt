@@ -1,0 +1,3 @@
+					if (stream->get_id() == MAVLINK_MSG_ID_HIGH_LATENCY2) {
+						_first_heartbeat_sent = stream->first_message_sent();
+					}

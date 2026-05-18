@@ -1,0 +1,22 @@
+		if (cause == Cause::Generic) {
+			/* EVENT
+			* @type append_health_and_arming_messages
+			*/
+			events::send<uint32_t, events::px4::enums::failsafe_action_t, uint16_t>(
+				events::ID("commander_failsafe_enter_generic_hold"),
+			{events::Log::Critical, events::LogInternal::Warning},
+			"Failsafe activated: switching to {2} in {3} seconds", mavlink_mode, failsafe_action,
+			(uint16_t) delay_s);
+
+		} else {
+			/* EVENT
+			*/
+			events::send<uint32_t, events::px4::enums::failsafe_action_t, uint16_t, events::px4::enums::failsafe_cause_t>(
+				events::ID("commander_failsafe_enter_hold"),
+			{events::Log::Critical, events::LogInternal::Warning},
+			"{4}: switching to {2} in {3} seconds", mavlink_mode, failsafe_action,
+			(uint16_t) delay_s, failsafe_cause);
+		}
+
+		mavlink_log_critical(&_mavlink_log_pub, "Failsafe activated: entering Hold for %i seconds\t", delay_s);
+

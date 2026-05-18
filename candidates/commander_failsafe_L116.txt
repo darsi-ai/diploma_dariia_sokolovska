@@ -1,0 +1,19 @@
+	enum class command_after_quadchute : int32_t {
+		Warning_only = -1,
+		Return_mode = 0,
+		Land_mode = 1,
+		Hold_mode = 2,
+	};
+
+	// COM_RC_IN_MODE parameter values
+	enum class RcInMode : int32_t {
+		RcOnly = 0,
+		MavLinkOnly = 1,
+		RcOrMavlinkWithFallback = 2,
+		RcOrMavlinkKeepFirst = 3,
+		DisableManualControl = 4,
+		PriorityRcThenMavlinkAscending = 5,
+		PriorityMavlinkAscendingThenRc = 6,
+		PriorityRcThenMavlinkDescending = 7,
+		PriorityMavlinkDescendingThenRc = 8
+	};

@@ -1,0 +1,22 @@
+		if (_send_all_index == PARAM_HASH) {
+			/* return hash check for cached params */
+			uint32_t hash = param_hash_check();
+
+			/* build the one-off response message */
+			mavlink_param_value_t msg;
+			msg.param_count = param_count_used();
+			msg.param_index = -1;
+			strncpy(msg.param_id, HASH_PARAM, MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN);
+			msg.param_type = MAV_PARAM_TYPE_UINT32;
+			memcpy(&msg.param_value, &hash, sizeof(hash));
+			mavlink_msg_param_value_send_struct(_mavlink.get_channel(), &msg);
+
+			/* after this we should start sending all params */
+			_send_all_index = 0;
+
+			/* No further action, return now */
+			return true;
+		}
+
+		/* look for the first parameter which is used */
+		param_t p;

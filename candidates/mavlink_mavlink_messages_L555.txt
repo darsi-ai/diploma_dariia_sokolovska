@@ -1,0 +1,3 @@
+			if (strcmp(stream_name, stream.get_name()) == 0) {
+				return stream.new_instance(mavlink);
+			}

@@ -1,0 +1,8 @@
+	// Request a parameter if we are not already waiting on a response and if the list is not empty
+	if (!_uavcan_waiting_for_request_response && _uavcan_open_request_list != nullptr) {
+		uavcan_parameter_request_s req = _uavcan_open_request_list->req;
+
+		_uavcan_parameter_request_pub.publish(req);
+
+		_uavcan_waiting_for_request_response = true;
+	}

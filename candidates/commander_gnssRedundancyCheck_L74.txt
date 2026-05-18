@@ -1,0 +1,7 @@
+	if (fixed_count > _peak_fixed_count) {
+		_peak_fixed_count = fixed_count;
+	}
+
+	// Position divergence check: flag if two fixed receivers disagree beyond their
+	// combined uncertainty. Gate = 3 * RSS(eph), centered on the expected lever-arm separation.
+	float divergence_m = 0.f;

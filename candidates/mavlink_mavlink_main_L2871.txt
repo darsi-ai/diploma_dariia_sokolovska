@@ -1,0 +1,24 @@
+					if (_mode == MAVLINK_MODE_IRIDIUM) {
+						if (command_ack.from_external) {
+							// for MAVLINK_MODE_IRIDIUM send only if external
+							mavlink_msg_command_ack_send_struct(get_channel(), &msg);
+						}
+
+					} else {
+						mavlink_msg_command_ack_send_struct(get_channel(), &msg);
+					}
+
+				}
+			}
+		}
+	}
+}
+
+void Mavlink::check_requested_subscriptions()
+{
+	if (_subscribe_to_stream != nullptr) {
+		if (_subscribe_to_stream_rate < -1.5f) {
+			if (configure_streams_to_default(_subscribe_to_stream) == 0) {
+				if (get_protocol() == Protocol::SERIAL) {
+					PX4_DEBUG("stream %s on device %s set to default rate", _subscribe_to_stream, _device_name);
+				}

@@ -1,0 +1,10 @@
+			if (_modes.removeExternalMode(request.mode_id, request.name)) {
+				removeModeExecutor(request.mode_executor_id);
+				// else: if the mode was already removed (due to a timeout), the executor was also removed already
+			}
+
+			// If the removed mode is currently active, switch to Hold
+			if (user_intended_nav_state == request.mode_id) {
+				update_request.change_user_intended_nav_state = true;
+				update_request.user_intended_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+			}

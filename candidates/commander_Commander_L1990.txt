@@ -1,0 +1,3 @@
+				if (arm(arm_disarm_reason_t::mission_start, false) != TRANSITION_DENIED) {
+					_arm_on_boot_done = true;
+				}

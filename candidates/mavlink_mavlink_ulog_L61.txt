@@ -1,0 +1,2 @@
+ * ULog streaming class. At most one instance (stream) can exist, assigned to a specific mavlink channel.
+ */

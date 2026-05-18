@@ -1,0 +1,2 @@
+		 * Connect and enable stick input or use autonomous mode.
+		 * <profile name="dev">

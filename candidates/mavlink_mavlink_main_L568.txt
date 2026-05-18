@@ -1,0 +1,2 @@
+	float			_high_latency_freq{0.015f};	///< frequency of HIGH_LATENCY2 stream
+

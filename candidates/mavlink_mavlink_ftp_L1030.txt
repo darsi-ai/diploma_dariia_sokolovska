@@ -1,0 +1,6 @@
+	if (max_bytes_to_send < get_size()) {
+		return;
+	}
+
+	// Send stream packets until buffer is full
+

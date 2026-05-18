@@ -1,0 +1,13 @@
+	if (cmd_mavlink.x == INT32_MAX && cmd_mavlink.y == INT32_MAX) {
+		// INT32_MAX for x and y means to ignore it.
+		vcmd.param5 = (double)NAN;
+		vcmd.param6 = (double)NAN;
+
+	} else {
+		vcmd.param5 = ((double)cmd_mavlink.x) / 1e7;
+		vcmd.param6 = ((double)cmd_mavlink.y) / 1e7;
+	}
+
+	vcmd.param7 = cmd_mavlink.z;
+	vcmd.command = cmd_mavlink.command;
+	vcmd.target_system = cmd_mavlink.target_system;

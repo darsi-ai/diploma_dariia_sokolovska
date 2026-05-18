@@ -1,0 +1,8 @@
+{
+	_gps0_pub.publish(makeGps(BASE_LAT, BASE_LON));
+	runCheck();
+	EXPECT_FALSE(_failsafe_flags.gnss_lost);
+}
+
+// Two receivers at expected lever-arm separation → no divergence.
+TEST_F(GnssRedundancyChecksTest, TwoGpsAgreeingNoFlags)

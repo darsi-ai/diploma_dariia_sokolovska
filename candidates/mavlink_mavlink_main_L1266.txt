@@ -1,0 +1,4 @@
+			} else {
+				/* delete stream */
+				_streams.deleteNode(stream);
+				return OK; // must finish with loop after node is deleted

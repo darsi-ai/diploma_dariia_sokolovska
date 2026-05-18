@@ -1,0 +1,2 @@
+	// Defer and trigger non-deferrable failsafe
+	failsafe.deferFailsafes(true, defer_timeout_s);

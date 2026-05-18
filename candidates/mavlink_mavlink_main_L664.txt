@@ -1,0 +1,22 @@
+Mavlink::setup_flow_control(enum FLOW_CONTROL_MODE mode)
+{
+	struct termios uart_config;
+
+	int ret = tcgetattr(_uart_fd, &uart_config);
+
+	if (mode != FLOW_CONTROL_OFF) {
+		uart_config.c_cflag |= CRTSCTS;
+
+	} else {
+		uart_config.c_cflag &= ~CRTSCTS;
+
+	}
+
+	ret = tcsetattr(_uart_fd, TCSANOW, &uart_config);
+
+	if (!ret) {
+		_flow_control_mode = mode;
+	}
+
+	return ret;
+}

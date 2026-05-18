@@ -1,0 +1,2 @@
+					PX4_DEBUG("Removing unresponsive mode %i", i);
+					_external_checks.removeRegistration(mode.arming_check_registration_id, i);

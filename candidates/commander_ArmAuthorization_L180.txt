@@ -1,0 +1,26 @@
+	switch (state) {
+	case ARM_AUTH_IDLE:
+		/* no authentication in process? handle bellow */
+		break;
+
+	case ARM_AUTH_MISSION_APPROVED:
+		return vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+
+	case ARM_AUTH_WAITING_AUTH:
+	case ARM_AUTH_WAITING_AUTH_WITH_ACK:
+		return vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+
+	default:
+		return vehicle_command_ack_s::VEHICLE_CMD_RESULT_DENIED;
+	}
+
+	/* handling ARM_AUTH_IDLE */
+	arm_auth_request_msg_send();
+
+	hrt_abstime now = hrt_absolute_time();
+	auth_req_time = now;
+	auth_timeout = now + _param_com_arm_auth_timout;
+	state = ARM_AUTH_WAITING_AUTH;
+
+	mavlink_log_info(mavlink_log_pub, "Arm auth: Requesting authorization...");
+

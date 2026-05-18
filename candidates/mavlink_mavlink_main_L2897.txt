@@ -1,0 +1,2 @@
+					PX4_DEBUG("stream %s on UDP port %hu enabled with rate %.1f Hz", _subscribe_to_stream, _network_port,
+						  (double)_subscribe_to_stream_rate);

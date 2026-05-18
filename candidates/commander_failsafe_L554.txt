@@ -1,0 +1,2 @@
+		// If manual control loss and GCS connection loss are disabled and we lose both command links and the mission finished,
+		// trigger RTL to avoid losing the vehicle

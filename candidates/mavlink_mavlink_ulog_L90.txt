@@ -1,0 +1,2 @@
+	 * periodic update method: check for ulog stream messages and handle retransmission.
+	 * @return 0 on success, <0 otherwise

@@ -1,0 +1,2 @@
+	// Cannot enable while in failsafe
+	ASSERT_FALSE(failsafe.deferFailsafes(true, 0));

@@ -1,0 +1,74 @@
+		} else {
+			mission_item->params[4] = (double)mavlink_mission_item->x;
+			mission_item->params[5] = (double)mavlink_mission_item->y;
+		}
+
+		mission_item->params[6] = mavlink_mission_item->z;
+
+		switch (mavlink_mission_item->command) {
+		case MAV_CMD_DO_JUMP:
+			mission_item->nav_cmd = NAV_CMD_DO_JUMP;
+			mission_item->do_jump_mission_index = mavlink_mission_item->param1;
+			mission_item->do_jump_current_count = 0;
+			mission_item->do_jump_repeat_count = mavlink_mission_item->param2;
+			break;
+
+		case MAV_CMD_NAV_ROI:
+		case MAV_CMD_DO_SET_ROI: {
+				const int roi_mode = mavlink_mission_item->param1;
+
+				if (roi_mode == MAV_ROI_NONE || roi_mode == MAV_ROI_WPNEXT || roi_mode == MAV_ROI_WPINDEX) {
+					mission_item->nav_cmd = NAV_CMD_DO_SET_ROI;
+
+				} else {
+					return MAV_MISSION_INVALID_PARAM1;
+				}
+			}
+			break;
+
+		case MAV_CMD_DO_WINCH:
+		case MAV_CMD_DO_GRIPPER:
+			mission_item->nav_cmd = mavlink_mission_item->command;
+			MavlinkMissionManager::copy_params_from_mavlink_to_mission_item(mission_item, mavlink_mission_item, 1, 2);
+			break;
+
+		case MAV_CMD_DO_CHANGE_SPEED:
+		case MAV_CMD_DO_SET_HOME:
+		case MAV_CMD_DO_LAND_START:
+		case MAV_CMD_DO_TRIGGER_CONTROL:
+		case MAV_CMD_DO_DIGICAM_CONTROL:
+		case MAV_CMD_DO_MOUNT_CONFIGURE:
+		case MAV_CMD_DO_MOUNT_CONTROL:
+		case NAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW:
+		case NAV_CMD_SET_CAMERA_FOCUS:
+		case NAV_CMD_DO_GIMBAL_MANAGER_CONFIGURE:
+		case MAV_CMD_IMAGE_START_CAPTURE:
+		case MAV_CMD_IMAGE_STOP_CAPTURE:
+		case MAV_CMD_VIDEO_START_CAPTURE:
+		case MAV_CMD_VIDEO_STOP_CAPTURE:
+		case MAV_CMD_DO_CONTROL_VIDEO:
+		case MAV_CMD_DO_SET_CAM_TRIGG_DIST:
+		case MAV_CMD_OBLIQUE_SURVEY:
+		case MAV_CMD_DO_SET_CAM_TRIGG_INTERVAL:
+		case MAV_CMD_SET_CAMERA_MODE:
+		case MAV_CMD_SET_CAMERA_SOURCE:
+		case MAV_CMD_DO_VTOL_TRANSITION:
+		case MAV_CMD_NAV_DELAY:
+		case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+		case MAV_CMD_DO_SET_ROI_WPNEXT_OFFSET:
+		case MAV_CMD_DO_SET_ROI_NONE:
+		case MAV_CMD_CONDITION_DELAY:
+		case MAV_CMD_CONDITION_DISTANCE:
+		case MAV_CMD_DO_SET_ACTUATOR:
+		case MAV_CMD_DO_AUTOTUNE_ENABLE:
+		case MAV_CMD_COMPONENT_ARM_DISARM:
+			mission_item->nav_cmd = (NAV_CMD)mavlink_mission_item->command;
+			break;
+
+		default:
+			mission_item->nav_cmd = NAV_CMD_INVALID;
+
+			PX4_DEBUG("Unsupported command %d", mavlink_mission_item->command);
+
+			return MAV_MISSION_UNSUPPORTED;
+		}

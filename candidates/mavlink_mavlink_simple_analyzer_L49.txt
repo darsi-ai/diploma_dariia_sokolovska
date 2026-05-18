@@ -1,0 +1,4 @@
+	_mode(mode)
+{
+	reset();
+}

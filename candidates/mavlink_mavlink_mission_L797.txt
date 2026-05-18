@@ -1,0 +1,4 @@
+	// The request comes in the old float mode, so we switch to it.
+	if (_int_mode) {
+		_int_mode = false;
+	}

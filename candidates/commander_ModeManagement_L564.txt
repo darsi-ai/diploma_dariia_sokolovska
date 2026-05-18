@@ -1,0 +1,25 @@
+		if (_modes.valid(nav_state)) {
+			control_mode = _modes.mode(nav_state).config_control_setpoint;
+			ret = true;
+
+		} else {
+			Modes::Mode::setControlModeDefaults(control_mode);
+		}
+	}
+
+	return ret;
+}
+
+void ModeManagement::printStatus() const
+{
+	_modes.printStatus();
+	_mode_executors.printStatus(modeExecutorInCharge());
+}
+
+void ModeManagement::updateActiveConfigOverrides(uint8_t nav_state, config_overrides_s &overrides_in_out)
+{
+	config_overrides_s current_overrides;
+
+	if (_modes.valid(nav_state)) {
+		current_overrides = _modes.mode(nav_state).overrides;
+

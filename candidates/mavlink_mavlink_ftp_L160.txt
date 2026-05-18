@@ -1,0 +1,2 @@
+	static const char	kDirentFile = 'F';	///< Identifies File returned from List command
+	static const char	kDirentDir = 'D';	///< Identifies Directory returned from List command

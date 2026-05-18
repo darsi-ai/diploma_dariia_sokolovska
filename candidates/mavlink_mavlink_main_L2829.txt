@@ -1,0 +1,2 @@
+					msg.command = command_ack.command;
+					msg.progress = command_ack.result_param1;

@@ -1,0 +1,39 @@
+	} else {
+		BOARD_OVERLOAD_LED_OFF();
+	}
+}
+
+void Commander::updateControlMode()
+{
+	_vehicle_control_mode = {};
+
+	mode_util::getVehicleControlMode(_vehicle_status.nav_state,
+					 _vehicle_status.vehicle_type, _offboard_control_mode_sub.get(), _vehicle_control_mode);
+	_mode_management.updateControlMode(_vehicle_status.nav_state, _vehicle_control_mode);
+
+	_vehicle_control_mode.flag_armed = isArmed();
+	_vehicle_control_mode.flag_multicopter_position_control_enabled =
+		(_vehicle_status.vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING)
+		&& (_vehicle_control_mode.flag_control_altitude_enabled
+		    || _vehicle_control_mode.flag_control_climb_rate_enabled
+		    || _vehicle_control_mode.flag_control_position_enabled
+		    || _vehicle_control_mode.flag_control_velocity_enabled
+		    || _vehicle_control_mode.flag_control_acceleration_enabled);
+	_vehicle_control_mode.timestamp = hrt_absolute_time();
+	_vehicle_control_mode_pub.publish(_vehicle_control_mode);
+}
+
+void Commander::printRejectMode(uint8_t nav_state)
+{
+	if (hrt_elapsed_time(&_last_print_mode_reject_time) > 1_s) {
+
+		mavlink_log_critical(&_mavlink_log_pub, "Switching to %s is currently not available\t",
+				     mode_util::nav_state_names[nav_state]);
+		px4_custom_mode custom_mode = get_px4_custom_mode(nav_state);
+		uint32_t mavlink_mode = custom_mode.data;
+		/* EVENT
+		 * @type append_health_and_arming_messages
+		 */
+		events::send<uint32_t, events::px4::enums::navigation_mode_t>(events::ID("commander_modeswitch_not_avail"), {events::Log::Critical, events::LogInternal::Info},
+				"Switching to mode '{2}' is currently not possible", mavlink_mode, mode_util::navigation_mode(nav_state));
+

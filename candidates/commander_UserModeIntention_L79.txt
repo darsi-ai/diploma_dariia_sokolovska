@@ -1,0 +1,19 @@
+		if (!allow_change && allow_fallback) {
+			if (user_intended_nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL) {
+				allow_change = _health_and_arming_checks.canRun(vehicle_status_s::NAVIGATION_STATE_ALTCTL);
+				// We still use the original user intended mode. The failsafe state machine will then set the
+				// fallback and once can_run becomes true, the actual user intended mode will be selected.
+			}
+		}
+	}
+
+	// never allow to change out of termination state
+	allow_change &= _vehicle_status.nav_state != vehicle_status_s::NAVIGATION_STATE_TERMINATION;
+
+	if (allow_change) {
+		_had_mode_change = true;
+		_user_intented_nav_state = user_intended_nav_state;
+
+		// Special case termination state: even though this mode prevents arming,
+		// still don't switch out of it after disarm and thus store it in _nav_state_after_disarming.
+		if ((!_health_and_arming_checks.modePreventsArming(user_intended_nav_state)

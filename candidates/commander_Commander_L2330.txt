@@ -1,0 +1,2 @@
+	} else if (_vehicle_status.failsafe && isArmed()) {
+		tune_failsafe(true);

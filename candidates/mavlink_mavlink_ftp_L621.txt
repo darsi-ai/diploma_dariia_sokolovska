@@ -1,0 +1,34 @@
+{
+	if (payload->session != 0 || _session_info.fd < 0) {
+		PX4_DEBUG("_workWrite: no session or no fd");
+		return kErrInvalidSession;
+	}
+
+	if (!_validatePathIsWritable(_work_buffer1)) {
+		return kErrFailFileProtected;
+	}
+
+	if (lseek(_session_info.fd, payload->offset, SEEK_SET) < 0) {
+		// Unable to see to the specified location
+		PX4_ERR("seek fail");
+		return kErrFailErrno;
+	}
+
+	PX4_DEBUG("write %d bytes", payload->size);
+	int bytes_written = ::write(_session_info.fd, &payload->data[0], payload->size);
+
+	if (bytes_written < 0) {
+		// Negative return indicates error other than eof
+		_our_errno = errno;
+		PX4_ERR("write fail %d, %s", bytes_written, strerror(_our_errno));
+		return kErrFailErrno;
+	}
+
+	payload->size = sizeof(uint32_t);
+	std::memcpy(payload->data, &bytes_written, payload->size);
+
+	return kErrNone;
+}
+
+/// @brief Responds to a RemoveFile command
+MavlinkFTP::ErrorCode

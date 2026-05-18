@@ -1,0 +1,2 @@
+					    events::Log::Critical, "Mode is unresponsive");
+	}

@@ -1,0 +1,34 @@
+	struct __attribute__((__packed__)) PayloadHeader {
+		uint16_t	seq_number;	///< sequence number for message
+		uint8_t		session;	///< Session id for read and write commands
+		uint8_t		opcode;		///< Command opcode
+		uint8_t		size;		///< Size of data
+		uint8_t		req_opcode;	///< Request opcode returned in kRspAck, kRspNak message
+		uint8_t		burst_complete; ///< Only used if req_opcode=kCmdBurstReadFile - 1: set of burst packets complete, 0: More burst packets coming.
+		uint8_t		padding;        ///< 32 bit aligment padding
+		uint32_t	offset;		///< Offsets for List and Read commands
+		uint8_t		data[];		///< command data, varies by Opcode
+	};
+
+	/// @brief Command opcodes
+	enum Opcode : uint8_t {
+		kCmdNone,		///< ignored, always acked
+		kCmdTerminateSession,	///< Terminates open Read session
+		kCmdResetSessions,	///< Terminates all open Read sessions
+		kCmdListDirectory,	///< List files in <path> from <offset>
+		kCmdOpenFileRO,		///< Opens file at <path> for reading, returns <session>
+		kCmdReadFile,		///< Reads <size> bytes from <offset> in <session>
+		kCmdCreateFile,		///< Creates file at <path> for writing, returns <session>
+		kCmdWriteFile,		///< Writes <size> bytes to <offset> in <session>
+		kCmdRemoveFile,		///< Remove file at <path>
+		kCmdCreateDirectory,	///< Creates directory at <path>
+		kCmdRemoveDirectory,	///< Removes Directory at <path>, must be empty
+		kCmdOpenFileWO,		///< Opens file at <path> for writing, returns <session>
+		kCmdTruncateFile,	///< Truncate file at <path> to <offset> length
+		kCmdRename,		///< Rename <path1> to <path2>
+		kCmdCalcFileCRC32,	///< Calculate CRC32 for file at <path>
+		kCmdBurstReadFile,	///< Burst download session file
+
+		kRspAck = 128,		///< Ack response
+		kRspNak			///< Nak response
+	};

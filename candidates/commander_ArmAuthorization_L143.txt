@@ -1,0 +1,15 @@
+		if (state != ARM_AUTH_WAITING_AUTH && state != ARM_AUTH_WAITING_AUTH_WITH_ACK) {
+			break;
+		}
+
+		/* 0.5ms */
+		px4_usleep(500);
+		now = hrt_absolute_time();
+	}
+
+	switch (state) {
+	case ARM_AUTH_WAITING_AUTH:
+	case ARM_AUTH_WAITING_AUTH_WITH_ACK:
+		state = ARM_AUTH_IDLE;
+		mavlink_log_critical(mavlink_log_pub, "Arm auth: No response");
+		break;

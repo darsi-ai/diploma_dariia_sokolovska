@@ -1,0 +1,2 @@
+	updated_user_intented_mode = failsafe.update(time, state, false, stick_override_request, failsafe_flags);
+	stick_override_request = false;

@@ -1,0 +1,15 @@
+				if (strncmp(name, "_HASH_CHECK", sizeof(name)) == 0) {
+
+					if (_mavlink.hash_check_enabled()) {
+						_send_all_index = -1;
+					}
+
+					/* Error report that _HASH_CHECK parameter is read-only */
+					send_error(MAV_PARAM_ERROR_READ_ONLY, name, -1, msg->sysid, msg->compid);
+
+					/* No other action taken, return */
+					return;
+				}
+
+				/* attempt to find parameter, set and send it */
+				param_t param = param_find_no_notification(name);

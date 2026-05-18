@@ -1,0 +1,2 @@
+	// Defer and clear failsafe -> no action
+	failsafe.deferFailsafes(true, defer_timeout_s);

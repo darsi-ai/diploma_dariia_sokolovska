@@ -1,0 +1,2 @@
+		PX4_DEBUG("command %" PRIu32 " failed", cmd.command);
+		tune_negative(true);

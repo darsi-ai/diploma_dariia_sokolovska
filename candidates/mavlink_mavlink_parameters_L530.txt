@@ -1,0 +1,41 @@
+	if ((_param_update_time != 0) && ((_param_update_time + 5 * 1000) < hrt_absolute_time())) {
+
+		param_t param = 0;
+
+		// send out all changed values
+		do {
+			// skip over all parameters which are not invalid and not used
+			do {
+				param = param_for_index(_param_update_index);
+				++_param_update_index;
+			} while (param != PARAM_INVALID && !param_used(param));
+
+			// send parameters which are untransmitted while there is
+			// space in the TX buffer
+			if ((param != PARAM_INVALID) && param_value_unsaved(param)) {
+				int ret = send_param(param);
+				sent_one = true;
+
+				if (ret != PX4_OK) {
+					break;
+				}
+			}
+		} while ((_mavlink.get_free_tx_buf() >= get_size()) && !_mavlink.radio_status_critical()
+			 && (_param_update_index < (int) param_count()));
+
+		// Flag work as done once all params have been sent
+		if (_param_update_index >= (int) param_count()) {
+			_param_update_time = 0;
+		}
+	}
+
+	return sent_one;
+}
+
+bool
+MavlinkParametersManager::send_one()
+{
+	const hrt_abstime now = hrt_absolute_time();
+
+	// If in low-bandwidth mode, throttle parameter transmission to 8 Hz
+	if (_mavlink.get_mode() == Mavlink::MAVLINK_MODE_LOW_BANDWIDTH

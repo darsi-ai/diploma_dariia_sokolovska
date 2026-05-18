@@ -1,0 +1,3 @@
+		if (msg_id == stream.get_id()) {
+			return stream.get_name();
+		}

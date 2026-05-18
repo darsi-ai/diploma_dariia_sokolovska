@@ -1,0 +1,2 @@
+		snprintf(mode.name, sizeof(mode.name), "mode %i", i);
+		EXPECT_EQ(modes.addExternalMode(mode), Modes::FIRST_EXTERNAL_NAV_STATE + i);

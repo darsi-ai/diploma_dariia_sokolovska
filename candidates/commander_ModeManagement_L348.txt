@@ -1,0 +1,2 @@
+		PX4_DEBUG("got unregistration request: %s arming: %i mode: %i executor: %i", request.name,
+			  (int)request.arming_check_id, (int)request.mode_id, (int)request.mode_executor_id);

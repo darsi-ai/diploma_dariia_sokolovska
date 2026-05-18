@@ -1,0 +1,9 @@
+	if ((_armed_time != 0) && (time_us < _armed_time + spoolup)) {
+		CHECK_FAILSAFE(status_flags, battery_unhealthy, ActionOptions(Action::Disarm).cannotBeDeferred());
+
+	} else {
+		CHECK_FAILSAFE(status_flags, battery_unhealthy, Action::Warn);
+	}
+
+	// Parachute system health failsafe
+	CHECK_FAILSAFE(status_flags, parachute_unhealthy, Action::RTL);

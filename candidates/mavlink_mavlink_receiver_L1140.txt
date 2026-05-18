@@ -1,0 +1,38 @@
+			} else {
+				matrix::Vector3f(NAN, NAN, NAN).copyTo(setpoint.acceleration);
+			}
+
+			matrix::Vector3f(NAN, NAN, NAN).copyTo(setpoint.position);
+
+		} else {
+			mavlink_log_critical(&_mavlink_log_pub, "SET_POSITION_TARGET_LOCAL_NED coordinate frame %" PRIu8 " unsupported\t",
+					     target_local_ned.coordinate_frame);
+			events::send<uint8_t>(events::ID("mavlink_rcv_sp_target_unsup_coord"), events::Log::Error,
+					      "SET_POSITION_TARGET_LOCAL_NED: coordinate frame {1} unsupported", target_local_ned.coordinate_frame);
+			return;
+		}
+
+		setpoint.yaw      = (type_mask & POSITION_TARGET_TYPEMASK_YAW_IGNORE)      ? (float)NAN : target_local_ned.yaw;
+		setpoint.yawspeed = (type_mask & POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE) ? (float)NAN : target_local_ned.yaw_rate;
+
+
+		offboard_control_mode_s ocm = fill_offboard_control_mode(setpoint);
+
+		if (ocm.acceleration && (type_mask & POSITION_TARGET_TYPEMASK_FORCE_SET)) {
+			mavlink_log_critical(&_mavlink_log_pub, "SET_POSITION_TARGET_LOCAL_NED force not supported\t");
+			events::send(events::ID("mavlink_rcv_sp_target_unsup_force"), events::Log::Error,
+				     "SET_POSITION_TARGET_LOCAL_NED: FORCE is not supported");
+			return;
+		}
+
+		if (ocm.position || ocm.velocity || ocm.acceleration) {
+			// publish offboard_control_mode
+			ocm.timestamp = hrt_absolute_time();
+			_offboard_control_mode_pub.publish(ocm);
+
+			vehicle_status_s vehicle_status{};
+			_vehicle_status_sub.copy(&vehicle_status);
+
+			if (vehicle_status.accepts_offboard_setpoints) {
+				// only publish setpoint once in mode that accepts offboard setpoints
+				setpoint.timestamp = hrt_absolute_time();

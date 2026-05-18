@@ -1,0 +1,6 @@
+					if (request.enable_replace_internal_mode) {
+						mode.replaces_nav_state = request.replace_internal_mode;
+					}
+
+					mode.request_offboard_setpoints = request.request_offboard_setpoints;
+

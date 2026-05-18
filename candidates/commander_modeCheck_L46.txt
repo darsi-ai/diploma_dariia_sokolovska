@@ -1,0 +1,2 @@
+						    events::Log::Info, "Mode not suitable for arming");
+		}

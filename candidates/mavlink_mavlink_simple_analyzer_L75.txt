@@ -1,0 +1,2 @@
+		PX4_ERR("SimpleAnalyzer: Unknown mode.");
+	}

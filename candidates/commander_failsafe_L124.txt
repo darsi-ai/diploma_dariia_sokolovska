@@ -1,0 +1,32 @@
+FailsafeBase::ActionOptions Failsafe::fromActuatorFailureActParam(int param_value)
+{
+	ActionOptions options{};
+
+	switch (actuator_failure_failsafe_mode(param_value)) {
+	case actuator_failure_failsafe_mode::Warning_only:
+	default:
+		options.action = Action::Warn;
+		break;
+
+	case actuator_failure_failsafe_mode::Hold_mode:
+		options.action = Action::Hold;
+		break;
+
+	case actuator_failure_failsafe_mode::Land_mode:
+		options.action = Action::Land;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case actuator_failure_failsafe_mode::Return_mode:
+		options.action = Action::RTL;
+		options.clear_condition = ClearCondition::OnModeChangeOrDisarm;
+		break;
+
+	case actuator_failure_failsafe_mode::Terminate:
+		options.action = Action::Terminate;
+		options.clear_condition = ClearCondition::Never;
+		break;
+	}
+
+	return options;
+}

@@ -1,0 +1,2 @@
+		kErrFailErrno,			///< Command failed, errno sent back in PayloadHeader.data[1]
+		kErrInvalidDataSize,		///< PayloadHeader.size is invalid

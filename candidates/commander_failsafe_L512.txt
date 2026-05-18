@@ -1,0 +1,2 @@
+	// altitude. The vtol takeoff navigaton mode will set mission_finished to true as soon as the loiter is established
+	const bool in_forward_flight = (state.vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) || state.vtol_in_transition_mode;

@@ -1,0 +1,11 @@
+	if (_mavlink_ulog) {
+		mavlink_ulog_streaming_rate_inv = 1.0f - _mavlink_ulog->current_data_rate();
+	}
+
+	/* scale up and down as the link permits */
+	float bandwidth_mult = (float)(_datarate * mavlink_ulog_streaming_rate_inv - const_rate) / rate;
+
+	/* Reduce rate while sending parameters in low bandwidth mode */
+	if (sending_parameters() && _mode == Mavlink::MAVLINK_MODE_LOW_BANDWIDTH) {
+		bandwidth_mult = fminf(bandwidth_mult, 0.25f);
+	}

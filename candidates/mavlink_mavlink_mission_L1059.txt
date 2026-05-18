@@ -1,0 +1,2 @@
+		// It seems that we should be using the float mode, let's switch out of int mode.
+		_int_mode = false;

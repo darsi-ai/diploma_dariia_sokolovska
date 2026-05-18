@@ -1,0 +1,12 @@
+			if (main_ret != TRANSITION_DENIED) {
+				cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+
+			} else {
+				cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+				mavlink_log_critical(&_mavlink_log_pub, "Figure 8 command rejected, Only available in fixed wing mode.");
+			}
+
+#else
+			cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_UNSUPPORTED;
+			mavlink_log_critical(&_mavlink_log_pub, "Figure 8 command not supported.");
+#endif // CONFIG_FIGURE_OF_EIGHT

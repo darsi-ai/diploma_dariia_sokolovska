@@ -1,0 +1,20 @@
+	for (const auto &stream : _streams) {
+		if (strcmp(stream_name, stream->get_name()) == 0) {
+			if (interval != 0) {
+				/* set new interval */
+				stream->set_interval(interval);
+
+			} else {
+				/* delete stream */
+				_streams.deleteNode(stream);
+				return OK; // must finish with loop after node is deleted
+			}
+
+			return OK;
+		}
+	}
+
+	// search for stream with specified name in supported streams list
+	// create new instance if found
+	MavlinkStream *stream = create_mavlink_stream(stream_name, this);
+

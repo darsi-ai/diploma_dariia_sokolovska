@@ -1,0 +1,10 @@
+{
+	_gps0_pub.publish(makeGps(BASE_LAT, BASE_LON));
+	_gps1_pub.publish(makeGps(AGREEING_LAT, BASE_LON));
+	runCheck();
+	EXPECT_FALSE(_failsafe_flags.gnss_lost);
+	EXPECT_FALSE(_health_warning_gps);
+}
+
+// Two receivers at the same position while a 0.70m lever arm is configured →
+// divergence detected (separation = 0, expected_d = 0.70m, deviation = 0.70m >> gate).

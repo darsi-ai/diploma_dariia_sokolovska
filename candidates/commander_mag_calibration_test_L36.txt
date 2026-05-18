@@ -1,0 +1,2 @@
+ * Run this test only using make tests TESTFILTER=mag_calibration
+ *

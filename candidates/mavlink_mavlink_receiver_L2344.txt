@@ -1,0 +1,4 @@
+		if (stream->get_id() == msgId) {
+			interval = stream->get_interval();
+			break;
+		}

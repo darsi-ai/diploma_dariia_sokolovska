@@ -1,0 +1,2 @@
+				memcpy(&mode.overrides, &override_request, sizeof(mode.overrides));
+			}

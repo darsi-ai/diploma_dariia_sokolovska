@@ -1,0 +1,19 @@
+	if (power_button_state_pub != nullptr) {
+		orb_publish(ORB_ID(power_button_state), power_button_state_pub, &button_state);
+
+	} else {
+		PX4_ERR("power_button_state_pub not properly initialized");
+	}
+
+	return ret;
+}
+#endif // BOARD_HAS_POWER_CONTROL
+
+#ifndef CONSTRAINED_FLASH
+static bool send_vehicle_command(const uint32_t cmd, const float param1 = NAN, const float param2 = NAN,
+				 const float param3 = NAN,  const float param4 = NAN, const double param5 = static_cast<double>(NAN),
+				 const double param6 = static_cast<double>(NAN), const float param7 = NAN)
+{
+	vehicle_command_s vcmd{};
+	vcmd.command = cmd;
+	vcmd.param1 = param1;

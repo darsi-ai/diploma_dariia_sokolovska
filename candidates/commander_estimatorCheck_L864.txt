@@ -1,0 +1,42 @@
+	if (!failsafe_flags.angular_velocity_invalid && angular_velocity_invalid) {
+		const char err_str[] {"angular velocity no longer valid"};
+
+		if (!condition_angular_velocity_time_valid && angular_velocity.timestamp != 0) {
+			PX4_ERR("%s (timeout)", err_str);
+
+		} else if (!condition_angular_velocity_finite) {
+			PX4_ERR("%s (non-finite values)", err_str);
+		}
+	}
+
+	failsafe_flags.angular_velocity_invalid = angular_velocity_invalid;
+}
+
+bool EstimatorChecks::checkPosVelValidity(const hrt_abstime &now, const bool data_valid, const float data_accuracy,
+		const float required_accuracy,
+		const hrt_abstime &data_timestamp_us, hrt_abstime &last_fail_time_us,
+		const bool was_valid) const
+{
+	bool valid = was_valid;
+	const bool data_stale = (now > data_timestamp_us + 1_s) || (data_timestamp_us == 0);
+	const float req_accuracy = (was_valid ? required_accuracy * 2.5f : required_accuracy);
+	const bool level_check_pass = data_valid && !data_stale && (data_accuracy < req_accuracy);
+
+	// Check accuracy with hysteresis in both test level and time
+	if (level_check_pass) {
+		if (!was_valid) {
+			// check if probation period has elapsed
+			if (now > last_fail_time_us + 1_s) {
+				valid = true;
+			}
+		}
+
+	} else {
+		// level check failed
+		if (was_valid) {
+			// FAILURE! no longer valid
+			valid = false;
+		}
+
+		last_fail_time_us = now;
+	}

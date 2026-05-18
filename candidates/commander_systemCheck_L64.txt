@@ -1,0 +1,21 @@
+		if (actuator_armed.termination || actuator_armed.kill) {
+			/* EVENT
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_flight_term_active"),
+						    events::Log::Critical, "Flight termination active");
+
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Flight termination active");
+			}
+		}
+	}
+
+	// USB not connected
+	if (!circuit_breaker_enabled_by_val(_param_cbrk_usb_chk.get(), CBRK_USB_CHK_KEY) && context.status().usb_connected) {
+		/* EVENT
+		 * @description
+		 * Flying with USB is not safe. Disconnect it and reboot the FMU.
+		 *
+		 * <profile name="dev">
+		 * This check can be configured via <param>CBRK_USB_CHK</param> parameter.
+		 * </profile>

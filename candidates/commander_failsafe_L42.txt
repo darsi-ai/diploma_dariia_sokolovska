@@ -1,0 +1,2 @@
+	Failsafe(ModuleParams *parent) : FailsafeBase(parent) {}
+

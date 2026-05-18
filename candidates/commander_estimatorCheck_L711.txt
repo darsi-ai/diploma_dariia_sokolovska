@@ -1,0 +1,31 @@
+	if (position_valid_but_low_accuracy && _param_com_pos_low_act.get()) {
+
+		// only report if armed
+		if (context.isArmed()) {
+			/* EVENT
+			 * @description Local position estimate valid but has low accuracy. Warn user.
+			 *
+			 * <profile name="dev">
+			 * This check can be configured via <param>COM_POS_LOW_EPH</param> and <param>COM_POS_LOW_ACT</param> parameters.
+			 * </profile>
+			 */
+			reporter.armingCheckFailure(NavModes::All, health_component_t::local_position_estimate,
+						    events::ID("check_estimator_low_position_accuracy"),
+						    events::Log::Error, "Position estimate has low accuracy");
+
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_warning(reporter.mavlink_log_pub(), "Position estimate has low accuracy\t");
+			}
+		}
+	}
+
+	reporter.failsafeFlags().position_accuracy_low = position_valid_but_low_accuracy;
+}
+
+void EstimatorChecks::setModeRequirementFlags(const Context &context, bool pre_flt_fail_innov_heading,
+		bool pre_flt_fail_innov_vel_horiz, bool pre_flt_fail_innov_pos_horiz,
+		const vehicle_local_position_s &lpos, const sensor_gps_s &vehicle_gps_position, failsafe_flags_s &failsafe_flags,
+		Report &reporter)
+{
+	// The following flags correspond to mode requirements, and are reported in the corresponding mode checks
+	vehicle_global_position_s gpos;

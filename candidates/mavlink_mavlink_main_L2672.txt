@@ -1,0 +1,2 @@
+			/* switch HIL mode if required */
+			set_hil_enabled(vehicle_status.hil_state == vehicle_status_s::HIL_STATE_ON);

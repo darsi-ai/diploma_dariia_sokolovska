@@ -1,0 +1,2 @@
+		kErrUnknownCommand,		///< Unknown command opcode
+		kErrFailFileExists,		///< File/directory exists already

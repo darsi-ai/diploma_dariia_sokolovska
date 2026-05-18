@@ -1,0 +1,2 @@
+	 * The HIL mode is enabled by the HIL bit flag
+	 * in the system mode. Either send a set mode

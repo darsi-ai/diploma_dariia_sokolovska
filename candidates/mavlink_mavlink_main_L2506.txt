@@ -1,0 +1,24 @@
+		if (!should_transmit()) {
+			check_requested_subscriptions();
+			handleStatus();
+			handleCommands();
+			handleAndGetCurrentCommandAck();
+			continue;
+		}
+
+		perf_count(_loop_interval_perf);
+		perf_begin(_loop_perf);
+
+		const hrt_abstime t = hrt_absolute_time();
+
+		update_rate_mult();
+
+		// check for parameter updates
+		if (_parameter_update_sub.updated()) {
+			// clear update
+			parameter_update_s pupdate;
+			_parameter_update_sub.copy(&pupdate);
+
+			// update parameters from storage
+			mavlink_update_parameters();
+		}

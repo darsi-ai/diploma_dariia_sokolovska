@@ -1,0 +1,8 @@
+	} else if (!context.status().open_drone_id_system_healthy) {
+		/* EVENT
+		 * @description
+		 * Open Drone ID system reported being unhealthy.
+		 *
+		 * <profile name="dev">
+		 * This check can be configured via <param>COM_ARM_ODID</param> parameter.
+		 * </profile>

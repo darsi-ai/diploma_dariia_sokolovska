@@ -1,0 +1,8 @@
+			} else {
+				// Switch to orbit state and let the orbit task handle the command further
+				if (_user_mode_intention.change(vehicle_status_s::NAVIGATION_STATE_ORBIT, getSourceFromCommand(cmd))) {
+					main_ret = TRANSITION_CHANGED;
+
+				} else {
+					main_ret = TRANSITION_DENIED;
+				}

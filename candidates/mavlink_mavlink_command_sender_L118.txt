@@ -1,0 +1,15 @@
+		if (item->timestamp_us == command.timestamp) {
+
+			// We should activate the channel by setting num_sent_per_channel from -1 to 0.
+			item->num_sent_per_channel[channel] = 0;
+			already_existing = true;
+			break;
+		}
+	}
+
+	if (!already_existing) {
+
+		command_item_s new_item;
+		new_item.command = msg;
+		new_item.timestamp_us = command.timestamp;
+		new_item.num_sent_per_channel[channel] = 0;

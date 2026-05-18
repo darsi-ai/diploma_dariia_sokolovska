@@ -1,0 +1,31 @@
+	if (PX4_ISFINITE(flow.distance) && (flow.distance >= 0.f)) {
+		// Positive value (including zero): distance known. Negative value: Unknown distance.
+		sensor_optical_flow.distance_m = flow.distance;
+		sensor_optical_flow.distance_available = true;
+	}
+
+	sensor_optical_flow.timestamp = hrt_absolute_time();
+
+	_sensor_optical_flow_pub.publish(sensor_optical_flow);
+}
+
+void
+MavlinkReceiver::handle_message_set_mode(mavlink_message_t *msg)
+{
+	mavlink_set_mode_t new_mode;
+	mavlink_msg_set_mode_decode(msg, &new_mode);
+
+	union px4_custom_mode custom_mode;
+	custom_mode.data = new_mode.custom_mode;
+
+	vehicle_command_s vcmd{};
+
+	vcmd.timestamp = hrt_absolute_time();
+
+	/* copy the content of mavlink_command_long_t cmd_mavlink into command_t cmd */
+	vcmd.param1 = (float)new_mode.base_mode;
+	vcmd.param2 = (float)custom_mode.main_mode;
+	vcmd.param3 = (float)custom_mode.sub_mode;
+
+	vcmd.command = vehicle_command_s::VEHICLE_CMD_DO_SET_MODE;
+	vcmd.target_system = new_mode.target_system;

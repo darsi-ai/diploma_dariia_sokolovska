@@ -1,0 +1,2 @@
+		PX4_ERR("command %" PRIu32 " invalid result %d", cmd.command, result);
+		return;

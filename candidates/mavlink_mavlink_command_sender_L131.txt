@@ -1,0 +1,19 @@
+	if (!already_existing) {
+
+		command_item_s new_item;
+		new_item.command = msg;
+		new_item.timestamp_us = command.timestamp;
+		new_item.num_sent_per_channel[channel] = 0;
+		new_item.last_time_sent_us = hrt_absolute_time();
+		_commands.put(new_item);
+	}
+
+	unlock();
+	return 0;
+}
+
+void MavlinkCommandSender::handle_mavlink_command_ack(const mavlink_command_ack_t &ack,
+		uint8_t from_sysid, uint8_t from_compid, uint8_t channel)
+{
+	CMD_DEBUG("handling result %" PRIu8 " for command %" PRIu16 " (from %" PRIu8 ":%" PRIu8 ")",
+		  ack.result, ack.command, from_sysid, from_compid);

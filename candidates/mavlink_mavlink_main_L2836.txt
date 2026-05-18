@@ -1,0 +1,6 @@
+					if (command_ack.command == vehicle_command_s::VEHICLE_CMD_LOGGING_START) {
+						if (_mavlink_ulog) {
+							_mavlink_ulog->start_ack_received();
+						}
+
+					} else if (command_ack.command == vehicle_command_s::VEHICLE_CMD_LOGGING_STOP

@@ -1,0 +1,27 @@
+					for (int i = Modes::FIRST_EXTERNAL_NAV_STATE; i <= Modes::LAST_EXTERNAL_NAV_STATE; ++i) {
+						if (_modes.valid(i)) {
+							const Modes::Mode &cur_mode = _modes.mode(i);
+
+							if (cur_mode.replaces_nav_state == request.replace_internal_mode) {
+								// TODO: we could add priorities and allow the highest priority to do the replacement
+								PX4_ERR("Trying to replace an already replaced mode (%i)", request.replace_internal_mode);
+								reply.success = false;
+							}
+						}
+					}
+				}
+			}
+
+			if (request.register_mode_executor && !_mode_executors.hasFreeExecutors()) {
+				PX4_WARN("No free slots for executors");
+				reply.success = false;
+			}
+
+			// register component(s)
+			if (reply.success) {
+				int nav_mode_id = -1;
+
+				if (request.register_mode) {
+					Modes::Mode mode{};
+					strncpy(mode.name, request.name, sizeof(mode.name));
+

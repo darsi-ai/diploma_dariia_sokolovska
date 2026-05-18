@@ -1,0 +1,11 @@
+	if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF, flags.mode_req_local_position_relaxed);
+
+	} else {
+		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF, flags.mode_req_local_position);
+	}
+
+	// NAVIGATION_STATE_EXTERNALx: handled outside
+
+	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX == 31, "update mode requirements");
+}

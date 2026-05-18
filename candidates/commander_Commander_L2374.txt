@@ -1,0 +1,59 @@
+	if (_worker_thread.hasResult()) {
+		int ret = _worker_thread.getResultAndReset();
+		_actuator_armed.in_esc_calibration_mode = false;
+
+		if (_vehicle_status.calibration_enabled) { // did we do a calibration?
+			_vehicle_status.calibration_enabled = false;
+
+			if (ret == 0) {
+				tune_positive(true);
+
+			} else {
+				tune_negative(true);
+			}
+		}
+	}
+}
+
+void Commander::handleAutoDisarm()
+{
+	// Auto disarm when landed or kill switch engaged
+	if (isArmed()) {
+
+		// Check for auto-disarm on landing or pre-flight
+		if (_param_com_disarm_land.get() > 0 || _param_com_disarm_prflt.get() > 0) {
+
+			const bool auto_disarm_land_enabled = _param_com_disarm_land.get() > 0 && !_mission_in_progress
+							      && !_config_overrides.disable_auto_disarm;
+
+			if (auto_disarm_land_enabled && _have_taken_off_since_arming) {
+				_auto_disarm_landed.set_hysteresis_time_from(false, _param_com_disarm_land.get() * 1_s);
+				_auto_disarm_landed.set_state_and_update(_vehicle_land_detected.landed, hrt_absolute_time());
+
+			} else if (_param_com_disarm_prflt.get() > 0 && !_have_taken_off_since_arming) {
+				_auto_disarm_landed.set_hysteresis_time_from(false,
+						(_param_com_spoolup_time.get() + _param_com_disarm_prflt.get()) * 1_s);
+				_auto_disarm_landed.set_state_and_update(true, hrt_absolute_time());
+			}
+
+			if (_auto_disarm_landed.get_state() && !_multicopter_throw_launch.isThrowLaunchInProgress()) {
+				if (_have_taken_off_since_arming) {
+					disarm(arm_disarm_reason_t::landing);
+
+				} else {
+					disarm(arm_disarm_reason_t::preflight_inaction);
+				}
+			}
+		}
+
+		// Auto disarm after 5 seconds if kill switch is engaged
+		_auto_disarm_killed.set_state_and_update(_actuator_armed.kill, hrt_absolute_time());
+
+		if (_auto_disarm_killed.get_state()) {
+			disarm(arm_disarm_reason_t::kill_switch, true);
+		}
+
+	} else {
+		_auto_disarm_landed.set_state_and_update(false, hrt_absolute_time());
+		_auto_disarm_killed.set_state_and_update(false, hrt_absolute_time());
+	}

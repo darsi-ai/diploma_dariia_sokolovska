@@ -1,0 +1,2 @@
+	void acknowledge(uint8_t sysid, uint8_t compid, uint16_t command, uint8_t result, uint8_t progress = 0);
+

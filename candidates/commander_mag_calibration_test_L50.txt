@@ -1,0 +1,12 @@
+class MagCalTest : public ::testing::Test
+{
+public:
+	void generate2SidesMagData(float *x, float *y, float *z, unsigned int n_samples, float mag_str);
+
+	/* Generate regularly spaced data on a sphere
+	 * Ref.: How to generate equidistributed points on the surface of a sphere, Markus Deserno, 2004
+	 */
+	void generateRegularData(float *x, float *y, float *z, unsigned int n_samples, float mag_str);
+
+	void modifyOffsetScale(float *x, float *y, float *z, unsigned int n_samples, Vector3f offsets, Vector3f scale_factors);
+};

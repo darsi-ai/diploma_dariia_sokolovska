@@ -1,0 +1,2 @@
+				const Modes::Mode &mode = _modes.mode(i);
+

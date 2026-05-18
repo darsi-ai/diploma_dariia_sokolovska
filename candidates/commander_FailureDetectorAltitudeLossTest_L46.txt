@@ -1,0 +1,51 @@
+class FailureDetectorAltitudeLossTest : public ::testing::Test
+{
+public:
+	void SetUp() override
+	{
+		param_control_autosave(false);
+
+		// FD_ALT_LOSS = 5m, FD_ALT_LOSS_T = 0s
+		param_t param = param_handle(px4::params::FD_ALT_LOSS);
+		float threshold = 5.f;
+		param_set(param, &threshold);
+
+		param = param_handle(px4::params::FD_ALT_LOSS_T);
+		float ttri = 0.f;
+		param_set(param, &ttri);
+	}
+
+	// Publish position and setpoint, then run the detector. Returns the alt flag state.
+	bool update(float lpos_z, float lpos_sp_z, float delta_z = 0.f, uint8_t z_reset_counter = 0)
+	{
+		vehicle_local_position_s lpos{};
+		lpos.timestamp = hrt_absolute_time();
+		lpos.z = lpos_z;
+		lpos.z_valid = true;
+		lpos.delta_z = delta_z;
+		lpos.z_reset_counter = z_reset_counter;
+		_lpos_pub.publish(lpos);
+
+		vehicle_local_position_setpoint_s lpos_sp{};
+		lpos_sp.timestamp = hrt_absolute_time();
+		lpos_sp.z = lpos_sp_z;
+		_lpos_sp_pub.publish(lpos_sp);
+
+		vehicle_status_s status{};
+		status.vehicle_type = vehicle_status_s::VEHICLE_TYPE_ROTARY_WING;
+
+		vehicle_control_mode_s control_mode{};
+		control_mode.flag_control_attitude_enabled = true;
+		control_mode.flag_control_altitude_enabled = true;
+
+		_fd.update(status, control_mode);
+
+		return _fd.getStatus().flags.alt;
+	}
+
+private:
+	FailureDetector _fd{nullptr};
+
+	uORB::Publication<vehicle_local_position_s> _lpos_pub{ORB_ID(vehicle_local_position)};
+	uORB::Publication<vehicle_local_position_setpoint_s> _lpos_sp_pub{ORB_ID(vehicle_local_position_setpoint)};
+};

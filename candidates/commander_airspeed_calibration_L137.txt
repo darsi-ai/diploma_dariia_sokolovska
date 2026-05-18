@@ -1,0 +1,23 @@
+	if (PX4_ISFINITE(diff_pres_offset)) {
+		// Prevent a completely zero param
+		// since this is used to detect a missing calibration
+		// This value is numerically down in the noise and has
+		// no effect on the sensor performance.
+		if (fabsf(diff_pres_offset) < 0.00000001f) {
+			diff_pres_offset = 0.00000001f;
+		}
+
+		if (param_set(param_find("SENS_DPRES_OFF"), &diff_pres_offset)) {
+			calibration_log_critical(mavlink_log_pub, CAL_ERROR_SET_PARAMS_MSG);
+			return PX4_ERROR;
+		}
+
+	} else {
+		feedback_calibration_failed(mavlink_log_pub);
+		return PX4_ERROR;
+	}
+
+	calibration_log_info(mavlink_log_pub, "[cal] Offset of %d Pascal", (int)diff_pres_offset);
+
+	/* wait 500 ms to ensure parameter propagated through the system */
+	px4_usleep(500 * 1000);

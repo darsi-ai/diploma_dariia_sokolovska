@@ -1,0 +1,2 @@
+					    ActionOptions(Action::Disarm).cannotBeDeferred());
+		_last_state_battery_unhealthy_spoolup = checkFailsafe(_caller_id_battery_unhealthy_spoolup,

@@ -1,0 +1,3 @@
+					} else {
+						PX4_ERR("invalid mode");
+						err_flag = true;

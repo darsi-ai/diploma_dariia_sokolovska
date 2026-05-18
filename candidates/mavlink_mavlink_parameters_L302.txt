@@ -1,0 +1,8 @@
+					} else {
+						/* local name buffer to enforce null-terminated string */
+						char name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN + 1];
+						strncpy(name, req_read.param_id, MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN);
+						/* enforce null termination */
+						name[MAVLINK_MSG_PARAM_VALUE_FIELD_PARAM_ID_LEN] = '\0';
+						/* attempt to find parameter and send it */
+

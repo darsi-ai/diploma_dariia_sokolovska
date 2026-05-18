@@ -1,0 +1,2 @@
+		Auto,   ///< allow takeover depending on delay parameter: if >0 go into hold first (w/o stick takeover possible), then take action
+		Never,  ///< never allow takeover

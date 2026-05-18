@@ -1,0 +1,2 @@
+				 * Configure the failsafe action with <param>COM_GNSSLOSS_ACT</param>.
+				 * </profile>

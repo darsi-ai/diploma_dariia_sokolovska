@@ -1,0 +1,14 @@
+	if (!_valid) {
+		tune_home_set(true);
+	}
+
+	// mark home position as set
+	_valid = true;
+}
+
+bool HomePosition::isGpsHorizontalFusionEnabled()
+{
+	// If parameter doesn't exist, allow GPS usage
+	if (_param_ekf2_gps_ctrl_handle == PARAM_INVALID) {
+		return true;
+	}

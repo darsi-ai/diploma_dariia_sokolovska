@@ -1,0 +1,25 @@
+		if (need_to_update_param) {
+			char hash_param_name[17];
+			snprintf(hash_param_name, sizeof(hash_param_name), "COM_MODE%d_HASH", new_mode_idx);
+			const param_t handle = param_find(hash_param_name);
+
+			if (handle != PARAM_INVALID) {
+				param_set_no_notification(handle, &mode_name_hash);
+			}
+		}
+
+		_modes[new_mode_idx] = mode;
+		_modes[new_mode_idx].valid = true;
+		return new_mode_idx + FIRST_EXTERNAL_NAV_STATE;
+	}
+
+	PX4_ERR("logic error");
+	return -1;
+}
+
+bool Modes::removeExternalMode(uint8_t nav_state, const char *name)
+{
+	if (valid(nav_state) && strncmp(name, _modes[nav_state - FIRST_EXTERNAL_NAV_STATE].name, sizeof(Mode::name)) == 0) {
+		_modes[nav_state - FIRST_EXTERNAL_NAV_STATE].valid = false;
+		return true;
+	}

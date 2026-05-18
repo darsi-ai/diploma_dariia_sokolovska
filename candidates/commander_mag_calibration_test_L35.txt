@@ -1,0 +1,2 @@
+ * Test code for the Magnetometer calibration routine
+ * Run this test only using make tests TESTFILTER=mag_calibration

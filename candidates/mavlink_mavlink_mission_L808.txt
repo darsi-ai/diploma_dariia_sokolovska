@@ -1,0 +1,14 @@
+	if (_int_mode) {
+		_int_mode = false;
+	}
+
+	handle_mission_request_both(msg);
+}
+
+void
+MavlinkMissionManager::handle_mission_request_int(const mavlink_message_t *msg)
+{
+	// The request comes in the new int mode, so we switch to it.
+	if (!_int_mode) {
+		_int_mode = true;
+	}

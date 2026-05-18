@@ -1,0 +1,2 @@
+				mavlink_log_emergency(reporter.mavlink_log_pub(), "Emergency battery level\t");
+			}

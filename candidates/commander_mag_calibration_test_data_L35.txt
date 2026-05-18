@@ -1,0 +1,2 @@
+ * Test data for the Magnetometer calibration unit tests
+ */

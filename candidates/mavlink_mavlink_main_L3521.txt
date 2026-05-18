@@ -1,0 +1,26 @@
+	for (Mavlink *inst : mavlink_module_instances) {
+		if (inst && (inst->get_mode() != MAVLINK_MODE_ONBOARD) &&
+		    !inst->broadcast_enabled() && inst->get_protocol() == Protocol::UDP) {
+
+			PX4_INFO("MAVLink only on localhost (set param MAV_{i}_BROADCAST = 1 to enable network)");
+		}
+	}
+
+#endif // MAVLINK_UDP
+
+}
+
+static void usage()
+{
+
+	PRINT_MODULE_DESCRIPTION(
+		R"DESCR_STR(
+### Description
+This module implements the MAVLink protocol, which can be used on a Serial link or UDP network connection.
+It communicates with the system via uORB: some messages are directly handled in the module (eg. mission
+protocol), others are published via uORB (eg. vehicle_command).
+
+Streams are used to send periodic messages with a specific rate, such as the vehicle attitude.
+When starting the mavlink instance, a mode can be specified, which defines the set of enabled streams with their rates.
+For a running instance, streams can be configured via `mavlink stream` command.
+

@@ -1,0 +1,2 @@
+	// If a failsafe is active we must pass the request along as it might lead to a user-takeover.
+	bool mode_change_requested = _user_mode_intention.getHadModeChangeAndClear();

@@ -1,0 +1,2 @@
+	 * stream.
+	 * @param configure_single_stream: if nullptr, configure all streams, else only a single stream

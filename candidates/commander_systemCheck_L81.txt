@@ -1,0 +1,32 @@
+			if (reporter.mavlink_log_pub()) {
+				mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Flight termination active");
+			}
+		}
+	}
+
+	// USB not connected
+	if (!circuit_breaker_enabled_by_val(_param_cbrk_usb_chk.get(), CBRK_USB_CHK_KEY) && context.status().usb_connected) {
+		/* EVENT
+		 * @description
+		 * Flying with USB is not safe. Disconnect it and reboot the FMU.
+		 *
+		 * <profile name="dev">
+		 * This check can be configured via <param>CBRK_USB_CHK</param> parameter.
+		 * </profile>
+		 */
+		reporter.armingCheckFailure(NavModes::All, health_component_t::system, events::ID("check_system_usb_connected"),
+					    events::Log::Error, "USB connected");
+
+		if (reporter.mavlink_log_pub()) {
+			mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: Flying with USB is not safe");
+		}
+	}
+
+	// Global position required
+	if (!_param_com_arm_wo_gps.get() && !context.isArmed()) {
+		if (reporter.failsafeFlags().global_position_invalid) {
+			/* EVENT
+			 * @description
+			 * <profile name="dev">
+			 * This check can be configured via <param>COM_ARM_WO_GPS</param> parameter.
+			 * </profile>

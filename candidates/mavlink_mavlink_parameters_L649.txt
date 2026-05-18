@@ -1,0 +1,2 @@
+	 * Map onboard parameter type to MAVLink type,
+	 * endianess matches (both little endian)

@@ -1,0 +1,3 @@
+		} else {
+			Modes::Mode::setControlModeDefaults(control_mode);
+		}

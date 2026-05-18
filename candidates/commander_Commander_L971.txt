@@ -1,0 +1,26 @@
+				if (base_mode & VEHICLE_MODE_FLAG_AUTO_ENABLED) {
+					desired_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+
+				} else if (base_mode & VEHICLE_MODE_FLAG_MANUAL_INPUT_ENABLED) {
+					if (base_mode & VEHICLE_MODE_FLAG_GUIDED_ENABLED) {
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_POSCTL;
+
+					} else if (base_mode & VEHICLE_MODE_FLAG_STABILIZE_ENABLED) {
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_STAB;
+
+					} else {
+						desired_nav_state = vehicle_status_s::NAVIGATION_STATE_MANUAL;
+					}
+
+				} else {
+					main_ret = TRANSITION_DENIED;
+					mavlink_log_critical(&_mavlink_log_pub, "Unsupported base mode\t");
+					events::send(events::ID("commander_unsupported_base_mode"), events::Log::Error,
+						     "Unsupported base mode");
+				}
+			}
+
+			if (desired_nav_state != vehicle_status_s::NAVIGATION_STATE_MAX) {
+
+				// Special handling for LAND mode: always allow to switch into it such that if used
+				// as emergency mode it is always available. When triggering it the user generally wants

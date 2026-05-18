@@ -1,0 +1,8 @@
+					    && (TRANSITION_DENIED != arm(arm_disarm_reason_t::mission_start))) {
+
+						cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_ACCEPTED;
+
+					} else {
+						printRejectMode(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION);
+						cmd_result = vehicle_command_ack_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
+					}

@@ -1,0 +1,24 @@
+	if (returned_state.updated_user_intended_mode == vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND) {
+		if ((selected_action == Action::RTL || selected_action == Action::Land ||
+		     returned_state.delayed_action == Action::RTL || returned_state.delayed_action == Action::Land)
+		    && modeCanRun(status_flags, vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND)) {
+			selected_action = Action::Warn;
+			returned_state.delayed_action = Action::None;
+		}
+	}
+}
+
+bool FailsafeBase::actionAllowsUserTakeover(Action action) const
+{
+	// Stick-controlled modes do not need user takeover
+	return action == Action::Hold || action == Action::RTL || action == Action::Land || action == Action::Descend;
+}
+
+void FailsafeBase::clearDelayIfNeeded(const State &state,
+				      const failsafe_flags_s &status_flags)
+{
+	// Clear delay if one of the following is true:
+	// - Already in a failsafe
+	// - Hold not available
+	// - Takeover is active (due to a mode switch during the delay)
+	if (_selected_action > Action::Hold || !modeCanRun(status_flags, vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER)

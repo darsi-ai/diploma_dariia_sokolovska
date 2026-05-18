@@ -1,0 +1,18 @@
+	if (missing_data && (param_ekf2_en == 1)) {
+		/* EVENT
+		 */
+		reporter.armingCheckFailure(required_groups, health_component_t::local_position_estimate,
+					    events::ID("check_estimator_missing_data"),
+					    events::Log::Info, "Waiting for estimator to initialize");
+
+		if (reporter.mavlink_log_pub()) {
+			mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: ekf2 missing data");
+		}
+
+	} else {
+		reporter.setIsPresent(health_component_t::local_position_estimate);
+		checkSensorBias(context, reporter, required_groups);
+	}
+
+	// set mode requirements
+	setModeRequirementFlags(context, pre_flt_fail_innov_heading, pre_flt_fail_innov_vel_horiz, pre_flt_fail_innov_pos_horiz,

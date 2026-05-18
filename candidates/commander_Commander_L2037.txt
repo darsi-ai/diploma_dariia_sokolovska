@@ -1,0 +1,26 @@
+		if (_action_request_sub.updated()) {
+			const unsigned last_generation = _action_request_sub.get_last_generation();
+			action_request_s action_request;
+
+			if (_action_request_sub.copy(&action_request)) {
+				if (_action_request_sub.get_last_generation() != last_generation + 1) {
+					PX4_ERR("action_request lost, generation %u -> %u", last_generation, _action_request_sub.get_last_generation());
+				}
+
+				executeActionRequest(action_request);
+			}
+		}
+
+		// update actuator_armed
+		_actuator_armed.armed = isArmed();
+		_actuator_armed.prearmed = getPrearmState();
+		_actuator_armed.ready_to_arm = _vehicle_status.pre_flight_checks_pass || isArmed();
+		_actuator_armed.lockdown = _multicopter_throw_launch.isThrowLaunchInProgress();
+		// _actuator_armed.kill // action_request_s::ACTION_KILL
+		_actuator_armed.termination = (_vehicle_status.nav_state == _vehicle_status.NAVIGATION_STATE_TERMINATION);
+		// _actuator_armed.in_esc_calibration_mode // VEHICLE_CMD_PREFLIGHT_CALIBRATION
+
+		// Send parachute command upon termination
+		if (!actuator_armed_prev.termination && _actuator_armed.termination && isArmed()) {
+			send_parachute_command();
+		}

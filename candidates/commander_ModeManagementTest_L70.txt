@@ -1,0 +1,2 @@
+		EXPECT_EQ(modes.addExternalMode(mode), Modes::FIRST_EXTERNAL_NAV_STATE + i);
+		EXPECT_EQ(readHash(i), events::util::hash_32_fnv1a_const(mode.name));

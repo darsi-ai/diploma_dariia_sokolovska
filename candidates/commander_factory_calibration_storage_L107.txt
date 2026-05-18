@@ -1,0 +1,6 @@
+	if (ret != 0) {
+		return -errno;
+	}
+
+	PX4_INFO("Storing parameters to factory storage %s", CALIBRATION_STORAGE);
+	param_control_autosave(false);

@@ -1,0 +1,33 @@
+				if (fabsf(bias.accel_bias[axis_index]) > ekf_ab_test_limit + test_uncertainty) {
+					/* EVENT
+					 * @description
+					 * An accelerometer recalibration might help.
+					 *
+					 * <profile name="dev">
+					 * Axis {1}: |{2:.8}| \> {3:.8} + {4:.8}
+					 *
+					 * This check can be configured via <param>EKF2_ABL_LIM</param> parameter.
+					 * </profile>
+					 */
+					reporter.armingCheckFailure<uint8_t, float, float, float>(required_groups, health_component_t::local_position_estimate,
+							events::ID("check_estimator_high_accel_bias"),
+							events::Log::Error, "High Accelerometer Bias", axis_index,
+							bias.accel_bias[axis_index], ekf_ab_test_limit, test_uncertainty);
+
+					if (reporter.mavlink_log_pub()) {
+						mavlink_log_critical(reporter.mavlink_log_pub(), "Preflight Fail: High Accelerometer Bias");
+					}
+
+					return; // avoid showing more than one error
+				}
+			}
+		}
+
+		// check gyro bias estimates
+		if (bias.gyro_bias_valid) {
+			const float ekf_gb_test_limit = 0.75f * bias.gyro_bias_limit;
+
+			for (int axis_index = 0; axis_index < 3; axis_index++) {
+				// allow for higher uncertainty in estimates for axes that are less observable to prevent false positives
+				// adjust test threshold by 3-sigma
+				const float test_uncertainty = 3.0f * sqrtf(fmaxf(bias.gyro_bias_variance[axis_index], 0.0f));

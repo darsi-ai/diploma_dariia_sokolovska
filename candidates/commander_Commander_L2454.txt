@@ -1,0 +1,2 @@
+	case FailsafeBase::Action::Disarm:
+		disarm(arm_disarm_reason_t::failsafe, true);

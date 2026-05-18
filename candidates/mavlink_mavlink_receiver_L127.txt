@@ -1,0 +1,2 @@
+	command_ack.command = command;
+	command_ack.result = result;

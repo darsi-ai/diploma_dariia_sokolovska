@@ -1,0 +1,5 @@
+		// We have to test seek past EOF ourselves, lseek will allow seek past EOF
+		if (_session_info.stream_offset >= _session_info.file_size) {
+			error_code = kErrEOF;
+			PX4_DEBUG("stream download: sending Nak EOF");
+		}

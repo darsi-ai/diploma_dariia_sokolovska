@@ -1,0 +1,4 @@
+			} else if (action == Action::Descend || action == Action::FallbackAltCtrl || action == Action::FallbackStab) {
+				/* EVENT
+				* @description Failsafe actions that disengage the autopilot (remove position control)
+				* @type append_health_and_arming_messages

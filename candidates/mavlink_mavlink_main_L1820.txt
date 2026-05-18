@@ -1,0 +1,2 @@
+		configure_stream_local("DEBUG", 50.0f);
+		configure_stream_local("DEBUG_FLOAT_ARRAY", 50.0f);

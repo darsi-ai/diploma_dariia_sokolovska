@@ -1,0 +1,41 @@
+		} else {
+			mavlink_mission_item->x = (float)mission_item->params[4];
+			mavlink_mission_item->y = (float)mission_item->params[5];
+		}
+
+		mavlink_mission_item->z = mission_item->params[6];
+
+		switch (mavlink_mission_item->command) {
+		case NAV_CMD_DO_JUMP:
+			mavlink_mission_item->param1 = mission_item->do_jump_mission_index;
+			mavlink_mission_item->param2 = mission_item->do_jump_repeat_count;
+			break;
+
+		case NAV_CMD_DO_CHANGE_SPEED:
+		case NAV_CMD_DO_SET_HOME:
+		case NAV_CMD_DO_LAND_START:
+		case NAV_CMD_DO_TRIGGER_CONTROL:
+		case NAV_CMD_DO_DIGICAM_CONTROL:
+		case NAV_CMD_IMAGE_START_CAPTURE:
+		case NAV_CMD_IMAGE_STOP_CAPTURE:
+		case NAV_CMD_VIDEO_START_CAPTURE:
+		case NAV_CMD_VIDEO_STOP_CAPTURE:
+		case NAV_CMD_DO_CONTROL_VIDEO:
+		case NAV_CMD_DO_MOUNT_CONFIGURE:
+		case NAV_CMD_DO_MOUNT_CONTROL:
+		case NAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW:
+		case NAV_CMD_DO_GIMBAL_MANAGER_CONFIGURE:
+		case NAV_CMD_DO_SET_ROI:
+		case NAV_CMD_DO_SET_CAM_TRIGG_DIST:
+		case NAV_CMD_OBLIQUE_SURVEY:
+		case NAV_CMD_DO_SET_CAM_TRIGG_INTERVAL:
+		case NAV_CMD_SET_CAMERA_MODE:
+		case NAV_CMD_SET_CAMERA_SOURCE:
+		case NAV_CMD_SET_CAMERA_ZOOM:
+		case NAV_CMD_SET_CAMERA_FOCUS:
+		case NAV_CMD_DO_VTOL_TRANSITION:
+			break;
+
+		default:
+			return PX4_ERROR;
+		}

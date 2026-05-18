@@ -1,0 +1,3 @@
+				} else {
+					disarm(arm_disarm_reason_t::preflight_inaction);
+				}

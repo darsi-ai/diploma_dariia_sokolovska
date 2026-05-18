@@ -1,0 +1,39 @@
+{
+public:
+	FailsafeTester(ModuleParams *parent) : FailsafeBase(parent) {}
+
+protected:
+
+	void checkStateAndMode(const hrt_abstime &time_us, const State &state,
+			       const failsafe_flags_s &status_flags) override
+	{
+		CHECK_FAILSAFE(status_flags, manual_control_signal_lost, ActionOptions(Action::RTL).clearOn(ClearCondition::OnModeChangeOrDisarm));
+		CHECK_FAILSAFE(status_flags, gcs_connection_lost, Action::Descend);
+
+		if (state.user_intended_mode == vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION) {
+			CHECK_FAILSAFE(status_flags, mission_failure, Action::Descend);
+		}
+
+		CHECK_FAILSAFE(status_flags, wind_limit_exceeded, ActionOptions(Action::RTL).allowUserTakeover(UserTakeoverAllowed::Never));
+		CHECK_FAILSAFE(status_flags, battery_low_remaining_time, ActionOptions(Action::RTL).causedBy(Cause::RemainingFlightTimeLow));
+		CHECK_FAILSAFE(status_flags, offboard_control_signal_lost, ActionOptions(Action::Hold));
+
+		CHECK_FAILSAFE(status_flags, navigator_failure, ActionOptions(Action::Warn));
+		CHECK_FAILSAFE(status_flags, fd_imbalanced_prop, ActionOptions(Action::None));
+
+		_last_state_test = checkFailsafe(_caller_id_test, _last_state_test, status_flags.fd_motor_failure
+						 && status_flags.fd_critical_failure, ActionOptions(Action::Terminate).cannotBeDeferred());
+	}
+
+	Action checkModeFallback(const failsafe_flags_s &status_flags, uint8_t user_intended_mode) const override
+	{
+		return Action::None;
+	}
+
+private:
+	const int _caller_id_test{genCallerId()};
+	bool _last_state_test{false};
+};
+
+class FailsafeTest : public ::testing::Test
+

@@ -1,0 +1,17 @@
+{
+	strncpy(dst, _root_dir, dst_len);
+	int root_dir_len = _root_dir_len;
+
+	// If neither the root ends nor the given path starts with a '/', add a separating '/' in between
+	if (dst[0] != '\0' && dst[strlen(dst) - 1] != '/' && path[0] != '/') {
+		strncat(dst, "/", dst_len);
+		++root_dir_len;
+	}
+
+	strncpy(dst + root_dir_len, path, dst_len - root_dir_len);
+	// Ensure termination
+	dst[dst_len - 1] = '\0';
+}
+
+/// @brief Responds to a List command
+MavlinkFTP::ErrorCode

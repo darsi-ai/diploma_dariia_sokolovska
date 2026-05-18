@@ -1,0 +1,2 @@
+	static const char	kDirentSkip = 'S';	///< Identifies Skipped entry from List command
+

@@ -1,0 +1,20 @@
+	if (!strcmp(argv[0], "poweroff")) {
+
+		bool ret = send_vehicle_command(vehicle_command_s::VEHICLE_CMD_PREFLIGHT_REBOOT_SHUTDOWN,
+						2.0f);
+
+		return (ret ? 0 : 1);
+	}
+
+
+#endif
+
+	return print_usage("unknown command");
+}
+
+int Commander::print_status()
+{
+	PX4_INFO("%s", isArmed() ? "Armed" : "Disarmed");
+	PX4_INFO("prearm safety: %s", _safety.isSafetyOff() ? "Off" : "On");
+	PX4_INFO("navigation mode: %s", mode_util::nav_state_names[_vehicle_status.nav_state]);
+	PX4_INFO("user intended navigation mode: %s", mode_util::nav_state_names[_vehicle_status.nav_state_user_intention]);

@@ -1,0 +1,4 @@
+static bool modeValid(uint8_t mode)
+{
+	return mode >= Modes::FIRST_EXTERNAL_NAV_STATE && mode <= Modes::LAST_EXTERNAL_NAV_STATE;
+}

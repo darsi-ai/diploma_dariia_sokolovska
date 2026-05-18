@@ -1,0 +1,8 @@
+	} else if (fd_status.fd_pitch) {
+		/* EVENT
+		 * @description
+		 * The vehicle exceeded the maximum configured pitch angle.
+		 *
+		 * <profile name="dev">
+		 * This check can be configured via <param>FD_FAIL_P</param> parameter.
+		 * </profile>

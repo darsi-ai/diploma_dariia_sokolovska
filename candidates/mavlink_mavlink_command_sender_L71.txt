@@ -1,0 +1,2 @@
+	int handle_vehicle_command(const struct vehicle_command_s &command, mavlink_channel_t channel);
+

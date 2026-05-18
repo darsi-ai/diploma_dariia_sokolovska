@@ -1,0 +1,2 @@
+	 * @param configure_single_stream: if nullptr, configure all streams, else only a single stream
+	 * @return 0 on success, <0 on error

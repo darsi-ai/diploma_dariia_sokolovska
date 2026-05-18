@@ -1,0 +1,2 @@
+		// It seems that we should be using the int mode, let's switch to it.
+		_int_mode = true;

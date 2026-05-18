@@ -1,0 +1,2 @@
+					 "Arm auth: Authorized for the next %" PRId32 " seconds",
+					 command_ack.result_param2);

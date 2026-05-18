@@ -1,0 +1,6 @@
+		while (_subscribe_to_stream != nullptr) {
+			px4_usleep(MAIN_LOOP_DELAY / 2);
+		}
+
+		/* copy stream name */
+		unsigned n = strlen(stream_name) + 1;

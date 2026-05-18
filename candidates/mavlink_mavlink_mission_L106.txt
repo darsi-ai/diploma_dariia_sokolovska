@@ -1,0 +1,2 @@
+	enum MISSION_MODE _mission_mode {MISSION_MODE_UNKNOWN}; ///< Current mission mode
+

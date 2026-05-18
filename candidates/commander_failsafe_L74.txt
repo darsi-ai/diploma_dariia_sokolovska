@@ -1,0 +1,2 @@
+	case gcs_connection_loss_failsafe_mode::Disarm: // Lockdown
+		options.allow_user_takeover = UserTakeoverAllowed::Never;

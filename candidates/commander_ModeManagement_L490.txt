@@ -1,0 +1,3 @@
+		if (_external_checks.isUnresponsive(_modes.mode(returned_nav_state).arming_check_registration_id)) {
+			returned_nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		}
